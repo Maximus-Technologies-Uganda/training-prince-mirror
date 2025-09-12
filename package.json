@@ -1,0 +1,30 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "Testing the remote connection",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+   "test": "vitest",
+    "start": "node src/hello/index.js",
+    "dev": "node src/hello/index.js",
+    "lint": "echo \"Linter not set up yet.\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maximus-Technologies-Uganda/training-prince.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Maximus-Technologies-Uganda/training-prince/issues"
+  },
+  "homepage": "https://github.com/Maximus-Technologies-Uganda/training-prince#readme",
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}
