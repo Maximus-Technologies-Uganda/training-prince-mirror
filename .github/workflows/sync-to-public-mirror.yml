@@ -1,0 +1,53 @@
+name: Sync to Public Mirror
+
+on:
+  push:
+    branches:
+      - main
+      - development
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+      - development
+
+jobs:
+  sync-to-mirror:
+    # Only run on successful pushes or merged PRs
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout private repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for proper sync
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+      
+      - name: Add public mirror as remote
+        run: |
+          git remote add mirror https://${{ secrets.MIRROR_TOKEN }}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git
+      
+      - name: Push to public mirror
+        run: |
+          # Get current branch name
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          
+          # Push to the same branch on the mirror
+          git push mirror $BRANCH_NAME --force
+          
+          # Also ensure main branch exists on mirror (in case we're pushing from development)
+          if [ "$BRANCH_NAME" != "main" ]; then
+            git push mirror main --force
+          fi
+      
+      - name: Verify sync
+        run: |
+          echo "Successfully synced branch ${{ github.ref_name }} to public mirror repository"
+          echo "Mirror URL: https://github.com/Maximus-Technologies-Uganda/training-prince-mirror"
