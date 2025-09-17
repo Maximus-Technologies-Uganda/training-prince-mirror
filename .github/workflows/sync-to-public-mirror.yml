@@ -9,13 +9,32 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
     steps:
       - name: Checkout Private Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Debug secret presence
+        run: |
+          if [ -n "${{ env.MIRROR_TOKEN }}" ]; then
+            echo "Has MIRROR_TOKEN: yes"
+          else
+            echo "Has MIRROR_TOKEN: no"
+          fi
+
+      - name: Skip push (no MIRROR_TOKEN)
+        if: ${{ env.MIRROR_TOKEN == '' }}
+        run: |
+          echo "MIRROR_TOKEN not available; skipping mirror push."
 
       - name: Push to Public Mirror
+        if: ${{ env.MIRROR_TOKEN != '' }}
         run: |
-          git push --force "https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git" --all
-          git push --force "https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git" --tags
+          MIRROR_URL="https://x-access-token:${MIRROR_TOKEN}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git"
+          git remote add mirror "$MIRROR_URL" 2>/dev/null || git remote set-url mirror "$MIRROR_URL"
+          git push --prune mirror --all
+          git push --prune mirror --tags
