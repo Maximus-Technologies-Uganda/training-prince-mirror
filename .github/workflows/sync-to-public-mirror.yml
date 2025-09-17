@@ -1,91 +1,21 @@
 name: Sync to Public Mirror
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
-      - development
-      - public-release
-  pull_request:
-    types: [closed]
     branches:
       - main
       - development
 
 jobs:
-  sync-to-mirror:
-    # Only run on successful pushes or merged PRs
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-    
+  sync:
     runs-on: ubuntu-latest
-    env:
-      MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
-    
     steps:
-      - name: Checkout private repository
+      - name: Checkout Private Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for proper sync
-          # Prevent using the default GITHUB_TOKEN for pushes; we'll use our PAT
-          persist-credentials: false
-      
-      - name: Configure Git
-        run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"
-          # Ensure no credential helper overrides our PAT
-          git config --global --unset-all credential.helper || true
-          git config --global credential.helper ""
+          fetch-depth: 0
 
-      - name: Fetch all branches and tags from origin
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_ACTOR: ${{ github.actor }}
+      - name: Push to Public Mirror
         run: |
-          ORIGIN_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git remote set-url origin "$ORIGIN_URL"
-          git fetch --prune --tags origin "+refs/heads/*:refs/remotes/origin/*"
-      
-      - name: Add public mirror as remote
-        env:
-          MIRROR_URL: https://x-access-token:${{ env.MIRROR_TOKEN }}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git
-        run: |
-          git remote remove mirror 2>/dev/null || true
-          git remote add mirror "$MIRROR_URL"
-
-      - name: Debug secret presence
-        run: |
-          if [ -n "${{ env.MIRROR_TOKEN }}" ]; then
-            echo "Has MIRROR_TOKEN: yes"
-          else
-            echo "Has MIRROR_TOKEN: no"
-          fi
-
-      - name: Validate PAT access to mirror (ls-remote)
-        if: ${{ env.MIRROR_TOKEN != '' }}
-        run: |
-          echo "Validating access to mirror repo..."
-          git ls-remote "https://x-access-token:${MIRROR_TOKEN}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git" | head -n 5 | cat
-
-      - name: Skipping push because MIRROR_TOKEN is not available (likely fork PR)
-        if: ${{ env.MIRROR_TOKEN == '' }}
-        run: |
-          echo "MIRROR_TOKEN is not available to this workflow run."
-          echo "This often happens on pull_request events from forks, where secrets are not passed."
-          echo "Skipping mirror push."
-      
-      - name: Push all branches and tags to public mirror
-        if: ${{ env.MIRROR_TOKEN != '' }}
-        shell: bash
-        run: |
-          echo "Pushing all refs to mirror (branches and tags) from origin/* to heads/*"
-          MIRROR_URL="https://x-access-token:${MIRROR_TOKEN}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git"
-          git push --prune "$MIRROR_URL" +refs/remotes/origin/*:refs/heads/*
-          git push --prune "$MIRROR_URL" --tags
-      
-      - name: Verify sync
-        run: |
-          echo "Successfully synced branch ${{ github.ref_name }} to public mirror repository"
-          echo "Mirror URL: https://github.com/Maximus-Technologies-Uganda/training-prince-mirror"
+          git push --force "https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git" --all
+          git push --force "https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git" --tags
