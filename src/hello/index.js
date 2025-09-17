@@ -1,22 +1,10 @@
-const readline = require('readline');
+function getGreeting() {
+  return 'Hello, World!';
+}
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+// This line runs the function and prints its message to the console.
+console.log(getGreeting());
 
-// Check if '--shout' was typed in the terminal
-const shouldShout = process.argv.includes('--shout');
-
-rl.question('What is your name? ', (name) => {
-  let greeting = `Hello, ${name}!`;
-
-  // If the --shout flag was found, make the greeting uppercase
-  if (shouldShout) {
-    greeting = greeting.toUpperCase();
-  }
-
-  console.log(greeting);
-  rl.close();
-});
+// We export the function so that our test file can import and use it.
+export default getGreeting;
 
