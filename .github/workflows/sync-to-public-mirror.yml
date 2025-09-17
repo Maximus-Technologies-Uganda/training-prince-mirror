@@ -39,7 +39,13 @@ jobs:
           git config --global credential.helper ""
 
       - name: Fetch all branches and tags from origin
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_ACTOR: ${{ github.actor }}
         run: |
+          ORIGIN_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git remote set-url origin "$ORIGIN_URL"
           git fetch --prune --tags origin "+refs/heads/*:refs/remotes/origin/*"
       
       - name: Add public mirror as remote
