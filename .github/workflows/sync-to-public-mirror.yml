@@ -76,8 +76,8 @@ jobs:
         run: |
           echo "Pushing all refs to mirror (branches and tags) from origin/* to heads/*"
           MIRROR_URL="https://x-access-token:${MIRROR_TOKEN}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git"
-          git push --force --prune "$MIRROR_URL" +refs/remotes/origin/*:refs/heads/*
-          git push --force --prune "$MIRROR_URL" --tags
+          git push --prune "$MIRROR_URL" +refs/remotes/origin/*:refs/heads/*
+          git push --prune "$MIRROR_URL" --tags
       
       - name: Verify sync
         run: |
