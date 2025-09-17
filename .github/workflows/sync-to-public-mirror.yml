@@ -37,6 +37,10 @@ jobs:
           # Ensure no credential helper overrides our PAT
           git config --global --unset-all credential.helper || true
           git config --global credential.helper ""
+
+      - name: Fetch all branches and tags from origin
+        run: |
+          git fetch --prune --tags origin "+refs/heads/*:refs/remotes/origin/*"
       
       - name: Add public mirror as remote
         env:
@@ -70,9 +74,10 @@ jobs:
         if: ${{ env.MIRROR_TOKEN != '' }}
         shell: bash
         run: |
-          echo "Pushing all refs to mirror (branches and tags)"
-          git push --force --prune "https://x-access-token:${MIRROR_TOKEN}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git" --all
-          git push --force --prune "https://x-access-token:${MIRROR_TOKEN}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git" --tags
+          echo "Pushing all refs to mirror (branches and tags) from origin/* to heads/*"
+          MIRROR_URL="https://x-access-token:${MIRROR_TOKEN}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git"
+          git push --force --prune "$MIRROR_URL" +refs/remotes/origin/*:refs/heads/*
+          git push --force --prune "$MIRROR_URL" --tags
       
       - name: Verify sync
         run: |
