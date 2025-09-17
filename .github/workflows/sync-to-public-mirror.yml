@@ -1,10 +1,16 @@
 name: Sync to Public Mirror
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main
-      - development
+      - "**"  # run for all branches, including feature branches
+    tags:
+      - "*"
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - "**"
 
 jobs:
   sync:
