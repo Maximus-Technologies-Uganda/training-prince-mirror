@@ -1,18 +1,33 @@
-name: Sync to Public Mirror - Key Generation
+name: Sync to Public Mirror
 
 on:
-  workflow_dispatch: # This allows us to run it manually
+  push:
+    branches:
+      - main
+      - development
 
 jobs:
-  generate-key:
+  sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate SSH key
+      # 1. Check out the code from the private repository
+      - name: Checkout Private Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2. Set up the SSH key
+      # This action loads the DEPLOY_KEY secret into the SSH agent
+      # so that Git can use it for authentication.
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      # 3. Push to the public mirror
+      # We now use an SSH URL (git@github.com:...) instead of HTTPS
+      - name: Push to Public Mirror
         run: |
-          ssh-keygen -t ed25519 -N "" -f ./deploy_key
-          echo " "
-          echo "ACTION REQUIRED: Copy the entire public key block below"
-          echo "========================================================"
-          cat ./deploy_key.pub
-          echo "========================================================"
-          echo " "
+          git remote add mirror git@github.com:Maximus-Technologies-Uganda/training-prince-mirror.git
+          git push --force --all mirror
+          git push --force --tags mirror
