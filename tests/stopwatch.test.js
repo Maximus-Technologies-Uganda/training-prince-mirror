@@ -7,7 +7,13 @@ describe('createStopwatch', () => {
       expect(stopwatch.startTime).toBe(0);
       expect(stopwatch.laps).toEqual([]);
     });
-  
+    it('should throw an error if lap() is called before start()', () => {
+      const stopwatch = createStopwatch();
+    
+      // We wrap the function call in an arrow function () => ...
+      // to test that it throws an error.
+      expect(() => stopwatch.lap()).toThrow('Stopwatch has not been started.');
+    });
     it('should record lap times', () => {
       const stopwatch = createStopwatch();
       stopwatch.start();
