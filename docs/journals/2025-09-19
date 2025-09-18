@@ -1,0 +1,23 @@
+# Journal — 2025-09-18
+
+## Goals for Today
+- [x] Implement the Expense Tracker CLI.
+- [x] Write unit tests for the core logic.
+- [x] Open and merge the PR for the feature.
+- [x] Complete daily journal entry.
+
+## Commands / Steps I tried
+- `git checkout -b feat/cli-expense`
+- `npm install`
+- `npm test`
+- `node src/expense/index.js add --amount 100 --category food`
+
+## PRs & CI
+- **PR:** <link to your merged 'feat/cli-expense' PR>
+- **CI:** <link to the successful 'checks' run for that PR>
+
+## What I learned
+- How to handle different commands (`add`, `list`, `total`) from the command line using a `switch` statement.
+- How to read from and write to a JSON file using Node.js's `fs` module to persist data.
+https://github.com/Maximus-Technologies-Uganda/training-prince/pull/14
+
