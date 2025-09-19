@@ -37,8 +37,31 @@ node src/hello/index.js Alice
 node src/hello/index.js Alice --shout
 ```
 
+- **Run via npx (after building/publishing or with `npm link`)**
+
+```bash
+npx . hello-cli Alice --shout
+```
+
 #### Stopwatch CLI
-- **Note**: The command-line entry (`index.js`) for the Stopwatch feature has not been built yet. Core logic and tests exist, but there is no runnable CLI command at this time.
+- **Start the stopwatch (resets any previous state)**
+
+```bash
+node src/stopwatch/index.js start
+```
+
+- **Record a lap**
+
+```bash
+node src/stopwatch/index.js lap
+```
+
+- **Run via npx**
+
+```bash
+npx . stopwatch-cli start
+npx . stopwatch-cli lap
+```
 
 #### Temperature Converter CLI
 - **Convert Celsius to Fahrenheit**
@@ -57,6 +80,12 @@ node src/temp-converter/index.js 32 --from F --to C
 
 ```bash
 node src/temp-converter/index.js 100 --from C --to C
+```
+
+- **Run via npx**
+
+```bash
+npx . temp-cli 100 --from C --to F
 ```
 
 If invalid or identical units are provided, the CLI will print an error message.
