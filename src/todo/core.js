@@ -1,5 +1,5 @@
 import fs from 'fs';
-const DB_FILE = 'todo.json';
+const DB_FILE = 'data/todo.json';
 /**
  * Adds a new todo object to a list of todos.
  * @param {Array} todos - The current list of todos.
@@ -52,6 +52,8 @@ export function removeTodo(todos, indexToRemove) {
   }
   
   export function saveTodos(todos) {
+    // Ensure data directory exists
+    try { fs.mkdirSync('data', { recursive: true }); } catch (_) {}
     const data = JSON.stringify(todos, null, 2);
     fs.writeFileSync(DB_FILE, data);
     console.log('To-do list saved.');

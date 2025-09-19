@@ -1,0 +1,27 @@
+# Friday Journal (2)
+
+- **Date**: Friday, September 19, 2025
+- **Project**: Finalizing Week 1 (Temperature Converter & Docs)
+- **Today's Goal**: Complete the final CLI project, update all documentation, and submit the final review packet for the week.
+
+## Prompts I Used
+1. "Write a Vitest test for a negative case where a function should throw an error."
+2. "Generate a professional README.md for a project with multiple CLI tools."
+
+## What Happened / Output
+- Successfully built the Temperature Converter CLI, including logic for C→F, F→C, and validation against invalid units.
+- The main project `README.md` was updated with installation, testing, and usage instructions for all CLIs.
+- The final review packet was created, filled out, and submitted via a "Capstone" pull request.
+
+## Bugs & Fixes
+- **Error**: User confusion about which repository to edit (private vs. public mirror).
+- **Fix**: Clarified the roles of each repository and used direct links to the correct files to avoid navigation errors.
+
+## Concepts Learned
+- The importance of "negative testing" to handle user errors gracefully.
+- How to write a comprehensive `README.md` that serves as good user documentation.
+- The process of creating a final "Capstone PR" to summarize and submit a week's worth of work.
+
+## Reflection
+Today was about polishing the work and preparing it for final review. It was satisfying to see all the individual PRs and features come together in the final Review Packet. This week was a huge learning curve, but I now have a complete, working project and a professional workflow to show for it.
+

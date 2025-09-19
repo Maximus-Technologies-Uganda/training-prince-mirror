@@ -1,0 +1,41 @@
+# Mentor Note — Clean-ups before Week 2
+
+- **Date**: September 19, 2025
+- **Project**: Repo Hygiene, Negative Tests, and Review Packet
+- **Today's Goal**: Finish non‑negotiable clean-ups to prepare the project for Week 2, including artifacted CI, repo hygiene, and negative tests for all CLIs.
+
+## Prompts I Used
+1. "Create a GitHub Actions workflow to build a single review packet artifact with coverage and an index page."
+2. "Refactor runtime state to a `data/` directory and ignore it in git."
+3. "Add negative tests for CLIs to validate error paths and usage messages."
+
+## What Happened / Output
+- Implemented `review-packet` workflow to produce a downloadable artifact containing `review.md`, `review-artifacts/index.html`, and HTML coverage under `review-artifacts/coverage-apps/`.
+- Added a prominent "How to review me" box to `README.md` with steps to open the Coverage Index from the artifact.
+- Moved runtime JSON/state files into `data/` and added `.gitignore` rules (`data/*.json`).
+- Updated code to read/write from `data/` and ensured the directory is created on save.
+- Added negative tests:
+  - Hello CLI: `--shout` without a name → usage error.
+  - Expense CLI: non‑numeric `--amount` → validation error.
+  - Temp Converter: invalid/identical units already covered at core level.
+  - Stopwatch core already guards `lap()` before `start()`.
+- All tests passing locally with the new cases.
+
+## Bugs & Fixes
+- **Issue**: Could not switch branches due to a dirty working tree (`.stopwatch-state.json`).
+  - **Fix**: Stashed state, switched branches safely, and later quarantined state into `data/`.
+- **Issue**: `npx . hello-cli` failed to resolve a binary.
+  - **Fix**: Added `bin` entries and shebangs; verified with `npm exec --package=. -- <bin>`.
+- **Issue**: Stopwatch `lap` across separate runs lost state.
+  - **Fix**: Implemented file‑backed state in CLI wrapper; added `reset` command.
+- **Issue**: Shell quoting errors when writing multi‑line files via terminal.
+  - **Fix**: Switched to safer write methods and editor edits for multi‑line content.
+
+## Concepts Learned
+- Designing CI artifacts for reviewers (single packet with index and coverage).
+- Separating pure logic from thin CLI wrappers to keep code testable and resilient.
+- Treating runtime JSON/state as build artifacts, not source, to avoid noisy diffs.
+- Writing negative tests to lock in error handling and usage contracts.
+
+## Reflection
+Today focused on polish and reviewability: making CI produce one download, cleaning repository noise, and hardening CLIs with clear error paths. The project now presents itself professionally—easy to review, reproducible locally, and ready to iterate in Week 2.

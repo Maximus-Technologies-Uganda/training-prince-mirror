@@ -19,10 +19,17 @@ import {
   
         if (amountIndex === -1 || categoryIndex === -1) {
           console.error('Error: --amount and --category are required for the add command.');
+          process.exitCode = 1;
           return;
         }
   
-        const amount = parseInt(args[amountIndex + 1]);
+        const amountRaw = args[amountIndex + 1];
+        const amount = parseFloat(amountRaw);
+        if (Number.isNaN(amount)) {
+          console.error('Error: --amount must be a number.');
+          process.exitCode = 1;
+          return;
+        }
         const category = args[categoryIndex + 1];
   
         expenses = addExpense(expenses, { amount, category });
