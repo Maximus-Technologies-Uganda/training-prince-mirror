@@ -72,3 +72,6 @@ Thumbs.db
 # Optional files
 .npm
 .eslintcache
+
+# App runtime state (generated at runtime; do not track)
+data/*.json

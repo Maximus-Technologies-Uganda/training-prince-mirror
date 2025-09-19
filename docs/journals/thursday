@@ -1,2 +1,28 @@
 # Thursday Journal
 
+- **Date**: September 18, 2025
+- **Project**: Stopwatch, Expense Tracker, and To-Do
+- **CLI(s) Today's Goal**: Build three separate command-line applications, following a Test-Driven Development (TDD) process for each.
+
+## Prompts I Used
+1. "Write a Vitest test for a function that throws an error."
+2. "Create a JavaScript function to parse command-line arguments for a CLI."
+3. "Show me how to read from and write to a JSON file in Node.js to persist data."
+
+## What Happened / Output
+- Successfully built and tested the core logic for the Stopwatch, Expense Tracker, and To-Do List CLIs.
+- Implemented features like adding, listing, toggling, and removing items, as well as calculating totals.
+- Added data persistence for the Expense and To-Do apps using `expenses.json` and `todo.json`.
+
+## Bugs & Fixes
+- **Error**: `ReferenceError: createStopwatch is not defined`.
+- **Fix**: Discovered that the code file was not being saved correctly before running `npm test`. The final fix was to use the `cat` command to verify the file's raw content, which revealed a missing newline character that was causing a parsing error.
+
+## Concepts Learned
+- The "Red-Green-Refactor" cycle of Test-Driven Development (TDD).
+- How to use Node.js's built-in `fs` module for file system operations.
+- How to build a simple CLI wrapper that parses `process.argv` and calls pure functions.
+
+## Reflection
+Today was incredibly productive. I moved much faster by applying the TDD pattern to each feature, which helped catch bugs early. The file-saving issue was frustrating but taught me to use terminal commands like `cat` to verify the "ground truth" when my editor and tests disagree.
+

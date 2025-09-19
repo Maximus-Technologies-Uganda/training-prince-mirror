@@ -1,2 +1,26 @@
 # Friday Journal (1)
 
+- **Date**: September 19, 2025
+- **Project**: Finalizing Week 1
+- **Today's Goal**: Complete the final weekly tasks, including improving CLI resilience and submitting the final Review Packet for scoring.
+
+## Prompts I Used
+1. "How do I write a Vitest test for a negative case where a function should throw an error?"
+2. "Create a simple and professional PR description for a documentation update."
+
+## What Happened / Output
+- Added error handling to the Stopwatch CLI to make it more resilient.
+- Created and filled out the `review-packet-week1.md` with links to all pull requests and CI runs from the week.
+- Cleaned up and submitted all remaining documentation in a final pull request.
+
+## Bugs & Fixes
+- **Error**: User confusion about which repository to edit (private vs. public mirror).
+- **Fix**: Clarified the roles of each repository and used direct links to the correct files to avoid navigation errors.
+
+## Concepts Learned
+- The importance of "negative testing" to handle user errors gracefully.
+- How to create a final summary document (a Review Packet) to present a week's worth of work to a mentor.
+
+## Reflection
+Today was about polishing the work and preparing it for final review. It was satisfying to see all the individual PRs and features come together in the final Review Packet. This week was a huge learning curve, but I now have a complete, working project and a professional workflow to show for it.
+

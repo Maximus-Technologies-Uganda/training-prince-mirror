@@ -1,5 +1,5 @@
 import fs from 'fs';
-const DB_FILE = 'expenses.json';
+const DB_FILE = 'data/expenses.json';
 /**
  * Adds a new expense to a list of expenses.
  * @param {Array} expenses - The current list of expenses.
@@ -44,6 +44,8 @@ export function loadExpenses() {
   
   // A function to save the expenses array to the JSON file
   export function saveExpenses(expenses) {
+    // Ensure data directory exists
+    try { fs.mkdirSync('data', { recursive: true }); } catch (_) {}
     // Convert the expenses array into a JSON string with nice formatting
     const data = JSON.stringify(expenses, null, 2);
     // Write the string to the file
