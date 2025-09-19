@@ -1,9 +1,7 @@
-name: Build Review Packet
+name: review-packet
 
 on:
-  workflow_dispatch: # Allows manual runs
-  pull_request:
-    branches: [ development ]
+  workflow_dispatch:
   push:
     branches: [ development ]
 
@@ -11,38 +9,57 @@ jobs:
   build-review-packet:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 20
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: '20'
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
       - name: Run tests with coverage
-        run: npm test -- --coverage
+        run: npx vitest run --coverage
 
-      - name: Prepare artifact directories
+      - name: Prepare review artifacts
         run: |
-          mkdir -p review-artifacts/coverage-hello
-          mv coverage/* review-artifacts/coverage-hello/
+          mkdir -p review-artifacts
+          # Coverage outputs under coverage/
+          if [ -d coverage ]; then
+            cp -R coverage review-artifacts/coverage-apps || true
+          fi
+          # Create a simple index.html linking to coverage
+          cat > review-artifacts/index.html << 'HTML'
+          <!doctype html>
+          <html><head><meta charset="utf-8"><title>Coverage Index</title></head>
+          <body>
+            <h1>Coverage Index</h1>
+            <ul>
+              <li><a href="coverage-apps/index.html">Overall Coverage Report</a></li>
+            </ul>
+          </body></html>
+          HTML
 
       - name: Generate review.md
         run: |
-          echo "## Review Packet" > review.md
-          echo " " >> review.md
-          echo "**Generated:** $(date)" >> review.md
-          # ... (rest of the script)
+          echo "# Review Packet" > review.md
+          echo >> review.md
+          echo "## Environment" >> review.md
+          echo "Node: $(node -v)" >> review.md
+          echo "npm:  $(npm -v)" >> review.md
+          echo >> review.md
+          echo "## Recent Commits" >> review.md
+          git --no-pager log -n 20 --pretty=format:"- %h %ad %an: %s" --date=short >> review.md
+          echo >> review.md
+          echo "## Repo Map (2-level)" >> review.md
+          find . -maxdepth 2 -type d -not -path '*/\.*' | sed 's#^\./##' | sort >> review.md
 
-      - name: Upload Review Packet Artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: review-packet
           path: |
             review.md
-            review-artifacts/
+            review-artifacts

@@ -10,6 +10,10 @@ export function formatGreeting(name = 'World', shout = false) {
   return greeting;
 }
 
+function showHelp() {
+  console.log('Usage: node src/hello/index.js [name] [--shout]');
+}
+
 // --- CLI Logic ---
 // This part deals with the command line. It's a thin wrapper
 // around our core logic.
@@ -23,6 +27,13 @@ function runCli() {
   
   // Find the flag to shout
   const shoutArg = args.includes('--shout');
+
+  if (shoutArg && !nameArg) {
+    console.error('Error: --shout requires a name.');
+    showHelp();
+    process.exitCode = 1;
+    return;
+  }
 
   const message = formatGreeting(nameArg, shoutArg);
   console.log(message);
