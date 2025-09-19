@@ -1,0 +1,29 @@
+# Journal — 2025-09-18
+
+## Goals for Today
+- [x] Design and implement core logic for Stopwatch CLI using TDD.
+- [x] Write unit tests for time formatting and lap behavior (3 total).
+- [x] Open a PR with passing tests and get it merged.
+- [x] Complete daily journal entry.
+
+## Commands / Steps I tried
+- `git checkout -b feat/cli-stopwatch`
+- `touch tests/stopwatch.test.js`
+- `npm test`
+
+## PRs & CI
+- **PR:** <link to your merged 'feat/cli-stopwatch' PR>
+- **CI:** <link to the successful 'checks' run for that PR>
+
+## Bugs & Fixes
+- **Symptom:** Tests were failing with `ReferenceError: createStopwatch is not defined`.
+- **Root Cause:** A persistent file saving issue in the editor meant the test runner was executing an old version of the `src/stopwatch/core.js` file that was missing the `export` keyword and the new function.
+- **Fix:** Used the `cat` command to verify the file's true contents, which revealed a final syntax error (a missing newline). Adding the newline and re-saving the file finally resolved the issue.
+
+## What I learned
+- The Test-Driven Development (TDD) cycle: Red -> Green -> Refactor.
+- How to debug persistent errors by verifying the "ground truth" of files directly in the terminal.
+
+## Plan for Tomorrow
+- Begin the Expense Tracker CLI.
+https://github.com/Maximus-Technologies-Uganda/training-prince/pull/12

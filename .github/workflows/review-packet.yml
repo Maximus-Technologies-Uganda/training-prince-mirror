@@ -1,0 +1,48 @@
+name: Build Review Packet
+
+on:
+  workflow_dispatch: # Allows manual runs
+  pull_request:
+    branches: [ development ]
+  push:
+    branches: [ development ]
+
+jobs:
+  build-review-packet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 20
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage
+
+      - name: Prepare artifact directories
+        run: |
+          mkdir -p review-artifacts/coverage-hello
+          mv coverage/* review-artifacts/coverage-hello/
+
+      - name: Generate review.md
+        run: |
+          echo "## Review Packet" > review.md
+          echo " " >> review.md
+          echo "**Generated:** $(date)" >> review.md
+          # ... (rest of the script)
+
+      - name: Upload Review Packet Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-packet
+          path: |
+            review.md
+            review-artifacts/

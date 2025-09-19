@@ -1,0 +1,10 @@
+[
+  {
+    "amount": 100,
+    "category": "food"
+  },
+  {
+    "amount": 50,
+    "category": "transport"
+  }
+]

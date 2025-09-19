@@ -1,0 +1,47 @@
+# Journal — 2025-09-17
+
+## Day 0: Pre-Flight (Setup)
+
+### Goals for Today
+- [x] Create private and public repositories.
+- [x] Set up a workflow to automatically sync the private repo to the public mirror.
+- [x] Create a CI quality gate workflow (`checks.yml`).
+- [x] Add branch protection to the `development` branch.
+
+### PRs & CI
+* **PR:** <link to your chore/bootstrap PR>
+* **Sync Workflow Runs:** <link to your successful sync workflow run>
+* **Checks Workflow Runs:** <link to your successful checks workflow run>
+
+### Bugs & Fixes
+* **Symptom:** The mirror sync workflow kept failing with a `Permission denied to github-actions[bot]` error, even after creating a `MIRROR_TOKEN` secret.
+* **Root Cause:** The workflow `.yml` file in the repository had the wrong code, which was using the default `GITHUB_TOKEN` instead of our custom `MIRROR_TOKEN`. The browser editor also gave "stale edit" errors, which prevented the corrected file from being saved properly.
+* **Fix:** Confirmed the fix by inspecting the commit history ("diff"), which showed the old code was still present. Replaced the entire workflow file with the correct code and successfully committed it.
+
+### What I learned
+- A Personal Access Token needs the `workflow` scope to be able to push changes to `.github/workflows/` files from the command line.
+- The `github-actions[bot]` error means a workflow is using the default `GITHUB_TOKEN`, which has no permission to access other repos.
+- When you commit a change to a workflow file, the workflow is triggered using the version of the file from *before* the change.
+
+---
+## Day 1: Bootstrap & Hello
+
+### Goals for Today
+- [x] Initialize a Node.js project and add a test runner.
+- [x] Create a simple "Hello, World" function.
+- [x] Create a passing "sanity check" unit test.
+- [x] Push the changes in a PR to see the `checks` CI run and pass.
+
+### Commands / Steps I tried
+- `npm init -y`
+- `npm install -D vitest`
+- `npm test`
+
+### PRs & CI
+* **PR:** <link to your chore/bootstrap PR>
+* **CI Run:** <link to your successful checks run for the hello world test>
+
+### What I learned
+- How to add and run scripts like `npm test` from `package.json`.
+- The `checks` workflow in my PR runs automatically after I `git push` new changes.
+- Branch protection works by running CI and requiring an approval before merging.
