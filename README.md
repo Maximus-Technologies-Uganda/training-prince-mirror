@@ -1,5 +1,10 @@
 # Week 1 CLI Projects
 
+> How to review me:
+> - Go to GitHub Actions → latest run for `review-packet` on `development`.
+> - Download the artifact named `review-packet`.
+> - Open `review-artifacts/index.html` for the Coverage Index and links.
+
 ### Installation
 - **Clone the repository**
 - **Navigate into the project directory**

@@ -13,8 +13,9 @@ function run() {
 
   if (isNaN(tempArg) || !fromUnit || !toUnit) {
     console.log('--- Temperature Converter ---');
-    console.error('Usage: node <file> <temperature> --from <C|F> --to <C|F>');
+    console.error('Usage: node src/temp-converter/index.js <temperature> --from <C|F> --to <C|F>');
     console.error('Example: node src/temp-converter/index.js 100 --from C --to F');
+    process.exitCode = 1;
     return;
   }
 
@@ -24,6 +25,7 @@ function run() {
     console.log(`${tempArg}°${fromUnit} is ${result.toFixed(2)}°${toUnit}`);
   } catch (error) {
     console.error(`Error: ${error.message}`);
+    process.exitCode = 1;
   }
 }
 
