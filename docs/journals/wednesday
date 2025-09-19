@@ -1,2 +1,28 @@
 # Wednesday Journal
 
+- **Date**: September 17, 2025
+- **Project**: Repository Setup & CI/CD Pipeline
+- **Today's goal**: Complete the initial repository setup, including automated workflows and branch protection, to establish a professional development environment.
+
+## Prompts I used
+1. "Debug a persistent GitHub Actions 'permission denied to github-actions[bot]' error."
+2. "Explain why a git push might fail with 'refusing to delete the current branch'."
+3. "Create a new GitHub Actions workflow using a secure SSH Deploy Key instead of a PAT."
+
+## What happened (output)
+1. After extensive debugging, a final, working sync workflow was created using an SSH Deploy Key.
+2. Discovered and fixed multiple issues related to PAT scopes, incorrect YAML code, file-saving errors, and the "chicken-and-egg" problem of workflow commits.
+3. Successfully set up a second CI workflow (`checks.yml`) and configured branch protection rules on `development`.
+
+## Bugs and fixes
+- **Error**: "Permission denied to github-actions"
+- **Fix**: The root cause was a combination of an incorrect workflow file being cached/not saving correctly and a faulty PAT setup. The final solution was to delete and recreate the workflow using a more robust SSH Deploy Key method.
+
+## Concepts learned
+- The difference between a Personal Access Token (PAT) and an SSH Deploy Key for automation.
+- How branch protection rules work with required status checks and approvals.
+- How to systematically debug failing CI/CD workflows by inspecting logs.
+
+## Reflection
+Today was a very challenging day focused on debugging the core repository automation. The process was frustrating, but solving the persistent sync issue taught me a lot about the details of GitHub Actions. Having a fully automated and protected setup now feels like a major accomplishment.
+
