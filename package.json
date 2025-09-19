@@ -8,11 +8,19 @@
     "doc": "docs",
     "test": "tests"
   },
+  "bin": {
+    "hello-cli": "src/hello/index.js",
+    "temp-cli": "src/temp-converter/index.js",
+    "stopwatch-cli": "src/stopwatch/index.js"
+  },
   "scripts": {
     "test": "vitest",
     "start": "node src/hello/index.js",
     "dev": "node src/hello/index.js",
-    "lint": "echo \"Linter not set up yet.\""
+    "lint": "echo \"Linter not set up yet.\"",
+    "hello": "node src/hello/index.js",
+    "temp": "node src/temp-converter/index.js",
+    "stopwatch": "node src/stopwatch/index.js"
   },
   "repository": {
     "type": "git",
@@ -54,7 +62,7 @@
     "rollup": "^4.50.1",
     "siginfo": "^2.0.0",
     "source-map-js": "^1.2.1",
-    "stackback": "^0.0.2",
+    "stackback": "0.0.2",
     "std-env": "^3.9.0",
     "strip-literal": "^3.0.0",
     "tinybench": "^2.9.0",

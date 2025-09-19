@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // --- Core Logic ---
 // A "pure" function that is easy to test. It doesn't know about the
 // command line; it just takes inputs and returns an output.
