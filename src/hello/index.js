@@ -11,7 +11,10 @@ export function formatGreeting(name = 'World', shout = false) {
 }
 
 function showHelp() {
-  console.log('Usage: node src/hello/index.js [name] [--shout]');
+  console.log('Usage: node src/hello/index.js [name] [--shout] [--version]');
+  console.log('Options:');
+  console.log('  --shout    Make the greeting uppercase');
+  console.log('  --version  Show version information');
 }
 
 // --- CLI Logic ---
@@ -27,6 +30,12 @@ function runCli() {
   
   // Find the flag to shout
   const shoutArg = args.includes('--shout');
+  const versionArg = args.includes('--version');
+
+  if (versionArg) {
+    console.log('Hello CLI v1.0.0');
+    return;
+  }
 
   if (shoutArg && !nameArg) {
     console.error('Error: --shout requires a name.');

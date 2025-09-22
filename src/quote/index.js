@@ -3,6 +3,13 @@ import { defaultQuotes, pickRandom, filterByAuthor, formatQuote } from './core.j
 
 function run(argv = process.argv.slice(2)) {
   const args = argv;
+  
+  // Check for version flag first
+  if (args.includes('--version')) {
+    console.log('Quote CLI v1.0.0');
+    return 0;
+  }
+  
   const byIndex = args.indexOf('--by');
   const authorArg = byIndex !== -1 ? args[byIndex + 1] : null;
 
