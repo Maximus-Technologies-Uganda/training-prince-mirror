@@ -22,10 +22,10 @@ import {
       && date.getDate() === now.getDate();
   }
   
-  function run() {
-    const command = process.argv[2]; // e.g., 'add', 'list'
-    const argument = process.argv[3]; // e.g., the text for a new todo or an index
-    const args = process.argv.slice(3);
+  function run(argv = process.argv.slice(2)) {
+    const command = argv[0]; // e.g., 'add', 'list'
+    const argument = argv[1]; // e.g., the text for a new todo or an index
+    const args = argv.slice(1);
   
     if (!command) {
       showHelp();
@@ -109,4 +109,9 @@ import {
     }
   }
   
-  run();
+  // Only call run() if this file is executed directly
+  if (import.meta.url === `file://${process.argv[1]}`) {
+    run();
+  }
+  
+  export { run };
