@@ -4,14 +4,18 @@ import { convertTemperature } from './core.js';
 function run() {
   const args = process.argv.slice(2);
 
-  const tempArg = parseFloat(args[0]);
+  const tempRaw = (args[0] || '').trim();
+  const tempArg = Number(tempRaw);
   const fromIndex = args.indexOf('--from');
   const toIndex = args.indexOf('--to');
 
-  const fromUnit = fromIndex !== -1 ? args[fromIndex + 1]?.toUpperCase() : null;
-  const toUnit = toIndex !== -1 ? args[toIndex + 1]?.toUpperCase() : null;
+  const fromUnitRaw = fromIndex !== -1 ? (args[fromIndex + 1] || '').trim() : null;
+  const toUnitRaw = toIndex !== -1 ? (args[toIndex + 1] || '').trim() : null;
+  const fromUnit = fromUnitRaw ? fromUnitRaw.toUpperCase() : null;
+  const toUnit = toUnitRaw ? toUnitRaw.toUpperCase() : null;
 
-  if (isNaN(tempArg) || !fromUnit || !toUnit) {
+  if (!Number.isFinite(tempArg) || tempRaw === '' || !fromUnit || !toUnit) 
+  {
     console.log('--- Temperature Converter ---');
     console.error('Usage: node src/temp-converter/index.js <temperature> --from <C|F> --to <C|F>');
     console.error('Example: node src/temp-converter/index.js 100 --from C --to F');
