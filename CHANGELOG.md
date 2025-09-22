@@ -9,6 +9,11 @@
 - Stopwatch exporter and golden‑file tests for empty and populated states.
 - Temp‑converter hardening: lowercase flags, NaN guard, strict non‑zero exits; table‑driven tests.
 - Review Packet workflow and Coverage Summary in job Summary.
+- CONTRIBUTING.md with branch/PR conventions and Linear integration guidelines.
+- Comprehensive CLI unit tests for Expense and To-Do with 97.87% and 93.69% coverage respectively.
+- READMEs for Expense and To-Do CLIs with copy-pasteable examples.
+- .gitattributes for EOL normalization and golden file protection.
+- vitest.config.js with proper coverage reporters (text, json, lcov, text-summary).
 
 ### Changed
 - Moved runtime state to `data/` and added ignore rules; updated code to use `data/*`.
