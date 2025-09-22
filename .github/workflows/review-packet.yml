@@ -23,28 +23,6 @@ jobs:
       - name: Run tests with coverage
         run: npx vitest run --coverage
 
-      - name: Coverage summary table
-        run: |
-          echo '## Coverage Summary' >> $GITHUB_STEP_SUMMARY
-          if [ -f coverage/coverage-summary.json ]; then
-            node -e '
-              const fs = require("fs");
-              const sum = JSON.parse(fs.readFileSync("coverage/coverage-summary.json","utf8"));
-              const s = sum.total.statements.pct;
-              const b = sum.total.branches.pct;
-              const f = sum.total.functions.pct;
-              const l = sum.total.lines.pct;
-              console.log(`| Metric | % |`);
-              console.log(`|---|---:|`);
-              console.log(`| Statements | ${s}% |`);
-              console.log(`| Branches | ${b}% |`);
-              console.log(`| Functions | ${f}% |`);
-              console.log(`| Lines | ${l}% |`);
-            ' >> $GITHUB_STEP_SUMMARY
-          else
-            echo 'No coverage-summary.json found' >> $GITHUB_STEP_SUMMARY
-          fi
-
       - name: Prepare review artifacts
         run: |
           mkdir -p review-artifacts
