@@ -26,9 +26,8 @@ function writeState(state) {
   fs.writeFileSync(stateFilePath, JSON.stringify(state), 'utf8');
 }
 
-function run() {
-  const args = process.argv.slice(2);
-  const command = args[0];
+function run(argv = process.argv.slice(2)) {
+  const command = argv[0];
 
   if (!command) {
     showHelp();
@@ -63,4 +62,9 @@ function run() {
   }
 }
 
-run();
+// Only call run() if this file is executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  run();
+}
+
+export { run };
