@@ -75,3 +75,4 @@ Thumbs.db
 
 # App runtime state (generated at runtime; do not track)
 data/*.json
+coverage-summary.json
