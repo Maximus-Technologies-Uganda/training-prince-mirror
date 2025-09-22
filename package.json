@@ -11,7 +11,8 @@
   "bin": {
     "hello-cli": "src/hello/index.js",
     "temp-cli": "src/temp-converter/index.js",
-    "stopwatch-cli": "src/stopwatch/index.js"
+    "stopwatch-cli": "src/stopwatch/index.js",
+    "quote-cli": "src/quote/index.js"
   },
   "scripts": {
     "test": "vitest",
@@ -20,7 +21,8 @@
     "lint": "echo \"Linter not set up yet.\"",
     "hello": "node src/hello/index.js",
     "temp": "node src/temp-converter/index.js",
-    "stopwatch": "node src/stopwatch/index.js"
+    "stopwatch": "node src/stopwatch/index.js",
+    "quote": "node src/quote/index.js"
   },
   "repository": {
     "type": "git",
