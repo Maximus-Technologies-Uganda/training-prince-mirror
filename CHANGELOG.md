@@ -9,6 +9,15 @@
 - Stopwatch exporter and golden‑file tests for empty and populated states.
 - Temp‑converter hardening: lowercase flags, NaN guard, strict non‑zero exits; table‑driven tests.
 - Review Packet workflow and Coverage Summary in job Summary.
+- CONTRIBUTING.md with branch/PR conventions and Linear integration guidelines.
+- Comprehensive CLI unit tests for Expense and To-Do with 97.87% and 93.69% coverage respectively.
+- READMEs for Expense and To-Do CLIs with copy-pasteable examples.
+- .gitattributes for EOL normalization and golden file protection.
+- vitest.config.js with proper coverage reporters (text, json, lcov, text-summary).
+- Quote edge-case tests: 28 comprehensive tests covering empty/invalid inputs, case-insensitive filtering.
+- Stopwatch CLI unit tests: 98.16% coverage with comprehensive CLI command testing.
+- Version flags: Added `--version` to Hello and Quote CLIs for better UX.
+- READMEs for Stopwatch CLI with copy-pasteable examples and error cases.
 
 ### Changed
 - Moved runtime state to `data/` and added ignore rules; updated code to use `data/*`.

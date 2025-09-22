@@ -1,0 +1,14 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Ensure golden files are normalized
+tests/**/*.golden text eol=lf
+tests/**/*.expected text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
