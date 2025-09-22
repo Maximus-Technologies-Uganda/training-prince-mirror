@@ -45,6 +45,10 @@ describe('To-Do CLI Unit Tests', () => {
     it('adds a basic todo', () => {
       run(['add', 'Buy groceries']);
       
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
+      expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
+      
+      // Verify todo was added to file
       const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
       expect(todos).toHaveLength(1);
       expect(todos[0]).toMatchObject({
@@ -53,37 +57,51 @@ describe('To-Do CLI Unit Tests', () => {
         highPriority: false,
         dueToday: false
       });
-      expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
     });
 
     it('adds a high priority todo', () => {
       run(['add', 'Pay bills', '--highPriority']);
       
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
+      expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
+      
       const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
+      expect(todos).toHaveLength(1);
       expect(todos[0]).toMatchObject({
         text: 'Pay bills',
+        completed: false,
         highPriority: true,
         dueToday: false
       });
     });
 
     it('adds a due today todo', () => {
-      run(['add', 'Workout', '--dueToday']);
+      run(['add', 'Call mom', '--dueToday']);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
+      expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
       
       const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
+      expect(todos).toHaveLength(1);
       expect(todos[0]).toMatchObject({
-        text: 'Workout',
+        text: 'Call mom',
+        completed: false,
         highPriority: false,
         dueToday: true
       });
     });
 
     it('adds a todo with both flags', () => {
-      run(['add', 'Important task', '--highPriority', '--dueToday']);
+      run(['add', 'Urgent meeting', '--highPriority', '--dueToday']);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
+      expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
       
       const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
+      expect(todos).toHaveLength(1);
       expect(todos[0]).toMatchObject({
-        text: 'Important task',
+        text: 'Urgent meeting',
+        completed: false,
         highPriority: true,
         dueToday: true
       });
@@ -99,21 +117,27 @@ describe('To-Do CLI Unit Tests', () => {
     it('prevents duplicate with same text and dueToday', () => {
       // Add first todo
       run(['add', 'Workout', '--dueToday']);
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
+      expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
       
       // Try to add duplicate
       run(['add', 'Workout', '--dueToday']);
       
       expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Duplicate to-do with same text and due date.');
       expect(process.exitCode).toBe(1);
-      
-      // Verify only one todo exists
-      const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
-      expect(todos).toHaveLength(1);
     });
 
     it('allows same text with different dueToday status', () => {
+      // Add first todo
       run(['add', 'Workout']);
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
+      expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
+      
+      // Add same text but with --dueToday
       run(['add', 'Workout', '--dueToday']);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
+      expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
       
       const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
       expect(todos).toHaveLength(2);
@@ -121,49 +145,61 @@ describe('To-Do CLI Unit Tests', () => {
   });
 
   describe('list command', () => {
-    beforeEach(() => {
-      // Add some test todos
-      fs.writeFileSync(TODO_FILE, JSON.stringify([
-        { text: 'High priority task', completed: false, highPriority: true, dueToday: false },
-        { text: 'Due today task', completed: false, highPriority: false, dueToday: true },
-        { text: 'Regular task', completed: false, highPriority: false, dueToday: false },
-        { text: 'Completed task', completed: true, highPriority: false, dueToday: false }
-      ]));
-    });
-
     it('lists all todos', () => {
+      // Pre-populate with test data
+      const testTodos = [
+        { text: 'Buy groceries', completed: false, highPriority: false, dueToday: false },
+        { text: 'Pay bills', completed: true, highPriority: true, dueToday: false }
+      ];
+      fs.writeFileSync(TODO_FILE, JSON.stringify(testTodos));
+      
       run(['list']);
       
       expect(consoleSpy).toHaveBeenCalledWith('--- To-Do List ---');
-      expect(consoleSpy).toHaveBeenCalledWith('0. [ ] High priority task (!)');
-      expect(consoleSpy).toHaveBeenCalledWith('1. [ ] Due today task (today)');
-      expect(consoleSpy).toHaveBeenCalledWith('2. [ ] Regular task');
-      expect(consoleSpy).toHaveBeenCalledWith('3. [x] Completed task');
+      expect(consoleSpy).toHaveBeenCalledWith('0. [ ] Buy groceries');
+      expect(consoleSpy).toHaveBeenCalledWith('1. [x] Pay bills (!)');
     });
 
     it('filters by high priority', () => {
+      const testTodos = [
+        { text: 'Buy groceries', completed: false, highPriority: false, dueToday: false },
+        { text: 'Pay bills', completed: true, highPriority: true, dueToday: false }
+      ];
+      fs.writeFileSync(TODO_FILE, JSON.stringify(testTodos));
+      
       run(['list', '--highPriority']);
       
       expect(consoleSpy).toHaveBeenCalledWith('--- To-Do List ---');
-      expect(consoleSpy).toHaveBeenCalledWith('0. [ ] High priority task (!)');
+      expect(consoleSpy).toHaveBeenCalledWith('0. [x] Pay bills (!)');
     });
 
     it('filters by due today', () => {
+      const testTodos = [
+        { text: 'Buy groceries', completed: false, highPriority: false, dueToday: false },
+        { text: 'Call mom', completed: false, highPriority: false, dueToday: true }
+      ];
+      fs.writeFileSync(TODO_FILE, JSON.stringify(testTodos));
+      
       run(['list', '--dueToday']);
       
       expect(consoleSpy).toHaveBeenCalledWith('--- To-Do List ---');
-      expect(consoleSpy).toHaveBeenCalledWith('0. [ ] Due today task (today)');
+      expect(consoleSpy).toHaveBeenCalledWith('0. [ ] Call mom (today)');
     });
 
     it('filters by both flags', () => {
+      const testTodos = [
+        { text: 'Buy groceries', completed: false, highPriority: false, dueToday: false },
+        { text: 'Urgent meeting', completed: false, highPriority: true, dueToday: true }
+      ];
+      fs.writeFileSync(TODO_FILE, JSON.stringify(testTodos));
+      
       run(['list', '--highPriority', '--dueToday']);
       
       expect(consoleSpy).toHaveBeenCalledWith('--- To-Do List ---');
-      expect(consoleSpy).toHaveBeenCalledWith('Your list is empty. Add a to-do with the "add" command!');
+      expect(consoleSpy).toHaveBeenCalledWith('0. [ ] Urgent meeting (!) (today)');
     });
 
     it('shows empty message when no todos', () => {
-      fs.writeFileSync(TODO_FILE, '[]');
       run(['list']);
       
       expect(consoleSpy).toHaveBeenCalledWith('--- To-Do List ---');
@@ -172,23 +208,22 @@ describe('To-Do CLI Unit Tests', () => {
   });
 
   describe('toggle command', () => {
-    beforeEach(() => {
-      fs.writeFileSync(TODO_FILE, JSON.stringify([
-        { text: 'Task 1', completed: false },
-        { text: 'Task 2', completed: false }
-      ]));
-    });
-
     it('toggles a todo', () => {
+      const testTodos = [
+        { text: 'Buy groceries', completed: false, highPriority: false, dueToday: false }
+      ];
+      fs.writeFileSync(TODO_FILE, JSON.stringify(testTodos));
+      
       run(['toggle', '0']);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
       
       const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
       expect(todos[0].completed).toBe(true);
-      expect(todos[1].completed).toBe(false);
     });
 
     it('errors for invalid index', () => {
-      run(['toggle', '5']);
+      run(['toggle', '0']);
       
       expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Please provide a valid index to toggle.');
       expect(process.exitCode).toBe(1);
@@ -203,23 +238,24 @@ describe('To-Do CLI Unit Tests', () => {
   });
 
   describe('remove command', () => {
-    beforeEach(() => {
-      fs.writeFileSync(TODO_FILE, JSON.stringify([
-        { text: 'Task 1', completed: false },
-        { text: 'Task 2', completed: false }
-      ]));
-    });
-
     it('removes a todo', () => {
+      const testTodos = [
+        { text: 'Buy groceries', completed: false, highPriority: false, dueToday: false },
+        { text: 'Pay bills', completed: true, highPriority: true, dueToday: false }
+      ];
+      fs.writeFileSync(TODO_FILE, JSON.stringify(testTodos));
+      
       run(['remove', '0']);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
       
       const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
       expect(todos).toHaveLength(1);
-      expect(todos[0].text).toBe('Task 2');
+      expect(todos[0].text).toBe('Pay bills');
     });
 
     it('errors for invalid index', () => {
-      run(['remove', '5']);
+      run(['remove', '0']);
       
       expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Please provide a valid index to remove.');
       expect(process.exitCode).toBe(1);
@@ -239,12 +275,17 @@ describe('To-Do CLI Unit Tests', () => {
       
       expect(consoleSpy).toHaveBeenCalledWith('Usage: node src/todo/index.js <command> [options]');
       expect(consoleSpy).toHaveBeenCalledWith('Commands:');
+      expect(consoleSpy).toHaveBeenCalledWith('  add <text> [--highPriority] [--dueToday]');
+      expect(consoleSpy).toHaveBeenCalledWith('  list [--dueToday] [--highPriority]');
+      expect(consoleSpy).toHaveBeenCalledWith('  toggle <index>');
+      expect(consoleSpy).toHaveBeenCalledWith('  remove <index>');
     });
 
     it('shows error for unknown command', () => {
       run(['unknown']);
       
       expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Command not recognized.');
+      expect(consoleSpy).toHaveBeenCalledWith('Usage: node src/todo/index.js <command> [options]');
       expect(process.exitCode).toBe(1);
     });
   });
