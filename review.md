@@ -35,3 +35,4 @@
 
 ## Week 3 Target
 Focus on Hello and Temp-converter CLI testing to achieve ≥50% coverage across all applications.
+

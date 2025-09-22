@@ -41,7 +41,7 @@ describe('Expense CLI', () => {
         'add', 
         '--amount', '100', 
         '--category', 'food'
-      ], { encoding: 'utf8', cwd: process.cwd() });
+      ], { encoding: 'utf8', cwd: process.cwd(), stdio: 'pipe' });
       
       expect(result.status).toBe(0);
       
@@ -62,7 +62,7 @@ describe('Expense CLI', () => {
         '--amount', '50', 
         '--category', 'transport',
         '--month', '3'
-      ], { encoding: 'utf8', cwd: process.cwd() });
+      ], { encoding: 'utf8', cwd: process.cwd(), stdio: 'pipe' });
       
       expect(result.status).toBe(0);
       
@@ -199,12 +199,20 @@ describe('Expense CLI', () => {
     });
 
     it('calculates total with both filters', () => {
+      // Set up test data first
+      const testExpenses = [
+        { amount: 100, category: 'food', month: 1 },
+        { amount: 50, category: 'transport', month: 1 },
+        { amount: 75, category: 'food', month: 2 }
+      ];
+      fs.writeFileSync(EXPENSE_FILE, JSON.stringify(testExpenses));
+      
       const result = spawnSync('node', [
         'src/expense/index.js', 
         'total',
         '--category', 'food',
         '--month', '1'
-      ], { encoding: 'utf8' });
+      ], { encoding: 'utf8', cwd: process.cwd(), stdio: 'pipe' });
       
       expect(result.status).toBe(0);
       expect(result.stdout).toContain("Total Expenses for category 'food' & month '01': 100");
