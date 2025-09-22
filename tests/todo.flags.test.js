@@ -26,6 +26,7 @@ function run(args) {
 
 describe('todo CLI flags', () => {
   beforeEach(() => {
+    // Clean up ALL data files first
     cleanupDataFiles();
     ensureDataDir();
     fs.writeFileSync('data/todo.json', '[]');
