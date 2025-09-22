@@ -8,6 +8,14 @@ const EXPENSE_FILE = path.join(DATA_DIR, 'expenses.json');
 
 describe('Expense CLI', () => {
   beforeEach(() => {
+    // Clean up any existing data files first
+    if (fs.existsSync('data/todo.json')) {
+      fs.unlinkSync('data/todo.json');
+    }
+    if (fs.existsSync('data/.stopwatch-state.json')) {
+      fs.unlinkSync('data/.stopwatch-state.json');
+    }
+    
     // Ensure data directory exists
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -17,7 +25,7 @@ describe('Expense CLI', () => {
   });
 
   afterEach(() => {
-    // Clean up
+    // Clean up only the expense file, not other data files
     if (fs.existsSync(EXPENSE_FILE)) {
       fs.unlinkSync(EXPENSE_FILE);
     }
