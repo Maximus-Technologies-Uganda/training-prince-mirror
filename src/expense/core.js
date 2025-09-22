@@ -13,20 +13,37 @@ export function addExpense(expenses, expense) {
   
   /**
    * Calculates the total amount from a list of expenses.
-   * If a category is provided, it totals only the expenses in that category.
+   * If a category and/or month is provided, it totals only matching expenses.
+   * Backwards compatible signature:
+   *   calculateTotal(expenses, category)
+   * New signature:
+   *   calculateTotal(expenses, { category, month })
    * @param {Array} expenses - The list of expenses.
-   * @param {string|null} category - The optional category to filter by.
+   * @param {string|object|null} filter - Category string or an options object.
    * @returns {number} The total amount.
    */
-  export function calculateTotal(expenses, category = null) {
+  export function calculateTotal(expenses, filter = null) {
+    let category = null;
+    let month = null; // "01".."12" or number 1..12
+
+    if (filter && typeof filter === 'object') {
+      category = filter.category || null;
+      month = filter.month || null;
+    } else if (typeof filter === 'string') {
+      category = filter;
+    }
+
     let expensesToTotal = expenses;
   
-    // If a category is provided, filter the list first
     if (category) {
-      expensesToTotal = expenses.filter(expense => expense.category === category);
+      expensesToTotal = expensesToTotal.filter(expense => expense.category === category);
+    }
+
+    if (month) {
+      const norm = String(month).padStart(2, '0');
+      expensesToTotal = expensesToTotal.filter(expense => (expense.month ? String(expense.month).padStart(2, '0') : '') === norm);
     }
   
-    // Then, calculate the total of the (potentially filtered) list
     return expensesToTotal.reduce((total, expense) => total + expense.amount, 0);
   }
   // A function to load expenses from the JSON file
