@@ -41,7 +41,7 @@ describe('Expense CLI', () => {
         'add', 
         '--amount', '100', 
         '--category', 'food'
-      ], { encoding: 'utf8' });
+      ], { encoding: 'utf8', cwd: process.cwd() });
       
       expect(result.status).toBe(0);
       
@@ -50,7 +50,8 @@ describe('Expense CLI', () => {
       expect(expenses).toHaveLength(1);
       expect(expenses[0]).toMatchObject({
         amount: 100,
-        category: 'food'
+        category: 'food',
+        month: null
       });
     });
 
@@ -61,7 +62,7 @@ describe('Expense CLI', () => {
         '--amount', '50', 
         '--category', 'transport',
         '--month', '3'
-      ], { encoding: 'utf8' });
+      ], { encoding: 'utf8', cwd: process.cwd() });
       
       expect(result.status).toBe(0);
       

@@ -21,7 +21,7 @@ function cleanupDataFiles() {
 }
 
 function run(args) {
-  return spawnSync('node', ['src/todo/index.js', ...args], { encoding: 'utf8' });
+  return spawnSync('node', ['src/todo/index.js', ...args], { encoding: 'utf8', cwd: process.cwd() });
 }
 
 describe('todo CLI flags', () => {
@@ -35,7 +35,11 @@ describe('todo CLI flags', () => {
   it('adds a high priority todo', () => {
     const r1 = run(['add', 'Pay bills', '--highPriority']);
     expect(r1.status).toBe(0);
+    expect(r1.stdout).toContain('Added new to-do.');
+    
+    // Wait a bit for file to be written
     const list = JSON.parse(fs.readFileSync('data/todo.json', 'utf8'));
+    expect(list).toHaveLength(1);
     expect(list[0].highPriority).toBe(true);
   });
 
@@ -45,9 +49,16 @@ describe('todo CLI flags', () => {
     ensureDataDir();
     fs.writeFileSync('data/todo.json', '[]');
     
-    expect(run(['add', 'Workout', '--dueToday']).status).toBe(0);
+    const first = run(['add', 'Workout', '--dueToday']);
+    expect(first.status).toBe(0);
+    expect(first.stdout).toContain('Added new to-do.');
+    
+    // Wait a bit for file to be written
+    const todos = JSON.parse(fs.readFileSync('data/todo.json', 'utf8'));
+    expect(todos).toHaveLength(1);
+    
     const dup = run(['add', 'Workout', '--dueToday']);
-    expect(dup.status).not.toBe(0);
+    expect(dup.status).toBe(1);
     expect(dup.stderr).toContain('Duplicate');
   });
 });
