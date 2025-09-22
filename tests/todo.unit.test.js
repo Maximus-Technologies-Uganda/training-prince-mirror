@@ -10,6 +10,17 @@ describe('To-Do CLI Unit Tests', () => {
   let consoleSpy, consoleErrorSpy;
 
   beforeEach(() => {
+    // Clean up ALL data files first
+    if (fs.existsSync('data/expenses.json')) {
+      fs.unlinkSync('data/expenses.json');
+    }
+    if (fs.existsSync('data/.stopwatch-state.json')) {
+      fs.unlinkSync('data/.stopwatch-state.json');
+    }
+    if (fs.existsSync(TODO_FILE)) {
+      fs.unlinkSync(TODO_FILE);
+    }
+    
     // Ensure data directory exists
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });

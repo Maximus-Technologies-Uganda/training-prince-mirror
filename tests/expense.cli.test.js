@@ -8,12 +8,15 @@ const EXPENSE_FILE = path.join(DATA_DIR, 'expenses.json');
 
 describe('Expense CLI', () => {
   beforeEach(() => {
-    // Clean up any existing data files first
+    // Clean up ALL data files first
     if (fs.existsSync('data/todo.json')) {
       fs.unlinkSync('data/todo.json');
     }
     if (fs.existsSync('data/.stopwatch-state.json')) {
       fs.unlinkSync('data/.stopwatch-state.json');
+    }
+    if (fs.existsSync(EXPENSE_FILE)) {
+      fs.unlinkSync(EXPENSE_FILE);
     }
     
     // Ensure data directory exists
@@ -156,6 +159,13 @@ describe('Expense CLI', () => {
     });
 
     it('calculates total without filters', () => {
+      // Ensure test data exists before running total command
+      fs.writeFileSync(EXPENSE_FILE, JSON.stringify([
+        { amount: 100, category: 'food', month: 1 },
+        { amount: 50, category: 'transport', month: 1 },
+        { amount: 75, category: 'food', month: 2 }
+      ]));
+      
       const result = spawnSync('node', [
         'src/expense/index.js', 
         'total'
