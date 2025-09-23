@@ -9,16 +9,29 @@
 export function convertTemperature(temp, fromUnit, toUnit) {
     const validUnits = ['C', 'F'];
   
-    // Add validation to check for invalid or identical units
-    if (!validUnits.includes(fromUnit) || !validUnits.includes(toUnit) || fromUnit === toUnit) {
-      throw new Error('Invalid units provided for conversion.');
+    // Validate input temperature
+    if (!Number.isFinite(temp)) {
+      throw new Error('Temperature must be a valid number.');
+    }
+  
+    // Validate units
+    if (!validUnits.includes(fromUnit) || !validUnits.includes(toUnit)) {
+      throw new Error(`Invalid units. Must be C or F, got: ${fromUnit} and ${toUnit}`);
+    }
+    
+    // Check for identical units
+    if (fromUnit === toUnit) {
+      throw new Error(`Cannot convert from ${fromUnit} to ${toUnit} (identical units)`);
     }
   
     if (fromUnit === 'C' && toUnit === 'F') {
-      // Celsius to Fahrenheit
+      // Celsius to Fahrenheit: (C × 9/5) + 32
       return (temp * 9/5) + 32;
     } else if (fromUnit === 'F' && toUnit === 'C') {
-      // Fahrenheit to Celsius
+      // Fahrenheit to Celsius: (F - 32) × 5/9
       return (temp - 32) * 5/9;
     }
+    
+    // This should never be reached due to validation above
+    throw new Error('Unexpected conversion case');
   }

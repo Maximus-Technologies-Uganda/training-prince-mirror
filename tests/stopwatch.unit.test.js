@@ -3,7 +3,7 @@ import { run } from '../src/stopwatch/index.js';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const STATE_FILE = '.stopwatch-state.json';
+const STATE_FILE = 'data/.stopwatch-state.json';
 
 describe('Stopwatch CLI Unit Tests', () => {
   let consoleSpy, consoleErrorSpy;
@@ -138,6 +138,51 @@ describe('Stopwatch CLI Unit Tests', () => {
       
       expect(consoleSpy).toHaveBeenCalledWith('--- Stopwatch CLI ---');
       expect(consoleSpy).toHaveBeenCalledWith('Usage:');
+    });
+  });
+
+  describe('negative test cases', () => {
+    it('handles double start (should not error)', () => {
+      run(['start']);
+      run(['start']); // Second start should not error
+      
+      expect(consoleSpy).toHaveBeenCalledWith('Stopwatch started.');
+      expect(consoleSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('handles lap before start with proper error', () => {
+      run(['lap']);
+      
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Stopwatch has not been started.');
+    });
+
+    it('handles reset before start (should not error)', () => {
+      run(['reset']);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('Stopwatch reset.');
+    });
+
+    it('handles corrupted state file gracefully', () => {
+      // Create corrupted state file
+      fs.writeFileSync(STATE_FILE, 'invalid json');
+      
+      // Should handle gracefully and start fresh
+      run(['start']);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('Stopwatch started.');
+    });
+
+    it('handles missing data directory', () => {
+      // Remove data directory if it exists
+      if (fs.existsSync('data')) {
+        fs.rmSync('data', { recursive: true });
+      }
+      
+      // Should create directory and work
+      run(['start']);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('Stopwatch started.');
+      expect(fs.existsSync(STATE_FILE)).toBe(true);
     });
   });
 
