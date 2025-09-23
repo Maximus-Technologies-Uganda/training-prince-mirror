@@ -94,3 +94,4 @@ npx . temp-cli 100 --from C --to F
 ```
 
 If invalid or identical units are provided, the CLI will print an error message.
+Sync test performed on September 23, 2025.
