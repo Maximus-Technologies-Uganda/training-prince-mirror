@@ -75,7 +75,7 @@ describe('To-Do CLI Unit Tests', () => {
       });
     });
 
-    it('adds a due today todo', () => {
+    it('adds a due today todo (legacy flag)', () => {
       run(['add', 'Call mom', '--dueToday']);
       
       expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
@@ -89,6 +89,43 @@ describe('To-Do CLI Unit Tests', () => {
         highPriority: false,
         dueToday: true
       });
+    });
+
+    it('adds a todo with --due YYYY-MM-DD and derives dueToday when today', () => {
+      const today = new Date();
+      const yyyy = String(today.getFullYear());
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const iso = `${yyyy}-${mm}-${dd}`;
+
+      run(['add', 'Submit report', '--due', iso]);
+
+      expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
+      expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
+
+      const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
+      expect(todos).toHaveLength(1);
+      expect(todos[0].dueDate).toBe(iso);
+      expect(todos[0].dueToday).toBe(true);
+    });
+
+    it('validates --priority and maps to highPriority when high', () => {
+      run(['add', 'Urgent thing', '--priority', 'high']);
+      const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
+      expect(todos[0].priority).toBe('high');
+      expect(todos[0].highPriority).toBe(true);
+    });
+
+    it('errors on invalid --priority value', () => {
+      run(['add', 'X', '--priority', 'urgent']);
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error: --priority must be one of low|med|high.');
+      expect(process.exitCode).toBe(1);
+    });
+
+    it('errors on invalid --due date format', () => {
+      run(['add', 'Y', '--due', '2025/09/23']);
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Invalid date for --due; expected YYYY-MM-DD.');
+      expect(process.exitCode).toBe(1);
     });
 
     it('adds a todo with both flags', () => {
@@ -277,7 +314,7 @@ describe('To-Do CLI Unit Tests', () => {
       
       expect(consoleSpy).toHaveBeenCalledWith('Usage: node src/todo/index.js <command> [options]');
       expect(consoleSpy).toHaveBeenCalledWith('Commands:');
-      expect(consoleSpy).toHaveBeenCalledWith('  add <text> [--highPriority] [--dueToday]');
+      expect(consoleSpy).toHaveBeenCalledWith('  add <text> [--due YYYY-MM-DD] [--priority <low|med|high>]');
       expect(consoleSpy).toHaveBeenCalledWith('  list [--dueToday] [--highPriority]');
       expect(consoleSpy).toHaveBeenCalledWith('  toggle <index>');
       expect(consoleSpy).toHaveBeenCalledWith('  remove <index>');
