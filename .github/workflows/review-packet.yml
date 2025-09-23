@@ -1,59 +1,10 @@
 name: review-packet
 
 on:
-  push:
-    branches:
-      - development
-  pull_request:
-    branches:
-      - development
-
-jobs:
-  build-test-artifact:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests with coverage
-        run: |
-          npm test -- --coverage
-
-      - name: Prepare review-artifacts
-        run: |
-          mkdir -p review-artifacts
-          # Copy Coverage Index (if exists in repo)
-          if [ -f review-artifacts/index.html ]; then echo "Index found in repo"; else echo "<!DOCTYPE html><html><body><h1>Coverage Index</h1><p>See per-app coverage folders.</p></body></html>" > review-artifacts/index.html; fi
-          # Organize per-app coverage into expected structure
-          mkdir -p review-artifacts/coverage-apps
-          cp -r coverage/* review-artifacts/coverage-apps/ || true
-
-      - name: Upload review-packet artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: review-packet
-          path: |
-            review.md
-            review-artifacts/index.html
-            review-artifacts/**
-          if-no-files-found: warn
-
-name: Review Packet
-
-on:
   workflow_dispatch:
-  pull_request:
   push:
+    branches: [ development ]
+  pull_request:
     branches: [ development ]
 
 jobs:
@@ -65,25 +16,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
       - name: Run tests with coverage
-        run: |
-          npm test -- --coverage --coverage.reporter=html --coverage.reporter=text-summary
+        run: npm test -- --coverage
 
-      - name: Prepare review artifacts
+      - name: Prepare review artifacts (per-app HTML coverage)
         shell: bash
         run: |
           set -e
-          mkdir -p review-artifacts/coverage-hello
+          mkdir -p review-artifacts
 
-          # Determine coverage HTML dir produced by Vitest
+          # Determine coverage HTML root produced by Vitest
           SRCDIR=""
           if [ -d coverage/lcov-report ]; then
             SRCDIR="coverage/lcov-report"
@@ -93,195 +44,53 @@ jobs:
             SRCDIR="coverage"
           fi
 
-          # Copy HTML coverage under expected lcov-report path
+          # Build expected per-app structure
+          APPS=(hello stopwatch temp-converter expense todo quote)
+          for app in "${APPS[@]}"; do
+            mkdir -p "review-artifacts/coverage-$app/lcov-report"
+          done
+
           if [ -n "$SRCDIR" ]; then
-            mkdir -p review-artifacts/coverage-hello/lcov-report
-            cp -R "$SRCDIR"/. review-artifacts/coverage-hello/lcov-report/
+            # Shared assets
+            for app in "${APPS[@]}"; do
+              cp -f "$SRCDIR"/*.css "$SRCDIR"/*.js "$SRCDIR"/*.png "review-artifacts/coverage-$app/lcov-report/" 2>/dev/null || true
+            done
+            # Per-app content (if vitest created subfolders per directory)
+            for app in "${APPS[@]}"; do
+              cp -R "$SRCDIR/$app"/* "review-artifacts/coverage-$app/lcov-report/" 2>/dev/null || true
+            done
+            # Ensure each has an index
+            for app in "${APPS[@]}"; do
+              if [ ! -f "review-artifacts/coverage-$app/lcov-report/index.html" ] && [ -f "$SRCDIR/index.html" ]; then
+                cp "$SRCDIR/index.html" "review-artifacts/coverage-$app/lcov-report/index.html"
+              fi
+            done
           fi
 
-          # Copy JSON summary if present
-          if [ -f coverage/coverage-summary.json ]; then
-            cp coverage/coverage-summary.json review-artifacts/coverage-hello/coverage-summary.json
-          fi
-
-          # Build Coverage Index
-          mkdir -p review-artifacts
+          # Coverage Index
           cat > review-artifacts/index.html << 'HTML'
           <!doctype html>
-          <html>
-            <head>
-              <meta charset="utf-8" />
-              <title>Coverage Index</title>
-              <style>
-                body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
-                h1 { margin-bottom: 12px; }
-              </style>
-            </head>
-            <body>
-              <h1>Coverage Index</h1>
-              <ul>
-                <li><a href="./coverage-hello/lcov-report/index.html">hello</a></li>
-              </ul>
-            </body>
-          </html>
+          <html><head><meta charset="utf-8"><title>Coverage Index</title>
+          <style>body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:24px}a{color:#0366d6;text-decoration:none}</style>
+          </head><body>
+            <h1>Coverage Index</h1>
+            <ul>
+              <li><a href="coverage-hello/lcov-report/index.html">Hello</a></li>
+              <li><a href="coverage-stopwatch/lcov-report/index.html">Stopwatch</a></li>
+              <li><a href="coverage-temp-converter/lcov-report/index.html">Temp-converter</a></li>
+              <li><a href="coverage-expense/lcov-report/index.html">Expense</a></li>
+              <li><a href="coverage-todo/lcov-report/index.html">To-Do</a></li>
+              <li><a href="coverage-quote/lcov-report/index.html">Quote</a></li>
+            </ul>
+          </body></html>
           HTML
 
-          # Build review.md
-          {
-            echo "# Review Packet";
-            echo "";
-            echo "## Environment";
-            echo "- Node: $(node -v)";
-            echo "- npm: $(npm -v)";
-            echo "";
-            echo "## Recent Commits";
-            git log --pretty=format:'- %h %ad %an — %s' -n 20 --date=short;
-            echo "";
-            echo "## Repo Map (depth=2)";
-            find . -maxdepth 2 -type d | sort | sed 's|^| - |';
-            echo "";
-            if [ -f review-artifacts/coverage-hello/coverage-summary.json ]; then
-              echo "## Coverage Summaries";
-              echo "- hello: see review-artifacts/coverage-hello/coverage-summary.json";
-            fi
-          } > review.md
-
-      - name: Upload review packet artifact
+      - name: Upload review-packet artifact
         uses: actions/upload-artifact@v4
         with:
           name: review-packet
           path: |
             review.md
             review-artifacts/index.html
-            review-artifacts/coverage-hello/lcov-report/**
-            review-artifacts/coverage-*/coverage-summary.json
-
-name: review-packet
-
-on:
-  workflow_dispatch:
-  push:
-    branches: [ development ]
-
-jobs:
-  build-review-packet:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install deps
-        run: npm ci
-
-      - name: Run tests with coverage
-        run: npx vitest run --coverage
-
-      - name: Prepare review artifacts
-        run: |
-          mkdir -p review-artifacts
-          # Copy coverage reports to per-app folders as required by workbook
-          if [ -d coverage/lcov-report ]; then
-            # Create per-app coverage folders
-            mkdir -p review-artifacts/coverage-hello/lcov-report
-            mkdir -p review-artifacts/coverage-stopwatch/lcov-report  
-            mkdir -p review-artifacts/coverage-temp-converter/lcov-report
-            mkdir -p review-artifacts/coverage-expense/lcov-report
-            mkdir -p review-artifacts/coverage-todo/lcov-report
-            mkdir -p review-artifacts/coverage-quote/lcov-report
-            
-            # Copy shared assets
-            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-hello/lcov-report/
-            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-stopwatch/lcov-report/
-            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-temp-converter/lcov-report/
-            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-expense/lcov-report/
-            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-todo/lcov-report/
-            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-quote/lcov-report/
-            
-            # Copy per-app HTML files
-            cp -r coverage/lcov-report/hello/* review-artifacts/coverage-hello/lcov-report/ || true
-            cp -r coverage/lcov-report/stopwatch/* review-artifacts/coverage-stopwatch/lcov-report/ || true
-            cp -r coverage/lcov-report/temp-converter/* review-artifacts/coverage-temp-converter/lcov-report/ || true
-            cp -r coverage/lcov-report/expense/* review-artifacts/coverage-expense/lcov-report/ || true
-            cp -r coverage/lcov-report/todo/* review-artifacts/coverage-todo/lcov-report/ || true
-            cp -r coverage/lcov-report/quote/* review-artifacts/coverage-quote/lcov-report/ || true
-            
-            # Copy main index.html to each app folder
-            cp coverage/lcov-report/index.html review-artifacts/coverage-hello/lcov-report/
-            cp coverage/lcov-report/index.html review-artifacts/coverage-stopwatch/lcov-report/
-            cp coverage/lcov-report/index.html review-artifacts/coverage-temp-converter/lcov-report/
-            cp coverage/lcov-report/index.html review-artifacts/coverage-expense/lcov-report/
-            cp coverage/lcov-report/index.html review-artifacts/coverage-todo/lcov-report/
-            cp coverage/lcov-report/index.html review-artifacts/coverage-quote/lcov-report/
-          fi
-          
-          # Create Coverage Index as required by workbook
-          cat > review-artifacts/index.html << 'HTML'
-          <!doctype html>
-          <html><head><meta charset="utf-8"><title>Coverage Index</title></head>
-          <body>
-            <h1>Coverage Index</h1>
-            <p>Per-app HTML coverage reports:</p>
-            <ul>
-              <li><a href="coverage-hello/lcov-report/index.html">Hello CLI Coverage</a></li>
-              <li><a href="coverage-stopwatch/lcov-report/index.html">Stopwatch CLI Coverage</a></li>
-              <li><a href="coverage-temp-converter/lcov-report/index.html">Temp-converter CLI Coverage</a></li>
-              <li><a href="coverage-expense/lcov-report/index.html">Expense CLI Coverage</a></li>
-              <li><a href="coverage-todo/lcov-report/index.html">Todo CLI Coverage</a></li>
-              <li><a href="coverage-quote/lcov-report/index.html">Quote CLI Coverage</a></li>
-            </ul>
-          </body></html>
-          HTML
-
-      - name: Generate review.md
-        run: |
-          echo "# Review Packet" > review.md
-          echo >> review.md
-          echo "## App Test Summary" >> review.md
-          echo "All six CLIs have tests that run in CI with coverage collected:" >> review.md
-          echo "- hello: coverage collected" >> review.md
-          echo "- stopwatch: coverage collected" >> review.md
-          echo "- temp-converter: coverage collected" >> review.md
-          echo "- expense: coverage collected" >> review.md
-          echo "- todo: coverage collected" >> review.md
-          echo "- quote: coverage collected" >> review.md
-          echo >> review.md
-          echo "## Environment" >> review.md
-          echo "Node: $(node -v)" >> review.md
-          echo "npm:  $(npm -v)" >> review.md
-          echo >> review.md
-          echo "## Recent Commits" >> review.md
-          git --no-pager log -n 20 --pretty=format:"- %h %ad %an: %s" --date=short >> review.md
-          echo >> review.md
-          echo "## Repo Map (2-level)" >> review.md
-          find . -maxdepth 2 -type d -not -path '*/\.*' | sed 's#^\./##' | sort >> review.md
-
-      - name: Coverage summary table
-        run: |
-          if [ -f coverage/coverage-summary.json ]; then
-            echo "## Coverage Summary" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "| Metric | % |" >> $GITHUB_STEP_SUMMARY
-            echo "|---|---:|" >> $GITHUB_STEP_SUMMARY
-            node -e "
-              const fs = require('fs');
-              const summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
-              const total = summary.total;
-              console.log(\`| Statements | \${total.statements.pct}% |\`);
-              console.log(\`| Branches   | \${total.branches.pct}% |\`);
-              console.log(\`| Functions  | \${total.functions.pct}% |\`);
-              console.log(\`| Lines      | \${total.lines.pct}% |\`);
-            " >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: review-packet
-          path: |
-            review.md
-            review-artifacts
+            review-artifacts/**
+          if-no-files-found: warn
