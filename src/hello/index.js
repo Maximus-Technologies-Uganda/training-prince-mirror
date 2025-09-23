@@ -20,33 +20,45 @@ function showHelp() {
 // --- CLI Logic ---
 // This part deals with the command line. It's a thin wrapper
 // around our core logic.
-function runCli() {
-  // process.argv contains the command line arguments. The first two are 'node'
-  // and the file path, so the real arguments start at index 2.
-  const args = process.argv.slice(2);
-  
+export function run(argv = process.argv.slice(2)) {
   // Find the argument for the name (anything not starting with --)
-  const nameArg = args.find(arg => !arg.startsWith('--'));
+  const nameArg = argv.find(arg => !arg.startsWith('--'));
   
   // Find the flag to shout
-  const shoutArg = args.includes('--shout');
-  const versionArg = args.includes('--version');
+  const shoutArg = argv.includes('--shout');
+  const versionArg = argv.includes('--version');
+
+  // Validate flags - check for unknown flags
+  const validFlags = ['--shout', '--version'];
+  const unknownFlags = argv.filter(arg => arg.startsWith('--') && !validFlags.includes(arg));
+  
+  if (unknownFlags.length > 0) {
+    console.error(`Error: Unknown flag(s): ${unknownFlags.join(', ')}`);
+    showHelp();
+    process.exitCode = 1;
+    return 1;
+  }
 
   if (versionArg) {
     console.log('Hello CLI v1.0.0');
-    return;
+    process.exitCode = 0;
+    return 0;
   }
 
   if (shoutArg && !nameArg) {
     console.error('Error: --shout requires a name.');
     showHelp();
     process.exitCode = 1;
-    return;
+    return 1;
   }
 
   const message = formatGreeting(nameArg, shoutArg);
   console.log(message);
+  process.exitCode = 0;
+  return 0;
 }
 
 // This line makes the script runnable from the command line.
-runCli();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  run();
+}
