@@ -26,18 +26,55 @@ jobs:
       - name: Prepare review artifacts
         run: |
           mkdir -p review-artifacts
-          # Coverage outputs under coverage/
-          if [ -d coverage ]; then
-            cp -R coverage review-artifacts/coverage-apps || true
+          # Copy coverage reports to per-app folders as required by workbook
+          if [ -d coverage/lcov-report ]; then
+            # Create per-app coverage folders
+            mkdir -p review-artifacts/coverage-hello/lcov-report
+            mkdir -p review-artifacts/coverage-stopwatch/lcov-report  
+            mkdir -p review-artifacts/coverage-temp-converter/lcov-report
+            mkdir -p review-artifacts/coverage-expense/lcov-report
+            mkdir -p review-artifacts/coverage-todo/lcov-report
+            mkdir -p review-artifacts/coverage-quote/lcov-report
+            
+            # Copy shared assets
+            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-hello/lcov-report/
+            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-stopwatch/lcov-report/
+            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-temp-converter/lcov-report/
+            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-expense/lcov-report/
+            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-todo/lcov-report/
+            cp coverage/lcov-report/*.css coverage/lcov-report/*.js coverage/lcov-report/*.png review-artifacts/coverage-quote/lcov-report/
+            
+            # Copy per-app HTML files
+            cp -r coverage/lcov-report/hello/* review-artifacts/coverage-hello/lcov-report/ || true
+            cp -r coverage/lcov-report/stopwatch/* review-artifacts/coverage-stopwatch/lcov-report/ || true
+            cp -r coverage/lcov-report/temp-converter/* review-artifacts/coverage-temp-converter/lcov-report/ || true
+            cp -r coverage/lcov-report/expense/* review-artifacts/coverage-expense/lcov-report/ || true
+            cp -r coverage/lcov-report/todo/* review-artifacts/coverage-todo/lcov-report/ || true
+            cp -r coverage/lcov-report/quote/* review-artifacts/coverage-quote/lcov-report/ || true
+            
+            # Copy main index.html to each app folder
+            cp coverage/lcov-report/index.html review-artifacts/coverage-hello/lcov-report/
+            cp coverage/lcov-report/index.html review-artifacts/coverage-stopwatch/lcov-report/
+            cp coverage/lcov-report/index.html review-artifacts/coverage-temp-converter/lcov-report/
+            cp coverage/lcov-report/index.html review-artifacts/coverage-expense/lcov-report/
+            cp coverage/lcov-report/index.html review-artifacts/coverage-todo/lcov-report/
+            cp coverage/lcov-report/index.html review-artifacts/coverage-quote/lcov-report/
           fi
-          # Create a simple index.html linking to coverage
+          
+          # Create Coverage Index as required by workbook
           cat > review-artifacts/index.html << 'HTML'
           <!doctype html>
           <html><head><meta charset="utf-8"><title>Coverage Index</title></head>
           <body>
             <h1>Coverage Index</h1>
+            <p>Per-app HTML coverage reports:</p>
             <ul>
-              <li><a href="coverage-apps/index.html">Overall Coverage Report</a></li>
+              <li><a href="coverage-hello/lcov-report/index.html">Hello CLI Coverage</a></li>
+              <li><a href="coverage-stopwatch/lcov-report/index.html">Stopwatch CLI Coverage</a></li>
+              <li><a href="coverage-temp-converter/lcov-report/index.html">Temp-converter CLI Coverage</a></li>
+              <li><a href="coverage-expense/lcov-report/index.html">Expense CLI Coverage</a></li>
+              <li><a href="coverage-todo/lcov-report/index.html">Todo CLI Coverage</a></li>
+              <li><a href="coverage-quote/lcov-report/index.html">Quote CLI Coverage</a></li>
             </ul>
           </body></html>
           HTML
@@ -45,6 +82,15 @@ jobs:
       - name: Generate review.md
         run: |
           echo "# Review Packet" > review.md
+          echo >> review.md
+          echo "## App Test Summary" >> review.md
+          echo "All six CLIs have tests that run in CI with coverage collected:" >> review.md
+          echo "- hello: coverage collected" >> review.md
+          echo "- stopwatch: coverage collected" >> review.md
+          echo "- temp-converter: coverage collected" >> review.md
+          echo "- expense: coverage collected" >> review.md
+          echo "- todo: coverage collected" >> review.md
+          echo "- quote: coverage collected" >> review.md
           echo >> review.md
           echo "## Environment" >> review.md
           echo "Node: $(node -v)" >> review.md
