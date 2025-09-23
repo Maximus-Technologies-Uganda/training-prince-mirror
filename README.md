@@ -131,19 +131,32 @@ node src/expense/index.js add --amount abc --category food
 ```
 
 #### To‑Do CLI
-- Add; list; toggle; remove
+- Add; list; toggle; remove (spec flags with backward compatibility)
 
 ```bash
-node src/todo/index.js add "Buy milk" --highPriority --dueToday
+# Spec flags
+node src/todo/index.js add "Buy milk" --due 2025-09-24 --priority high
+
+# Legacy flags (still supported)
+node src/todo/index.js add "Pay bills" --highPriority --dueToday
+
+# Other commands
 node src/todo/index.js list
 node src/todo/index.js toggle 0
 node src/todo/index.js remove 0
 ```
 
-- Error example (missing text → non‑zero exit)
+- Error examples
 
 ```bash
+# Missing text → non-zero exit
 node src/todo/index.js add
+
+# Bad date format → non-zero exit
+node src/todo/index.js add "Task" --due 2025/09/24
+
+# Bad priority value → non-zero exit
+node src/todo/index.js add "Task" --priority urgent
 ```
 
 #### Quote CLI
