@@ -4,12 +4,12 @@
 
 | App | Coverage | Target | Status | Notes |
 |-----|----------|--------|--------|-------|
-| Quote CLI | 87.5% | ≥60% | ✅ | 28 edge-case tests, exceeds target |
-| Stopwatch CLI | 98.16% | ≥50% | ✅ | 11 CLI unit tests, exceeds target |
-| Hello CLI | 69.56% | ≥50% | ✅ | Version flag implementation |
-| Temp-converter CLI | 44.44% | ≥50% | ❌ | Core logic tested, CLI needs work |
-| Expense CLI | 27.77% | ≥50% | ❌ | Core logic tested, CLI needs work |
-| To-Do CLI | 26.31% | ≥50% | ❌ | Core logic tested, CLI needs work |
+| Quote CLI | 87.5% | ≥60% | ✅ | Edge-case tests; by-author validation |
+| Stopwatch CLI | 98.26% | ≥50% | ✅ | Deterministic tests via Date.now mocking |
+| Hello CLI | 96.49% | ≥50% | ✅ | Unknown flag validation; version flag |
+| Temp-converter CLI | 92.95% | ≥50% | ✅ | Table-driven tests; negative paths |
+| Expense CLI | 96.91% | ≥50% | ✅ | CLI validation; totals by category/month |
+| To-Do CLI | 94.73% | ≥50% | ✅ | Duplicate guards; filters; negative cases |
 
 ## Coverage Collected
 - Quote: coverage collected ✅
@@ -33,6 +33,7 @@
 - Edge-case testing reveals important behavior differences
 - Documentation fidelity requires copy-pasteable examples
 
-## Week 3 Target
-Focus on Hello and Temp-converter CLI testing to achieve ≥50% coverage across all applications.
+## Notes
+- All six CLIs meet or exceed Week 2 coverage thresholds.
+- Review Packet artifact is produced by the `review-packet` workflow.
 
