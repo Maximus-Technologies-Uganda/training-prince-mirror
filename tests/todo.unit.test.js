@@ -139,6 +139,8 @@ describe('To-Do CLI Unit Tests', () => {
       expect(consoleSpy).toHaveBeenCalledWith('To-do list saved.');
       expect(consoleSpy).toHaveBeenCalledWith('Added new to-do.');
       
+      // Verify file was written
+      expect(fs.existsSync(TODO_FILE)).toBe(true);
       const todos = JSON.parse(fs.readFileSync(TODO_FILE, 'utf8'));
       expect(todos).toHaveLength(2);
     });
