@@ -12,7 +12,7 @@ describe('Temperature Converter CLI negative cases', () => {
   it('should error when identical units are provided', () => {
     const { status, stderr } = runTempCLI(['100', '--from', 'C', '--to', 'C']);
     expect(status).not.toBe(0);
-    expect(stderr).toContain('Invalid units provided for conversion');
+    expect(stderr).toContain('Cannot convert from C to C (identical units)');
   });
 
   it('should show usage when arguments are missing', () => {

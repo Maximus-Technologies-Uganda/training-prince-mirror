@@ -120,14 +120,14 @@ describe('Temp-converter CLI Unit Tests', () => {
     it('handles identical units error', () => {
       run(['100', '--from', 'C', '--to', 'C']);
       
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Invalid units provided for conversion.');
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Cannot convert from C to C (identical units)');
       expect(process.exitCode).toBe(1);
     });
 
     it('handles invalid units error', () => {
       run(['100', '--from', 'K', '--to', 'F']);
       
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Invalid units provided for conversion.');
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Error: Invalid units. Must be C or F, got: K and F');
       expect(process.exitCode).toBe(1);
     });
   });
