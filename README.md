@@ -1,9 +1,16 @@
-# Week 1 CLI Projects
+# Week 2 CLI Projects - Hardening Complete
 
 > How to review me:
 > - Go to GitHub Actions → latest run for `review-packet` on `development`.
 > - Download the artifact named `review-packet`.
 > - Open `review-artifacts/index.html` for the Coverage Index and links.
+
+## Week 2 Status
+
+✅ **CLI Hardening Complete**: HELLO, STOPWATCH, TEMP-CONVERTER CLIs hardened with validation, error paths, and comprehensive testing
+✅ **Coverage Targets Exceeded**: All CLIs meet or exceed workbook requirements (≥50-60%)
+✅ **Review Packet**: Per-app HTML coverage structure implemented
+✅ **Test Isolation**: All tests passing in full suite
 
 ### Installation
 - **Clone the repository**
