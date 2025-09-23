@@ -102,3 +102,65 @@ npx . temp-cli 100 --from C --to F
 
 If invalid or identical units are provided, the CLI will print an error message.
 Sync test performed on September 23, 2025.
+
+#### Expense CLI
+- Add an expense
+
+```bash
+node src/expense/index.js add --amount 12000 --category transport
+```
+
+- List expenses
+
+```bash
+node src/expense/index.js list
+```
+
+- Total (optionally filter)
+
+```bash
+node src/expense/index.js total
+node src/expense/index.js total --category food
+node src/expense/index.js total --month 3
+```
+
+- Error example (non-numeric amount → non‑zero exit)
+
+```bash
+node src/expense/index.js add --amount abc --category food
+```
+
+#### To‑Do CLI
+- Add; list; toggle; remove
+
+```bash
+node src/todo/index.js add "Buy milk" --highPriority --dueToday
+node src/todo/index.js list
+node src/todo/index.js toggle 0
+node src/todo/index.js remove 0
+```
+
+- Error example (missing text → non‑zero exit)
+
+```bash
+node src/todo/index.js add
+```
+
+#### Quote CLI
+- Default random
+
+```bash
+node src/quote/index.js
+```
+
+- By author (case‑insensitive)
+
+```bash
+node src/quote/index.js --by "Maya Angelou"
+```
+
+- Error example (author not found → non‑zero exit)
+
+```bash
+node src/quote/index.js --by "Unknown Author"
+```

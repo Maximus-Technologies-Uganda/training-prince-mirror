@@ -1,6 +1,164 @@
 name: review-packet
 
 on:
+  push:
+    branches:
+      - development
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  build-test-artifact:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: |
+          npm test -- --coverage
+
+      - name: Prepare review-artifacts
+        run: |
+          mkdir -p review-artifacts
+          # Copy Coverage Index (if exists in repo)
+          if [ -f review-artifacts/index.html ]; then echo "Index found in repo"; else echo "<!DOCTYPE html><html><body><h1>Coverage Index</h1><p>See per-app coverage folders.</p></body></html>" > review-artifacts/index.html; fi
+          # Organize per-app coverage into expected structure
+          mkdir -p review-artifacts/coverage-apps
+          cp -r coverage/* review-artifacts/coverage-apps/ || true
+
+      - name: Upload review-packet artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-packet
+          path: |
+            review.md
+            review-artifacts/index.html
+            review-artifacts/**
+          if-no-files-found: warn
+
+name: Review Packet
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [ development ]
+
+jobs:
+  build-review-packet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: |
+          npm test -- --coverage --coverage.reporter=html --coverage.reporter=text-summary
+
+      - name: Prepare review artifacts
+        shell: bash
+        run: |
+          set -e
+          mkdir -p review-artifacts/coverage-hello
+
+          # Determine coverage HTML dir produced by Vitest
+          SRCDIR=""
+          if [ -d coverage/lcov-report ]; then
+            SRCDIR="coverage/lcov-report"
+          elif [ -d coverage/html ]; then
+            SRCDIR="coverage/html"
+          elif [ -f coverage/index.html ]; then
+            SRCDIR="coverage"
+          fi
+
+          # Copy HTML coverage under expected lcov-report path
+          if [ -n "$SRCDIR" ]; then
+            mkdir -p review-artifacts/coverage-hello/lcov-report
+            cp -R "$SRCDIR"/. review-artifacts/coverage-hello/lcov-report/
+          fi
+
+          # Copy JSON summary if present
+          if [ -f coverage/coverage-summary.json ]; then
+            cp coverage/coverage-summary.json review-artifacts/coverage-hello/coverage-summary.json
+          fi
+
+          # Build Coverage Index
+          mkdir -p review-artifacts
+          cat > review-artifacts/index.html << 'HTML'
+          <!doctype html>
+          <html>
+            <head>
+              <meta charset="utf-8" />
+              <title>Coverage Index</title>
+              <style>
+                body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
+                h1 { margin-bottom: 12px; }
+              </style>
+            </head>
+            <body>
+              <h1>Coverage Index</h1>
+              <ul>
+                <li><a href="./coverage-hello/lcov-report/index.html">hello</a></li>
+              </ul>
+            </body>
+          </html>
+          HTML
+
+          # Build review.md
+          {
+            echo "# Review Packet";
+            echo "";
+            echo "## Environment";
+            echo "- Node: $(node -v)";
+            echo "- npm: $(npm -v)";
+            echo "";
+            echo "## Recent Commits";
+            git log --pretty=format:'- %h %ad %an — %s' -n 20 --date=short;
+            echo "";
+            echo "## Repo Map (depth=2)";
+            find . -maxdepth 2 -type d | sort | sed 's|^| - |';
+            echo "";
+            if [ -f review-artifacts/coverage-hello/coverage-summary.json ]; then
+              echo "## Coverage Summaries";
+              echo "- hello: see review-artifacts/coverage-hello/coverage-summary.json";
+            fi
+          } > review.md
+
+      - name: Upload review packet artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-packet
+          path: |
+            review.md
+            review-artifacts/index.html
+            review-artifacts/coverage-hello/lcov-report/**
+            review-artifacts/coverage-*/coverage-summary.json
+
+name: review-packet
+
+on:
   workflow_dispatch:
   push:
     branches: [ development ]
