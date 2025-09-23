@@ -14,4 +14,22 @@ describe('Expense CLI negative cases', () => {
     expect(status).not.toBe(0);
     expect(stderr).toContain('must be a number');
   });
+
+  it('should error on unknown flag for add', () => {
+    const { status, stderr } = runExpenseCLI(['add', '--amount', '10', '--category', 'food', '--bogus']);
+    expect(status).not.toBe(0);
+    expect(stderr).toContain('Unknown flag(s): --bogus');
+  });
+
+  it('should error on unknown flag for total', () => {
+    const { status, stderr } = runExpenseCLI(['total', '--weird']);
+    expect(status).not.toBe(0);
+    expect(stderr).toContain('Unknown flag(s): --weird');
+  });
+
+  it('should error on unknown flag for list', () => {
+    const { status, stderr } = runExpenseCLI(['list', '--extra']);
+    expect(status).not.toBe(0);
+    expect(stderr).toContain('Unknown flag(s): --extra');
+  });
 });

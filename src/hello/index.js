@@ -3,7 +3,8 @@
 // A "pure" function that is easy to test. It doesn't know about the
 // command line; it just takes inputs and returns an output.
 export function formatGreeting(name = 'World', shout = false) {
-  let greeting = `Hello, ${name}!`;
+  const normalizedName = typeof name === 'string' ? name.trim() : name;
+  let greeting = `Hello, ${normalizedName}!`;
   if (shout) {
     greeting = greeting.toUpperCase();
   }
