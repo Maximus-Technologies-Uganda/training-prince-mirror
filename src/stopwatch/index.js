@@ -11,7 +11,7 @@ function showHelp() {
   console.log('Notes: This is a simple in-memory stopwatch by core design, but the CLI persists state to a file so commands can be run separately.');
 }
 
-const stateFilePath = path.resolve(process.cwd(), '.stopwatch-state.json');
+const stateFilePath = path.resolve(process.cwd(), 'data', '.stopwatch-state.json');
 
 function readState() {
   try {
@@ -23,6 +23,11 @@ function readState() {
 }
 
 function writeState(state) {
+  // Ensure data directory exists
+  const dataDir = path.dirname(stateFilePath);
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
   fs.writeFileSync(stateFilePath, JSON.stringify(state), 'utf8');
 }
 
@@ -59,6 +64,7 @@ function run(argv = process.argv.slice(2)) {
     }
   } catch (err) {
     console.error(`Error: ${err.message}`);
+    process.exitCode = 1;
   }
 }
 
