@@ -38,8 +38,21 @@ import {
     // Always start by loading the latest expenses from the file
     let expenses = loadExpenses();
   
+    // Unknown flag guard per command
+    const validateFlags = (allowedFlags) => {
+      const unknown = args.filter(a => a.startsWith('--') && !allowedFlags.includes(a));
+      if (unknown.length > 0) {
+        console.error(`Error: Unknown flag(s): ${unknown.join(', ')}`);
+        showHelp();
+        process.exitCode = 1;
+        return false;
+      }
+      return true;
+    };
+
     switch (command) {
       case 'add':
+        if (!validateFlags(['--amount', '--category', '--month'])) return;
         const amountIndex = args.indexOf('--amount');
         const categoryIndex = args.indexOf('--category');
   
@@ -65,11 +78,13 @@ import {
         break;
   
       case 'list':
+        if (!validateFlags([])) return;
         console.log('All Expenses:');
         console.table(expenses);
         break;
   
       case 'total':
+        if (!validateFlags(['--category', '--month'])) return;
         const categoryFilterIndex = args.indexOf('--category');
         const categoryFilter = categoryFilterIndex !== -1 ? args[categoryFilterIndex + 1] : null;
         const monthFilter = parseMonth(args);

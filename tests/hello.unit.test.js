@@ -152,10 +152,10 @@ describe('Hello CLI Unit Tests', () => {
   });
 
   describe('run function - edge cases', () => {
-    it('handles whitespace in name', () => {
+    it('trims whitespace in name', () => {
       const result = run(['  Alice  ']);
       expect(result).toBe(0);
-      expect(consoleSpy).toHaveBeenCalledWith('Hello,   Alice  !');
+      expect(consoleSpy).toHaveBeenCalledWith('Hello, Alice!');
     });
 
     it('handles empty string name', () => {
