@@ -25,3 +25,18 @@
 
 ### Notes
 - All tests green in CI; coverage collected and included in the Review Packet artifact.
+
+## Week 2 Wrap
+
+### Added
+- Review Packet artifact (single `review-packet`): `review.md`, Coverage Index, per‑app HTML coverage.
+- HTML coverage output via Vitest reporter.
+
+### Changed
+- Hello: trim whitespace in name input; unknown flag validation.
+- Expense: validate unknown flags per command; error exits on invalid input.
+- To‑Do: align CLI to workbook spec (`--due`, `--priority`) with backward compatibility; validation for bad date/priority.
+- README: updated To‑Do usage and error examples.
+
+### Notes
+- Private and public mirror both produce `review‑packet` artifacts; Coverage Index verified.
