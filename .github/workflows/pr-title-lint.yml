@@ -1,0 +1,22 @@
+name: pr-title-lint
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  check-title:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Validate PR title contains Linear key (e.g., ABC-123)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request.title || '';
+            const hasKey = /^[A-Z]{2,}-\d+/.test(title);
+            if (!hasKey) {
+              core.setFailed('PR title must start with a Linear key like ABC-123: Short description');
+            }
+
