@@ -31,6 +31,9 @@
 ### Added
 - Review Packet artifact (single `review-packet`): `review.md`, Coverage Index, per‑app HTML coverage.
 - HTML coverage output via Vitest reporter.
+- Linear PR title lint and PR→Linear sync (state + comments).
+- Spec requirement: PRs must include `Spec: <url>` (enforced by CI).
+- Repo hygiene: ignore runtime data in `/data/` and known CLI state files.
 
 ### Changed
 - Hello: trim whitespace in name input; unknown flag validation.
@@ -40,3 +43,4 @@
 
 ### Notes
 - Private and public mirror both produce `review‑packet` artifacts; Coverage Index verified.
+ - Linear statuses now update automatically on PR open/merge; older tickets may need a one‑time manual state change.
