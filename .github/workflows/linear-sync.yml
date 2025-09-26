@@ -1,0 +1,60 @@
+name: linear-sync
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, closed]
+
+jobs:
+  sync:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse Linear key from PR title
+        id: parse
+        run: |
+          title='${{ github.event.pull_request.title }}'
+          if [[ "$title" =~ ^([A-Z]{2,}-[0-9]+) ]]; then
+            echo "key=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+          else
+            echo "No Linear key in PR title; skipping sync." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Skip if no key
+        if: ${{ steps.parse.outputs.key == '' || steps.parse.outputs.key == null }}
+        run: echo "No Linear key found; nothing to do."
+
+      - name: Update Linear issue
+        if: ${{ steps.parse.outputs.key != '' && steps.parse.outputs.key != null }}
+        uses: actions/github-script@v7
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        with:
+          script: |
+            const key = process.env.KEY || `${{ steps.parse.outputs.key }}`;
+            const apiKey = process.env.LINEAR_API_KEY;
+            if (!apiKey) {
+              core.setFailed('Missing LINEAR_API_KEY secret');
+            }
+            const isMerged = context.payload.pull_request.merged === true;
+            const prUrl = context.payload.pull_request.html_url;
+            const commentBody = isMerged
+              ? `PR merged: ${prUrl}`
+              : `PR updated: ${prUrl}`;
+
+            const query = `
+              mutation($key: String!, $comment: String!, $state: String) {
+                issueSetStateFromKey(key: $key, state: $state) { success }
+                commentCreate(input: { issueKey: $key, body: $comment }) { success }
+              }
+            `;
+
+            const state = isMerged ? 'Done' : 'In Review';
+
+            const res = await fetch('https://api.linear.app/graphql', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': apiKey },
+              body: JSON.stringify({ query, variables: { key, comment: commentBody, state } })
+            });
+            const data = await res.json();
+            core.info(JSON.stringify(data));
+
