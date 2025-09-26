@@ -9,6 +9,9 @@ npm test -- --coverage
 ### Review Packet & Coverage
 - Artifact: [Actions run → review-packet](PASTE_ACTIONS_RUN_URL_HERE)
 
+### Spec
+- Spec: <paste link to Linear doc or external spec>
+
 | App | Statements | Branches | Functions | Lines |
 |-----|------------|----------|-----------|-------|
 | hello |  |  |  |  |
@@ -24,3 +27,4 @@ npm test -- --coverage
 - [ ] README examples updated
 - [ ] Coverage thresholds met
 - [ ] CI green and `review-packet` artifact attached
+ - [ ] PR title starts with Linear key (e.g., DEV-123)

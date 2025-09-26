@@ -94,17 +94,6 @@ jobs:
             const q3 = `mutation($key: String!, $body: String!) { commentCreate(input: { issueKey: $key, body: $body }) { success } }`;
             const body = isMerged ? `PR merged: ${prUrl}` : `PR updated: ${prUrl}`;
             await fetch('https://api.linear.app/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': apiKey }, body: JSON.stringify({ query: q3, variables: { key, body } }) });
-name: linear-sync
-
-on:
-  pull_request:
-    types: [opened, edited, synchronize, reopened, closed]
-
-jobs:
-  sync:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
-    runs-on: ubuntu-latest
-    steps:
       - name: Parse Linear key from PR title
         id: parse
         run: |
