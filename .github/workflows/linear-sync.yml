@@ -13,7 +13,7 @@ jobs:
         id: parse
         run: |
           title='${{ github.event.pull_request.title }}'
-          if [[ "$title" =~ ^([A-Z]{2,}-[0-9]+) ]]; then
+          if [[ "$title" =~ ^([A-Za-z]{2,}-[0-9]+) ]]; then
             echo "key=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
           else
             echo "No Linear key in PR title; skipping sync." >> $GITHUB_STEP_SUMMARY
@@ -30,31 +30,92 @@ jobs:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
         with:
           script: |
-            const key = process.env.KEY || `${{ steps.parse.outputs.key }}`;
+            const rawKey = `${{ steps.parse.outputs.key }}`;
+            const key = rawKey.trim();
             const apiKey = process.env.LINEAR_API_KEY;
-            if (!apiKey) {
-              core.setFailed('Missing LINEAR_API_KEY secret');
-            }
-            const isMerged = context.payload.pull_request.merged === true;
-            const prUrl = context.payload.pull_request.html_url;
-            const commentBody = isMerged
-              ? `PR merged: ${prUrl}`
-              : `PR updated: ${prUrl}`;
+            if (!apiKey) core.setFailed('Missing LINEAR_API_KEY secret');
 
-            const query = `
-              mutation($key: String!, $comment: String!, $state: String) {
-                issueSetStateFromKey(key: $key, state: $state) { success }
-                commentCreate(input: { issueKey: $key, body: $comment }) { success }
+            const isMerged = !!context.payload.pull_request.merged;
+            const prUrl = context.payload.pull_request.html_url;
+            const targetName = isMerged ? 'Done' : 'In Review';
+
+            // 1) Resolve team and states from team key
+            const [teamKeyRaw, numberRaw] = key.split('-');
+            const teamKey = String(teamKeyRaw || '').toUpperCase();
+            const issueNumber = parseInt(numberRaw, 10);
+            if (!teamKey || Number.isNaN(issueNumber)) {
+              core.warning(`Invalid Linear key format: ${key}`);
+              return;
+            }
+
+            const qTeam = `
+              query($teamKey: String!) {
+                teamByKey(key: $teamKey) { id states(first: 100) { nodes { id name } } }
               }
             `;
-
-            const state = isMerged ? 'Done' : 'In Review';
-
-            const res = await fetch('https://api.linear.app/graphql', {
+            const rTeam = await fetch('https://api.linear.app/graphql', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': apiKey },
-              body: JSON.stringify({ query, variables: { key, comment: commentBody, state } })
+              body: JSON.stringify({ query: qTeam, variables: { teamKey } })
             });
-            const data = await res.json();
-            core.info(JSON.stringify(data));
+            const dTeam = await rTeam.json();
+            const team = dTeam.data?.teamByKey;
+            if (!team) {
+              core.warning(`Linear team not found for key ${teamKey}`);
+              return;
+            }
+            const states = team.states.nodes;
+
+            // 2) Find the issue by number within the team
+            const qIssue = `
+              query($teamId: String!, $number: Int!) {
+                issueByNumber(teamId: $teamId, number: $number) { id }
+              }
+            `;
+            const rIssue = await fetch('https://api.linear.app/graphql', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': apiKey },
+              body: JSON.stringify({ query: qIssue, variables: { teamId: team.id, number: issueNumber } })
+            });
+            const dIssue = await rIssue.json();
+            const issue = dIssue.data?.issueByNumber;
+            if (!issue) {
+              core.warning(`Linear issue not found for key ${key}`);
+              return;
+            }
+            const issueId = issue.id;
+            // Prefer exact match, otherwise try case-insensitive
+            let state = states.find(s => s.name === targetName) || states.find(s => s.name.toLowerCase() === targetName.toLowerCase());
+            if (!state && !isMerged) {
+              // Some teams use "PR Opened" instead of "In Review"
+              state = states.find(s => s.name === 'PR Opened') || states.find(s => s.name.toLowerCase() === 'pr opened');
+            }
+            if (!state) {
+              core.info(`Could not find state '${targetName}' for team. Skipping state change.`);
+            } else {
+              const q2 = `
+                mutation($id: String!, $stateId: String!) {
+                  issueUpdate(id: $id, input: { stateId: $stateId }) { success }
+                }
+              `;
+              const r2 = await fetch('https://api.linear.app/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': apiKey },
+                body: JSON.stringify({ query: q2, variables: { id: issueId, stateId: state.id } })
+              });
+              const d2 = await r2.json();
+              core.info(`issueUpdate: ${JSON.stringify(d2)}`);
+            }
+
+            const q3 = `
+              mutation($key: String!, $body: String!) { commentCreate(input: { issueKey: $key, body: $body }) { success } }
+            `;
+            const body = isMerged ? `PR merged: ${prUrl}` : `PR updated: ${prUrl}`;
+            const r3 = await fetch('https://api.linear.app/graphql', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': apiKey },
+              body: JSON.stringify({ query: q3, variables: { key, body } })
+            });
+            const d3 = await r3.json();
+            core.info(`commentCreate: ${JSON.stringify(d3)}`);
 
