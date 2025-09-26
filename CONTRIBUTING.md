@@ -1,8 +1,8 @@
 # Contributing Guide
 
 ## Branch & PR Conventions (Linear-linked)
-- Branch: `feature/LIN-####-short-scope`
-- PR title: `feat(scope): short description (LIN-####)`
+- Branch: `feature/PRI-####-short-scope` (example: `feature/PRI-123-add-flag`)
+- PR title must start with the Linear key: `PRI-123: Short description`
 - Keep scope small and focused. No direct commits to `development`.
 
 ## PR Description Checklist
@@ -18,6 +18,7 @@
   | Lines      | <paste> |
 - [ ] CLI snippets included (copy-paste real outputs)
 - [ ] Links: PR URL(s), CI run URL(s)
+- [ ] Spec: paste Linear issue/doc URL (e.g., `Spec: https://linear.app/.../PRI-123/...`)
 
 ## Review Steps
 1. Open a feature branch from `development`.
