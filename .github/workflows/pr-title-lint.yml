@@ -10,16 +10,14 @@ jobs:
     permissions:
       pull-requests: read
     steps:
-      - name: Validate PR title contains Linear key (e.g., ABC-123)
+      - name: Validate PR title starts with PRI-<number>
         uses: actions/github-script@v7
         with:
           script: |
             const raw = context.payload.pull_request.title || '';
             const title = raw.trim();
             core.info(`PR title: "${title}"`);
-            // Accept keys like DEV-123 or AbC-123 at the very start
-            const m = title.match(/^([A-Za-z]{2,}-\d+)\b/);
+            const m = title.match(/^([Pp][Rr][Ii]-\d+)(?=[:\s]|$)/);
             if (!m) {
-              core.setFailed('PR title must start with a Linear key like ABC-123: Short description');
+              core.setFailed('PR title must start with your team key: PRI-123: Short description');
             }
-
