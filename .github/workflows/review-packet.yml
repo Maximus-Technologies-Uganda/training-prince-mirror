@@ -1,48 +1,96 @@
-name: Build Review Packet
+name: review-packet
 
 on:
-  workflow_dispatch: # Allows manual runs
-  pull_request:
-    branches: [ development ]
+  workflow_dispatch:
   push:
+    branches: [ development ]
+  pull_request:
     branches: [ development ]
 
 jobs:
   build-review-packet:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 20
+          fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
       - name: Run tests with coverage
         run: npm test -- --coverage
 
-      - name: Prepare artifact directories
+      - name: Prepare review artifacts (per-app HTML coverage)
+        shell: bash
         run: |
-          mkdir -p review-artifacts/coverage-hello
-          mv coverage/* review-artifacts/coverage-hello/
+          set -e
+          mkdir -p review-artifacts
 
-      - name: Generate review.md
-        run: |
-          echo "## Review Packet" > review.md
-          echo " " >> review.md
-          echo "**Generated:** $(date)" >> review.md
-          # ... (rest of the script)
+          # Determine coverage HTML root produced by Vitest
+          SRCDIR=""
+          if [ -d coverage/lcov-report ]; then
+            SRCDIR="coverage/lcov-report"
+          elif [ -d coverage/html ]; then
+            SRCDIR="coverage/html"
+          elif [ -f coverage/index.html ]; then
+            SRCDIR="coverage"
+          fi
 
-      - name: Upload Review Packet Artifact
+          # Build expected per-app structure
+          APPS=(hello stopwatch temp-converter expense todo quote)
+          for app in "${APPS[@]}"; do
+            mkdir -p "review-artifacts/coverage-$app/lcov-report"
+          done
+
+          if [ -n "$SRCDIR" ]; then
+            # Shared assets
+            for app in "${APPS[@]}"; do
+              cp -f "$SRCDIR"/*.css "$SRCDIR"/*.js "$SRCDIR"/*.png "review-artifacts/coverage-$app/lcov-report/" 2>/dev/null || true
+            done
+            # Per-app content (if vitest created subfolders per directory)
+            for app in "${APPS[@]}"; do
+              cp -R "$SRCDIR/$app"/* "review-artifacts/coverage-$app/lcov-report/" 2>/dev/null || true
+            done
+            # Ensure each has an index
+            for app in "${APPS[@]}"; do
+              if [ ! -f "review-artifacts/coverage-$app/lcov-report/index.html" ] && [ -f "$SRCDIR/index.html" ]; then
+                cp "$SRCDIR/index.html" "review-artifacts/coverage-$app/lcov-report/index.html"
+              fi
+            done
+          fi
+
+          # Coverage Index
+          cat > review-artifacts/index.html << 'HTML'
+          <!doctype html>
+          <html><head><meta charset="utf-8"><title>Coverage Index</title>
+          <style>body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:24px}a{color:#0366d6;text-decoration:none}</style>
+          </head><body>
+            <h1>Coverage Index</h1>
+            <ul>
+              <li><a href="coverage-hello/lcov-report/index.html">Hello</a></li>
+              <li><a href="coverage-stopwatch/lcov-report/index.html">Stopwatch</a></li>
+              <li><a href="coverage-temp-converter/lcov-report/index.html">Temp-converter</a></li>
+              <li><a href="coverage-expense/lcov-report/index.html">Expense</a></li>
+              <li><a href="coverage-todo/lcov-report/index.html">To-Do</a></li>
+              <li><a href="coverage-quote/lcov-report/index.html">Quote</a></li>
+            </ul>
+          </body></html>
+          HTML
+
+      - name: Upload review-packet artifact
         uses: actions/upload-artifact@v4
         with:
           name: review-packet
           path: |
             review.md
-            review-artifacts/
+            review-artifacts/index.html
+            review-artifacts/**
+          if-no-files-found: warn
