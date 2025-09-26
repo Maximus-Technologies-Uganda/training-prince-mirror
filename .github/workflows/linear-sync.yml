@@ -30,31 +30,67 @@ jobs:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
         with:
           script: |
-            const key = process.env.KEY || `${{ steps.parse.outputs.key }}`;
+            const key = `${{ steps.parse.outputs.key }}`;
             const apiKey = process.env.LINEAR_API_KEY;
-            if (!apiKey) {
-              core.setFailed('Missing LINEAR_API_KEY secret');
-            }
-            const isMerged = context.payload.pull_request.merged === true;
-            const prUrl = context.payload.pull_request.html_url;
-            const commentBody = isMerged
-              ? `PR merged: ${prUrl}`
-              : `PR updated: ${prUrl}`;
+            if (!apiKey) core.setFailed('Missing LINEAR_API_KEY secret');
 
-            const query = `
-              mutation($key: String!, $comment: String!, $state: String) {
-                issueSetStateFromKey(key: $key, state: $state) { success }
-                commentCreate(input: { issueKey: $key, body: $comment }) { success }
+            const isMerged = !!context.payload.pull_request.merged;
+            const prUrl = context.payload.pull_request.html_url;
+            const targetName = isMerged ? 'Done' : 'In Review';
+
+            // 1) Lookup issue, team and states
+            const q1 = `
+              query($key: String!) {
+                issue(key: $key) {
+                  id
+                  team { id states(first: 100) { nodes { id name } } }
+                }
               }
             `;
-
-            const state = isMerged ? 'Done' : 'In Review';
-
-            const res = await fetch('https://api.linear.app/graphql', {
+            const r1 = await fetch('https://api.linear.app/graphql', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': apiKey },
-              body: JSON.stringify({ query, variables: { key, comment: commentBody, state } })
+              body: JSON.stringify({ query: q1, variables: { key } })
             });
-            const data = await res.json();
-            core.info(JSON.stringify(data));
+            const d1 = await r1.json();
+            if (!d1.data?.issue) {
+              core.setFailed(`Linear issue not found for key ${key}`);
+              return;
+            }
+            const issueId = d1.data.issue.id;
+            const states = d1.data.issue.team.states.nodes;
+            // Prefer exact match, otherwise try case-insensitive
+            let state = states.find(s => s.name === targetName) || states.find(s => s.name.toLowerCase() === targetName.toLowerCase());
+            if (!state && !isMerged) {
+              // Some teams use "PR Opened" instead of "In Review"
+              state = states.find(s => s.name === 'PR Opened') || states.find(s => s.name.toLowerCase() === 'pr opened');
+            }
+            if (!state) {
+              core.info(`Could not find state '${targetName}' for team. Skipping state change.`);
+            } else {
+              const q2 = `
+                mutation($id: String!, $stateId: String!) {
+                  issueUpdate(id: $id, input: { stateId: $stateId }) { success }
+                }
+              `;
+              const r2 = await fetch('https://api.linear.app/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': apiKey },
+                body: JSON.stringify({ query: q2, variables: { id: issueId, stateId: state.id } })
+              });
+              const d2 = await r2.json();
+              core.info(`issueUpdate: ${JSON.stringify(d2)}`);
+            }
+
+            const q3 = `
+              mutation($key: String!, $body: String!) { commentCreate(input: { issueKey: $key, body: $body }) { success } }
+            `;
+            const body = isMerged ? `PR merged: ${prUrl}` : `PR updated: ${prUrl}`;
+            const r3 = await fetch('https://api.linear.app/graphql', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': apiKey },
+              body: JSON.stringify({ query: q3, variables: { key, body } })
+            });
+            const d3 = await r3.json();
+            core.info(`commentCreate: ${JSON.stringify(d3)}`);
 
