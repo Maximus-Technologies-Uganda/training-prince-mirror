@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - development
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -15,13 +16,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
-
-      - name: Push to Public Mirror
+      - name: Push to Public Mirror (HTTPS with token)
+        env:
+          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
         run: |
-          git remote add mirror git@github.com:Maximus-Technologies-Uganda/training-prince-mirror.git
+          set -euo pipefail
+          if [ -z "${MIRROR_TOKEN:-}" ]; then
+            echo "Missing MIRROR_TOKEN secret" >&2
+            exit 1
+          fi
+          git remote add mirror https://x-access-token:${MIRROR_TOKEN}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git
           git push --force --all mirror
           git push --force --tags mirror
