@@ -81,3 +81,4 @@ coverage-summary.json
 stopwatch-state.json
 expenses.json
 todo.json
+/.cursor
