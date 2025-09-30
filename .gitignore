@@ -77,3 +77,12 @@ Thumbs.db
 
 # CI/report artifacts
 review-artifacts/
+
+# App runtime state (generated at runtime; do not track)
+data/*.json
+coverage-summary.json
+
+# Explicit CLI state files (redundant with data/*.json, kept for clarity)
+stopwatch-state.json
+expenses.json
+todo.json
