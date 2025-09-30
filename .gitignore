@@ -1,7 +1,3 @@
-# Created by Gemini
-
-### Node.js ###
-
 # Logs
 logs
 *.log
@@ -17,68 +13,28 @@ pids
 *.seed
 *.pid.lock
 
+# App runtime state (generated at runtime; do not track)
+# This one line ignores the entire /data directory as required by the workbook
+/data
+
 # Dependency directories
-# Keep node_modules out of your git repository to avoid bloating it.
-# These dependencies should be installed via `npm install` or `yarn install`.
 node_modules/
 jspm_packages/
 
-# Transpiled/built code
-# These directories are typically generated from your source code.
-dist
-dist-ssr
-.next/
-out/
-build/
-.svelte-kit/
-
-# TypeScript cache files
-*.tsbuildinfo
-
-# Environment variables
-# Keep sensitive information like API keys out of your repository.
-# Include a .env.example file with template variables for other developers.
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.*.local
-
-# Do not ignore .env.example
-!.env.example
-
-# Coverage directory
+# Coverage directory & report artifacts
 coverage
 .nyc_output
+review-artifacts/
+coverage-summary.json
+
+# Local tool metadata
+/.cursor/
+.eslintcache
 
 # IDE and editor directories
 .idea
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.swp
+.vscode/
 
 # OS generated files
 .DS_Store
 Thumbs.db
-
-# Optional files
-.npm
-.eslintcache
-
-# App runtime state (generated at runtime; do not track)
-data/*.json
-coverage-summary.json
-
-# Explicit CLI state files (redundant with data/*.json, kept for clarity)
-stopwatch-state.json
-expenses.json
-todo.json
-/.cursor
