@@ -1,5 +1,6 @@
 import fs from 'fs';
-const DB_FILE = 'data/expenses.json';
+const DB_FILE = 'data/expenses.json'; 
+
 /**
  * Adds a new expense to a list of expenses.
  * @param {Array} expenses - The current list of expenses.
@@ -15,9 +16,9 @@ export function addExpense(expenses, expense) {
    * Calculates the total amount from a list of expenses.
    * If a category and/or month is provided, it totals only matching expenses.
    * Backwards compatible signature:
-   *   calculateTotal(expenses, category)
+   * calculateTotal(expenses, category)
    * New signature:
-   *   calculateTotal(expenses, { category, month })
+   * calculateTotal(expenses, { category, month })
    * @param {Array} expenses - The list of expenses.
    * @param {string|object|null} filter - Category string or an options object.
    * @returns {number} The total amount.
@@ -46,7 +47,8 @@ export function addExpense(expenses, expense) {
   
     return expensesToTotal.reduce((total, expense) => total + expense.amount, 0);
   }
-  // A function to load expenses from the JSON file
+  
+// A function to load expenses from the JSON file
 export function loadExpenses() {
     try {
       // Read the file's contents

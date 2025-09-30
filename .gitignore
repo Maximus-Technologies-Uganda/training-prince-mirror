@@ -17,14 +17,15 @@ pids
 *.seed
 *.pid.lock
 
+# App runtime state (generated at runtime; do not track)
+/data
+coverage-summary.json
+
 # Dependency directories
-# Keep node_modules out of your git repository to avoid bloating it.
-# These dependencies should be installed via `npm install` or `yarn install`.
 node_modules/
 jspm_packages/
 
 # Transpiled/built code
-# These directories are typically generated from your source code.
 dist
 dist-ssr
 .next/
@@ -36,8 +37,6 @@ build/
 *.tsbuildinfo
 
 # Environment variables
-# Keep sensitive information like API keys out of your repository.
-# Include a .env.example file with template variables for other developers.
 .env
 .env.local
 .env.development.local
@@ -72,7 +71,3 @@ Thumbs.db
 # Optional files
 .npm
 .eslintcache
-
-# App runtime state (generated at runtime; do not track)
-data/*.json
-coverage-summary.json
