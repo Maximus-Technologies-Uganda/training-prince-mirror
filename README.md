@@ -5,6 +5,11 @@
 > - Download the artifact named `review-packet`.
 > - Open `review-artifacts/index.html` for the Coverage Index and links.
 
+### PR Spec requirement
+- Every PR must include a line in the description with a link to the specification or Linear ticket:
+  - `Spec: https://...` (Linear issue URL or external spec doc)
+- PR titles must start with the Linear key, for example: `DEV-123: Short description`.
+
 ## Week 2 Status
 
 ✅ **CLI Hardening Complete**: HELLO, STOPWATCH, TEMP-CONVERTER CLIs hardened with validation, error paths, and comprehensive testing

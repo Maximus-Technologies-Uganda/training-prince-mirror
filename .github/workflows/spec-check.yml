@@ -1,0 +1,24 @@
+name: spec-check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  ensure-spec-url:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: 'Require "Spec: <url>" in PR body'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = (context.payload.pull_request?.body || '').trim();
+            const match = body.match(/(^|\n)\s*Spec:\s*(https?:\/\/\S+)/i);
+            if (!match) {
+              core.setFailed('Missing Spec: URL in PR body. Add a line like: "Spec: https://..."');
+            } else {
+              core.info(`Spec URL found: ${match[2]}`);
+            }
+

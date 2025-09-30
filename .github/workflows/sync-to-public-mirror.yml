@@ -10,40 +10,19 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    env:
-      DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-      MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
     steps:
       - name: Checkout Private Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      # Prefer SSH deploy key if provided
-      - name: Set up SSH (DEPLOY_KEY)
-        if: ${{ secrets.DEPLOY_KEY != '' }}
+
+      - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ env.DEPLOY_KEY }}
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Push to Public Mirror via SSH
-        if: ${{ secrets.DEPLOY_KEY != '' }}
+      - name: Push to Public Mirror
         run: |
           git remote add mirror git@github.com:Maximus-Technologies-Uganda/training-prince-mirror.git
           git push --force --all mirror
           git push --force --tags mirror
-
-      - name: Push to Public Mirror via HTTPS (token)
-        if: ${{ secrets.DEPLOY_KEY == '' && secrets.MIRROR_TOKEN != '' }}
-        env:
-          GIT_AUTH_TOKEN: ${{ env.MIRROR_TOKEN }}
-        run: |
-          git remote add mirror https://x-access-token:${GIT_AUTH_TOKEN}@github.com/Maximus-Technologies-Uganda/training-prince-mirror.git
-          git push --force --all mirror
-          git push --force --tags mirror
-
-      # If both secrets are missing, fail with a helpful message
-      - name: Fail due to missing secrets
-        if: ${{ secrets.DEPLOY_KEY == '' && secrets.MIRROR_TOKEN == '' }}
-        run: |
-          echo "Error: Set either DEPLOY_KEY (SSH) or MIRROR_TOKEN (HTTPS) secrets for mirroring to work." 1>&2
-          exit 1
