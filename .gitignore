@@ -71,3 +71,9 @@ Thumbs.db
 # Optional files
 .npm
 .eslintcache
+
+# Local tool metadata
+.cursor/
+
+# CI/report artifacts
+review-artifacts/
