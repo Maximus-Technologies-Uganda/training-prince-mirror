@@ -24,19 +24,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Run tests for each app and output coverage to a unique directory
+      # This is the corrected pattern: Run tests, then rename the output folder.
       - name: Run Hello Tests & Collect Coverage
-        run: npm test -- tests/hello.*.test.js --coverage --output-dir=coverage-hello
+        run: |
+          npm test -- tests/hello.*.test.js --coverage
+          mv coverage coverage-hello
       - name: Run Stopwatch Tests & Collect Coverage
-        run: npm test -- tests/stopwatch.*.test.js --coverage --output-dir=coverage-stopwatch
+        run: |
+          npm test -- tests/stopwatch.*.test.js --coverage
+          mv coverage coverage-stopwatch
       - name: Run Temp Converter Tests & Collect Coverage
-        run: npm test -- tests/temp-converter.*.test.js --coverage --output-dir=coverage-temp
+        run: |
+          npm test -- tests/temp-converter.*.test.js --coverage
+          mv coverage coverage-temp
       - name: Run Expense Tests & Collect Coverage
-        run: npm test -- tests/expense.*.test.js --coverage --output-dir=coverage-expense
+        run: |
+          npm test -- tests/expense.*.test.js --coverage
+          mv coverage coverage-expense
       - name: Run To-Do Tests & Collect Coverage
-        run: npm test -- tests/todo.*.test.js --coverage --output-dir=coverage-todo
+        run: |
+          npm test -- tests/todo.*.test.js --coverage
+          mv coverage coverage-todo
       - name: Run Quote Tests & Collect Coverage
-        run: npm test -- tests/quote.*.test.js --coverage --output-dir=coverage-quote
+        run: |
+          npm test -- tests/quote.*.test.js --coverage
+          mv coverage coverage-quote
 
       # Prepare the artifact structure
       - name: Prepare artifact directories
@@ -44,7 +56,15 @@ jobs:
           mkdir -p review-artifacts
           mv coverage-* review-artifacts/
 
-      # (We will add the index.html generation in the next step)
+      - name: Generate Coverage Index
+        run: |
+          echo "<h1>Coverage Index</h1>" > review-artifacts/index.html
+          echo "<ul>" >> review-artifacts/index.html
+          for dir in review-artifacts/coverage-*; do
+            APP_NAME=$(basename "$dir" | sed 's/coverage-//')
+            echo "  <li><a href=\"./${dir##*/}/lcov-report/index.html\">${APP_NAME}</a></li>" >> review-artifacts/index.html
+          done
+          echo "</ul>" >> review-artifacts/index.html
 
       - name: Generate review.md
         run: |
