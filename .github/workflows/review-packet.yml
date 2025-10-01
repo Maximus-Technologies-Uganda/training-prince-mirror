@@ -24,52 +24,52 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Run tests for each app and move coverage folder to a unique directory
+      # This is the corrected pattern: Run tests, then rename the output folder.
       - name: Run Hello Tests & Collect Coverage
         run: |
-          rm -rf coverage coverage-hello || true
           npm test -- tests/hello.*.test.js --coverage
           mv coverage coverage-hello
       - name: Run Stopwatch Tests & Collect Coverage
         run: |
-          rm -rf coverage coverage-stopwatch || true
           npm test -- tests/stopwatch.*.test.js --coverage
           mv coverage coverage-stopwatch
       - name: Run Temp Converter Tests & Collect Coverage
         run: |
-          rm -rf coverage coverage-temp || true
           npm test -- tests/temp-converter.*.test.js --coverage
           mv coverage coverage-temp
       - name: Run Expense Tests & Collect Coverage
         run: |
-          rm -rf coverage coverage-expense || true
           npm test -- tests/expense.*.test.js --coverage
           mv coverage coverage-expense
       - name: Run To-Do Tests & Collect Coverage
         run: |
-          rm -rf coverage coverage-todo || true
           npm test -- tests/todo.*.test.js --coverage
           mv coverage coverage-todo
       - name: Run Quote Tests & Collect Coverage
         run: |
-          rm -rf coverage coverage-quote || true
           npm test -- tests/quote.*.test.js --coverage
           mv coverage coverage-quote
 
-      # Prepare the artifact structure
       - name: Prepare artifact directories
         run: |
           mkdir -p review-artifacts
           mv coverage-* review-artifacts/
 
-      # (We will add the index.html generation in the next step)
+      - name: Generate Coverage Index
+        run: |
+          echo "<h1>Coverage Index</h1>" > review-artifacts/index.html
+          echo "<ul>" >> review-artifacts/index.html
+          for dir in review-artifacts/coverage-*; do
+            APP_NAME=$(basename "$dir" | sed 's/coverage-//')
+            echo "  <li><a href=\"./${dir##*/}/lcov-report/index.html\">${APP_NAME}</a></li>" >> review-artifacts/index.html
+          done
+          echo "</ul>" >> review-artifacts/index.html
 
       - name: Generate review.md
         run: |
           echo "## Review Packet" > review.md
           echo "Generated: $(date)" >> review.md
 
-      # Upload the artifact
       - name: Upload Review Packet Artifact
         uses: actions/upload-artifact@v4
         with:
