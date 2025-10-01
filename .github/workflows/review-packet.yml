@@ -1,96 +1,79 @@
-name: review-packet
+name: Build Review Packet
 
 on:
   workflow_dispatch:
   push:
-    branches: [ development ]
-  pull_request:
     branches: [ development ]
 
 jobs:
   build-review-packet:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 20
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 'lts/*'
           cache: 'npm'
+          cache-dependency-path: package-lock.json
 
-      - name: Install deps
+      - name: Install dependencies
         run: npm ci
 
-      - name: Run tests with coverage
-        run: npm test -- --coverage
-
-      - name: Prepare review artifacts (per-app HTML coverage)
-        shell: bash
+      # This is the corrected pattern: Run tests, then rename the output folder.
+      - name: Run Hello Tests & Collect Coverage
         run: |
-          set -e
+          npm test -- tests/hello.*.test.js --coverage
+          mv coverage coverage-hello
+      - name: Run Stopwatch Tests & Collect Coverage
+        run: |
+          npm test -- tests/stopwatch.*.test.js --coverage
+          mv coverage coverage-stopwatch
+      - name: Run Temp Converter Tests & Collect Coverage
+        run: |
+          npm test -- tests/temp-converter.*.test.js --coverage
+          mv coverage coverage-temp
+      - name: Run Expense Tests & Collect Coverage
+        run: |
+          npm test -- tests/expense.*.test.js --coverage
+          mv coverage coverage-expense
+      - name: Run To-Do Tests & Collect Coverage
+        run: |
+          npm test -- tests/todo.*.test.js --coverage
+          mv coverage coverage-todo
+      - name: Run Quote Tests & Collect Coverage
+        run: |
+          npm test -- tests/quote.*.test.js --coverage
+          mv coverage coverage-quote
+
+      - name: Prepare artifact directories
+        run: |
           mkdir -p review-artifacts
+          mv coverage-* review-artifacts/
 
-          # Determine coverage HTML root produced by Vitest
-          SRCDIR=""
-          if [ -d coverage/lcov-report ]; then
-            SRCDIR="coverage/lcov-report"
-          elif [ -d coverage/html ]; then
-            SRCDIR="coverage/html"
-          elif [ -f coverage/index.html ]; then
-            SRCDIR="coverage"
-          fi
-
-          # Build expected per-app structure
-          APPS=(hello stopwatch temp-converter expense todo quote)
-          for app in "${APPS[@]}"; do
-            mkdir -p "review-artifacts/coverage-$app/lcov-report"
+      - name: Generate Coverage Index
+        run: |
+          echo "<h1>Coverage Index</h1>" > review-artifacts/index.html
+          echo "<ul>" >> review-artifacts/index.html
+          for dir in review-artifacts/coverage-*; do
+            APP_NAME=$(basename "$dir" | sed 's/coverage-//')
+            echo "  <li><a href=\"./${dir##*/}/lcov-report/index.html\">${APP_NAME}</a></li>" >> review-artifacts/index.html
           done
+          echo "</ul>" >> review-artifacts/index.html
 
-          if [ -n "$SRCDIR" ]; then
-            # Shared assets
-            for app in "${APPS[@]}"; do
-              cp -f "$SRCDIR"/*.css "$SRCDIR"/*.js "$SRCDIR"/*.png "review-artifacts/coverage-$app/lcov-report/" 2>/dev/null || true
-            done
-            # Per-app content (if vitest created subfolders per directory)
-            for app in "${APPS[@]}"; do
-              cp -R "$SRCDIR/$app"/* "review-artifacts/coverage-$app/lcov-report/" 2>/dev/null || true
-            done
-            # Ensure each has an index
-            for app in "${APPS[@]}"; do
-              if [ ! -f "review-artifacts/coverage-$app/lcov-report/index.html" ] && [ -f "$SRCDIR/index.html" ]; then
-                cp "$SRCDIR/index.html" "review-artifacts/coverage-$app/lcov-report/index.html"
-              fi
-            done
-          fi
+      - name: Generate review.md
+        run: |
+          echo "## Review Packet" > review.md
+          echo "Generated: $(date)" >> review.md
 
-          # Coverage Index
-          cat > review-artifacts/index.html << 'HTML'
-          <!doctype html>
-          <html><head><meta charset="utf-8"><title>Coverage Index</title>
-          <style>body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:24px}a{color:#0366d6;text-decoration:none}</style>
-          </head><body>
-            <h1>Coverage Index</h1>
-            <ul>
-              <li><a href="coverage-hello/lcov-report/index.html">Hello</a></li>
-              <li><a href="coverage-stopwatch/lcov-report/index.html">Stopwatch</a></li>
-              <li><a href="coverage-temp-converter/lcov-report/index.html">Temp-converter</a></li>
-              <li><a href="coverage-expense/lcov-report/index.html">Expense</a></li>
-              <li><a href="coverage-todo/lcov-report/index.html">To-Do</a></li>
-              <li><a href="coverage-quote/lcov-report/index.html">Quote</a></li>
-            </ul>
-          </body></html>
-          HTML
-
-      - name: Upload review-packet artifact
+      - name: Upload Review Packet Artifact
         uses: actions/upload-artifact@v4
         with:
           name: review-packet
           path: |
             review.md
-            review-artifacts/index.html
-            review-artifacts/**
-          if-no-files-found: warn
+            review-artifacts/
