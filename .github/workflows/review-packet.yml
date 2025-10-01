@@ -50,6 +50,7 @@ jobs:
           npm test -- tests/quote.*.test.js --coverage
           mv coverage coverage-quote
 
+      # Prepare the artifact structure
       - name: Prepare artifact directories
         run: |
           mkdir -p review-artifacts
@@ -70,6 +71,7 @@ jobs:
           echo "## Review Packet" > review.md
           echo "Generated: $(date)" >> review.md
 
+      # Upload the artifact
       - name: Upload Review Packet Artifact
         uses: actions/upload-artifact@v4
         with:
