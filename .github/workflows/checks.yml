@@ -15,5 +15,3 @@ jobs:
       - run: npm ci
       - run: npm run lint --if-present
       - run: npm test
-      - name: Lint Spec Files
-        run: npm run spec:lint

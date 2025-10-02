@@ -22,8 +22,7 @@ function run(argv = process.argv.slice(2)) {
     }
     pool = filtered;
   }
-  const code = run();
-  process.exit(code); // This line uses that return code to exit
+
   try {
     const q = pickRandom(pool);
     console.log(formatQuote(q));
