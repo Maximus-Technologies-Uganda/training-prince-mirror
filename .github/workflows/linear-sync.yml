@@ -1,72 +1,38 @@
-name: linear-sync
+name: Linear Sync (tasks.md)
 
 on:
-  pull_request:
-    types: [opened, edited, synchronize, reopened, closed]
+  push:
+    branches:
+      - 'feature/**'
+    paths:
+      - '**/tasks.md'
 
 jobs:
   sync:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Parse Linear key from PR title (PRI only)
-        id: parse
-        run: |
-          title='${{ github.event.pull_request.title }}'
-          if [[ "$title" =~ ^([Pp][Rr][Ii]-[0-9]+) ]]; then
-            echo "key=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
-          else
-            echo "No PRI key in PR title; skipping sync." >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Skip if no key
-        if: ${{ steps.parse.outputs.key == '' || steps.parse.outputs.key == null }}
-        run: echo "No PRI key found; nothing to do."
-
-      - name: Update Linear issue
-        if: ${{ steps.parse.outputs.key != '' && steps.parse.outputs.key != null }}
-        uses: actions/github-script@v7
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - name: Run Linear sync
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
-        with:
-          script: |
-            const rawKey = `${{ steps.parse.outputs.key }}`;
-            const key = rawKey.trim();
-            const apiKey = process.env.LINEAR_API_KEY;
-            if (!apiKey) core.setFailed('Missing LINEAR_API_KEY secret');
-
-            const isMerged = !!context.payload.pull_request.merged;
-            const prUrl = context.payload.pull_request.html_url;
-            const targetName = isMerged ? 'Done' : 'In Review';
-
-            // Resolve team by key (PRI) and issue by number
-            const [teamKeyRaw, numberRaw] = key.split('-');
-            const teamKey = String(teamKeyRaw || '').toUpperCase();
-            const issueNumber = parseInt(numberRaw, 10);
-            if (teamKey !== 'PRI') { core.info(`Team key ${teamKey} is not PRI; skipping.`); return; }
-            if (!teamKey || Number.isNaN(issueNumber)) { core.warning(`Invalid Linear key format: ${key}`); return; }
-
-            const qTeam = `query($teamKey: String!) { teamByKey(key: $teamKey) { id states(first: 100) { nodes { id name } } } }`;
-            const rTeam = await fetch('https://api.linear.app/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': apiKey }, body: JSON.stringify({ query: qTeam, variables: { teamKey } }) });
-            const dTeam = await rTeam.json();
-            const team = dTeam.data?.teamByKey; if (!team) { core.warning(`Linear team not found for key ${teamKey}`); return; }
-            const states = team.states.nodes;
-
-            const qIssue = `query($teamId: String!, $number: Int!) { issueByNumber(teamId: $teamId, number: $number) { id } }`;
-            const rIssue = await fetch('https://api.linear.app/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': apiKey }, body: JSON.stringify({ query: qIssue, variables: { teamId: team.id, number: issueNumber } }) });
-            const dIssue = await rIssue.json();
-            const issue = dIssue.data?.issueByNumber; if (!issue) { core.warning(`Linear issue not found for key ${key}`); return; }
-            const issueId = issue.id;
-
-            let state = states.find(s => s.name === targetName) || states.find(s => s.name.toLowerCase() === targetName.toLowerCase());
-            if (!state && !isMerged) { state = states.find(s => s.name === 'PR Opened') || states.find(s => s.name.toLowerCase() === 'pr opened'); }
-            if (state) {
-              const q2 = `mutation($id: String!, $stateId: String!) { issueUpdate(id: $id, input: { stateId: $stateId }) { success } }`;
-              await fetch('https://api.linear.app/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': apiKey }, body: JSON.stringify({ query: q2, variables: { id: issueId, stateId: state.id } }) });
-            }
-
-            const q3 = `mutation($key: String!, $body: String!) { commentCreate(input: { issueKey: $key, body: $body }) { success } }`;
-            const body = isMerged ? `PR merged: ${prUrl}` : `PR updated: ${prUrl}`;
-            await fetch('https://api.linear.app/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': apiKey }, body: JSON.stringify({ query: q3, variables: { key, body } }) });
-      # The following block removed duplicate parse/sync steps introduced by a conflicted merge
-
+          LINEAR_TEAM_KEY: ${{ secrets.LINEAR_TEAM_KEY }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: node .github/scripts/linear-sync.js
+      - name: Commit mapping updates (if any)
+        run: |
+          if [ -n "$(git status --porcelain | grep 'linear-map.json')" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add "**/linear-map.json"
+            git commit -m "chore(linear): update mapping from tasks.md"
+            git push
+          fi
