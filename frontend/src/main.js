@@ -1,3 +1,20 @@
+import { defaultQuotes, pickRandom, formatQuote } from '../../src/quote/core.js';
+
+const quoteDisplay = document.getElementById('quote-display');
+const authorFilter = document.getElementById('author-filter');
+
+function renderInitialQuote() {
+  if (!quoteDisplay) return;
+  const quote = pickRandom(defaultQuotes);
+  quoteDisplay.innerHTML = formatQuote(quote);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderInitialQuote);
+} else {
+  renderInitialQuote();
+}
+
 import './style.css';
 import javascriptLogo from './javascript.svg';
 import viteLogo from '/vite.svg';
