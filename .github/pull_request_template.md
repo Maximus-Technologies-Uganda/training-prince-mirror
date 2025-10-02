@@ -1,30 +1,33 @@
 ### Context
-- Why this change? Which CLI/area?
+### Spec
+- Spec: [link to your spec file]()
+- [ ] Acceptance criteria 1
+- [ ] Acceptance criteria 2
 
 ### How I tested
-```bash
-npm test -- --coverage
-```
+- `npm run test`
+- `npm run test:e2e`
 
 ### Review Packet & Coverage
-- Artifact: [Actions run → review-packet](PASTE_ACTIONS_RUN_URL_HERE)
+- **Artifact**: [Link to the Actions run]() → `review-packet`
+- **Coverage (backend + UI)**:
 
-### Spec
-- Spec: <paste link to Linear doc or external spec>
+| Surface      | Statements | Branches | Functions | Lines |
+|--------------|------------|----------|-----------|-------|
+| hello        |    %       |    %     |     %     |   %   |
+| stopwatch    |    %       |    %     |     %     |   %   |
+| temp         |    %       |    %     |     %     |   %   |
+| expense      |    %       |    %     |     %     |   %   |
+| todo         |    %       |    %     |     %     |   %   |
+| quote        |    %       |    %     |     %     |   %   |
+| UI-quote     |    %       |    %     |     %     |   %   |
+| UI-expense   |    %       |    %     |     %     |   %   |
+| UI-temp      |    %       |    %     |     %     |   %   |
+| UI-todo      |    %       |    %     |     %     |   %   |
+| UI-stopwatch |    %       |    %     |     %     |   %   |
 
-| App | Statements | Branches | Functions | Lines |
-|-----|------------|----------|-----------|-------|
-| hello |  |  |  |  |
-| stopwatch |  |  |  |  |
-| temp-converter |  |  |  |  |
-| expense |  |  |  |  |
-| todo |  |  |  |  |
-| quote |  |  |  |  |
-
-### Acceptance checklist
-- [ ] Negative tests added (where applicable)
-- [ ] Non‑zero exits on invalid input
-- [ ] README examples updated
-- [ ] Coverage thresholds met
-- [ ] CI green and `review-packet` artifact attached
- - [ ] PR title starts with Linear key (e.g., DEV-123)
+### Acceptance
+- [ ] Spec linked and all boxes ticked
+- [ ] Screenshots added
+- [ ] Artifact & Coverage Index verified
+- [ ] Coverage targets met

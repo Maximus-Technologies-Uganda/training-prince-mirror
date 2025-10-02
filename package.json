@@ -15,15 +15,16 @@
     "quote-cli": "src/quote/index.js"
   },
   "scripts": {
-    "test": "vitest",
-    "start": "node src/hello/index.js",
-    "dev": "node src/hello/index.js",
-    "lint": "echo \"Linter not set up yet.\"",
-    "hello": "node src/hello/index.js",
-    "temp": "node src/temp-converter/index.js",
-    "stopwatch": "node src/stopwatch/index.js",
-    "quote": "node src/quote/index.js"
+    "test:hello": "jest src/hello --coverage --coverageReporters=lcov --coverageDirectory=coverage-hello",
+    "test:stopwatch": "jest src/stopwatch --coverage --coverageReporters=lcov --coverageDirectory=coverage-stopwatch",
+    "test:temp": "jest src/temp-converter --coverage --coverageReporters=lcov --coverageDirectory=coverage-temp-converter",
+    "test:expense": "jest src/expense --coverage --coverageReporters=lcov --coverageDirectory=coverage-expense",
+    "test:todo": "jest src/todo --coverage --coverageReporters=lcov --coverageDirectory=coverage-todo",
+    "test:quote": "jest src/quote --coverage --coverageReporters=lcov --coverageDirectory=coverage-quote",
+    "test": "jest",
+    "spec:lint": "!(grep -r '\\[ \\]' specify/)"
   },
+  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Maximus-Technologies-Uganda/training-prince.git"
