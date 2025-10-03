@@ -4,16 +4,43 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>Quote UI</title>
+    <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div id="app">
-      <h1>Quote of the Day</h1>
-      <input type="text" id="author-filter" placeholder="Filter by author..." />
-      <blockquote id="quote-display">
-        <p>Loading...</p>
-        <footer>— <cite>Unknown</cite></footer>
+    <div id="app" class="quote-app">
+      <header class="quote-app__header">
+        <h1>Quote Explorer</h1>
+        <p>Find inspiration and filter quotes by your favourite authors.</p>
+      </header>
+
+      <section class="quote-app__controls" aria-label="Quote controls">
+        <label class="visually-hidden" for="author-filter">Filter quotes by author</label>
+        <input
+          type="text"
+          id="author-filter"
+          name="author-filter"
+          placeholder="Filter by author…"
+          autocomplete="off"
+        />
+        <button id="shuffle-quote" type="button">Show another quote</button>
+      </section>
+
+      <blockquote id="quote-display" class="quote-app__quote" cite="">
+        <p id="quote-text">Loading…</p>
+        <footer>— <cite id="quote-author">Unknown</cite></footer>
       </blockquote>
+      <main>
+        <section class="quote-app__controls" aria-label="Quote controls">
+          <label class="visually-hidden" for="author-filter">Filter quotes by author</label>
+          <input type="text" id="author-filter" name="author-filter" placeholder="Filter by author…" autocomplete="off" />
+          <button id="shuffle-quote" type="button">Show another quote</button>
+        </section>
+        <blockquote id="quote-display" class="quote-app__quote" cite="">
+          <p id="quote-text">Loading…</p>
+          <footer>— <cite id="quote-author">Unknown</cite></footer>
+        </blockquote>
+      </main>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>

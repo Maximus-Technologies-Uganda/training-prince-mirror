@@ -1,46 +1,90 @@
-console.log('main.js script started');
-import { defaultQuotes, pickRandom, formatQuote } from '../../src/quote/core.js';
-console.log('Functions imported successfully');
+import './style.css';
+import { defaultQuotes, pickRandom, filterByAuthor } from '../../src/quote/core.js';
 
-const quoteDisplay = document.getElementById('quote-display');
-console.log('Quote display element:', quoteDisplay);
-const authorFilter = document.getElementById('author-filter');
+const state = {
+  quotes: defaultQuotes,
+  filteredQuotes: defaultQuotes,
+  lastQuoteId: null,
+};
 
-function renderInitialQuote() {
-  if (!quoteDisplay) return;
-  const randomQuote = pickRandom(defaultQuotes);
-  console.log('Random quote picked:', randomQuote);
-  console.log('Attempting to update HTML...');
-  quoteDisplay.innerHTML = formatQuote(randomQuote);
+function getElements() {
+  return {
+    app: document.getElementById('app'),
+    quoteText: document.getElementById('quote-text'),
+    quoteAuthor: document.getElementById('quote-author'),
+    quoteBlock: document.getElementById('quote-display'),
+    authorFilter: document.getElementById('author-filter'),
+    shuffleButton: document.getElementById('shuffle-quote'),
+  };
+}
+
+function renderQuote(elements, quote) {
+  let targetQuote = quote ?? null;
+
+  if (!targetQuote && state.filteredQuotes.length > 0) {
+    targetQuote = pickRandom(state.filteredQuotes);
+  }
+
+  if (!targetQuote) {
+    elements.quoteText.textContent = 'No quotes found. Try a different author.';
+    elements.quoteAuthor.textContent = '';
+    elements.quoteBlock?.setAttribute('cite', '');
+    elements.shuffleButton.disabled = true;
+    return;
+  }
+
+  elements.shuffleButton.disabled = state.filteredQuotes.length <= 1;
+
+  elements.quoteText.textContent = targetQuote.text;
+  elements.quoteAuthor.textContent = targetQuote.author || 'Unknown';
+  if (elements.quoteBlock) {
+    elements.quoteBlock.setAttribute('cite', targetQuote.author || '');
+  }
+
+  state.lastQuoteId = `${targetQuote.text}-${targetQuote.author}`;
+}
+
+function applyFilter(elements, value) {
+  const term = value.trim();
+  state.filteredQuotes = filterByAuthor(state.quotes, term);
+
+  if (!state.filteredQuotes.length) {
+    renderQuote(elements, null);
+    return;
+  }
+
+  renderQuote(elements);
+}
+
+function initQuoteUI() {
+  const elements = getElements();
+  if (!elements.app) return;
+
+  renderQuote(elements);
+
+  elements.authorFilter?.addEventListener('input', (event) => {
+    applyFilter(elements, event.target.value);
+  });
+
+  elements.shuffleButton?.addEventListener('click', () => {
+    if (state.filteredQuotes.length === 0) return;
+
+    let nextQuote = pickRandom(state.filteredQuotes);
+
+    if (state.filteredQuotes.length > 1) {
+      let attempts = 0;
+      while (`${nextQuote.text}-${nextQuote.author}` === state.lastQuoteId && attempts < 5) {
+        nextQuote = pickRandom(state.filteredQuotes);
+        attempts += 1;
+      }
+    }
+
+    renderQuote(elements, nextQuote);
+  });
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', renderInitialQuote);
+  document.addEventListener('DOMContentLoaded', initQuoteUI);
 } else {
-  renderInitialQuote();
+  initQuoteUI();
 }
-
-import './style.css';
-import javascriptLogo from './javascript.svg';
-import viteLogo from '/vite.svg';
-import { setupCounter } from './counter.js';
-
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`;
-
-setupCounter(document.querySelector('#counter'));
