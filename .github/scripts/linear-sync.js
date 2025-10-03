@@ -71,15 +71,25 @@ async function resolveTeamIdFromEnv() {
   const explicitId = process.env.LINEAR_TEAM_ID;
   if (explicitId) return explicitId;
   const key = process.env.LINEAR_TEAM_KEY;
-  if (!key) throw new Error('Provide LINEAR_TEAM_ID or LINEAR_TEAM_KEY');
-  const data = await graphqlFetch(
-    `query TeamByKey($key: String!) {
-      teams(filter: { key: { eq: $key } }) { nodes { id key name } }
-    }`,
-    { key }
+  if (key) {
+    const data = await graphqlFetch(
+      `query TeamByKey($key: String!) {
+        teams(filter: { key: { eq: $key } }) { nodes { id key name } }
+      }`,
+      { key }
+    );
+    const node = data.teams?.nodes?.[0];
+    if (!node) throw new Error(`No Linear team found for key ${key}`);
+    return node.id;
+  }
+  // Fallback: pick the first team the API key has access to
+  const fallback = await graphqlFetch(
+    `query ViewerTeams { viewer { teams(first: 1) { nodes { id key name } } } }`,
+    {}
   );
-  const node = data.teams?.nodes?.[0];
-  if (!node) throw new Error(`No Linear team found for key ${key}`);
+  const node = fallback.viewer?.teams?.nodes?.[0];
+  if (!node) throw new Error('Provide LINEAR_TEAM_ID or LINEAR_TEAM_KEY');
+  console.log(`No team provided; using default team ${node.key} (${node.name}).`);
   return node.id;
 }
 
