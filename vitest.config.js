@@ -9,6 +9,7 @@ export default defineConfig({
         singleFork: true
       }
     },
+    environment: 'jsdom',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'lcov', 'html', 'text'],
