@@ -10,6 +10,8 @@ export default defineConfig({
       }
     },
     environment: 'jsdom',
+    include: ['tests/**/*.test.js'],
+    exclude: ['node_modules/**', 'frontend/**', 'coverage/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'lcov', 'html', 'text'],
