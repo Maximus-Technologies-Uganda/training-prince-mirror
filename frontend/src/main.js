@@ -1,12 +1,17 @@
+console.log('main.js script started');
 import { defaultQuotes, pickRandom, formatQuote } from '../../src/quote/core.js';
+console.log('Functions imported successfully');
 
 const quoteDisplay = document.getElementById('quote-display');
+console.log('Quote display element:', quoteDisplay);
 const authorFilter = document.getElementById('author-filter');
 
 function renderInitialQuote() {
   if (!quoteDisplay) return;
-  const quote = pickRandom(defaultQuotes);
-  quoteDisplay.innerHTML = formatQuote(quote);
+  const randomQuote = pickRandom(defaultQuotes);
+  console.log('Random quote picked:', randomQuote);
+  console.log('Attempting to update HTML...');
+  quoteDisplay.innerHTML = formatQuote(randomQuote);
 }
 
 if (document.readyState === 'loading') {
