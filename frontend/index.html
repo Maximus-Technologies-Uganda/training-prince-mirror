@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quote UI</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app" class="quote-app">
+      <h1>Expense Tracker</h1>
+      <div class="filters">
+        <label for="month-filter">Month:</label>
+        <input type="number" id="month-filter" placeholder="e.g., 3" min="1" max="12" />
+        <label for="category-filter">Category:</label>
+        <input type="text" id="category-filter" placeholder="e.g., food" />
+      </div>
+      <div id="expense-table">
+        >
+      </div>
+      <hr />
+      <div id="total-display">
+        <h2>Total: $0.00</h2>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
