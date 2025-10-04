@@ -9,20 +9,38 @@
   </head>
   <body>
     <div id="app" class="quote-app">
-      <h1>Expense Tracker</h1>
-      <div class="filters">
-        <label for="month-filter">Month:</label>
-        <input type="number" id="month-filter" placeholder="e.g., 3" min="1" max="12" />
-        <label for="category-filter">Category:</label>
-        <input type="text" id="category-filter" placeholder="e.g., food" />
-      </div>
-      <div id="expense-table">
-        >
-      </div>
-      <hr />
-      <div id="total-display">
-        <h2>Total: $0.00</h2>
-      </div>
+      <header class="quote-app__header">
+        <h1>Quote Explorer</h1>
+        <p>Find inspiration and filter quotes by your favourite authors.</p>
+      </header>
+
+      <section class="quote-app__controls" aria-label="Quote controls">
+        <label class="visually-hidden" for="author-filter">Filter quotes by author</label>
+        <input
+          type="text"
+          id="author-filter"
+          name="author-filter"
+          placeholder="Filter by author…"
+          autocomplete="off"
+        />
+        <button id="shuffle-quote" type="button">Show another quote</button>
+      </section>
+
+      <blockquote id="quote-display" class="quote-app__quote" cite="">
+        <p id="quote-text">Loading…</p>
+        <footer>— <cite id="quote-author">Unknown</cite></footer>
+      </blockquote>
+      <main>
+        <section class="quote-app__controls" aria-label="Quote controls">
+          <label class="visually-hidden" for="author-filter">Filter quotes by author</label>
+          <input type="text" id="author-filter" name="author-filter" placeholder="Filter by author…" autocomplete="off" />
+          <button id="shuffle-quote" type="button">Show another quote</button>
+        </section>
+        <blockquote id="quote-display" class="quote-app__quote" cite="">
+          <p id="quote-text">Loading…</p>
+          <footer>— <cite id="quote-author">Unknown</cite></footer>
+        </blockquote>
+      </main>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
