@@ -33,17 +33,13 @@
 
 ### Phase 3.1: Setup
 - [X] T001 [P] Create `frontend/src/ui-stopwatch/` skeleton (index.js, clock.js, styles.css)
-- [ ] T002 [P] Ensure Playwright config includes stopwatch e2e path `frontend/e2e/`
+- [X] T002 [P] Ensure Playwright config includes stopwatch e2e path `frontend/e2e/`
 
 ### Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
-- [ ] T003 [P] Vitest unit: CSV empty-state → header only in `frontend/src/ui-stopwatch/stopwatch.test.js`
-- [ ] T004 [P] Vitest unit: CSV golden with sample laps in `frontend/src/ui-stopwatch/stopwatch.test.js`
-- [ ] T005 Vitest unit: guard invalid transitions (start while running, stop while stopped)
-- [ ] T006 [P] Playwright smoke: start then stop shows non-zero time in `frontend/e2e/stopwatch.smoke.spec.ts`
- - [X] T003 [P] Vitest unit: CSV empty-state → header only in `frontend/src/ui-stopwatch/stopwatch.test.js`
- - [X] T004 [P] Vitest unit: CSV golden with sample laps in `frontend/src/ui-stopwatch/stopwatch.test.js`
- - [X] T005 Vitest unit: guard invalid transitions (start while running, stop while stopped)
- - [X] T006 [P] Playwright smoke: start then stop shows non-zero time in `frontend/e2e/stopwatch.smoke.spec.ts`
+- [X] T003 [P] Vitest unit: CSV empty-state → header only in `frontend/src/ui-stopwatch/stopwatch.test.js`
+- [X] T004 [P] Vitest unit: CSV golden with sample laps in `frontend/src/ui-stopwatch/stopwatch.test.js`
+- [X] T005 Vitest unit: guard invalid transitions (start while running, stop while stopped)
+- [X] T006 [P] Playwright smoke: start then stop shows non-zero time in `frontend/e2e/stopwatch.smoke.spec.ts`
 
 ### Phase 3.3: Core Implementation (ONLY after tests are failing)
 - [X] T007 Implement `clock.js` injectable seam (mirror `ui-todo/clock.js`) in `frontend/src/ui-stopwatch/clock.js`
