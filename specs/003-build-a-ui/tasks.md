@@ -32,7 +32,7 @@
 ## Tasks
 
 ### Phase 3.1: Setup
-- [ ] T001 [P] Create `frontend/src/ui-stopwatch/` skeleton (index.js, clock.js, styles.css)
+- [X] T001 [P] Create `frontend/src/ui-stopwatch/` skeleton (index.js, clock.js, styles.css)
 - [ ] T002 [P] Ensure Playwright config includes stopwatch e2e path `frontend/e2e/`
 
 ### Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
