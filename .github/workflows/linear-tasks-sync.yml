@@ -3,10 +3,13 @@ name: linear-tasks-sync
 on:
   push:
     branches:
-      - '**'
+      - 'feature/**'
+      - '001-*'
+      - '???-*'
     paths:
       - 'specs/*/tasks.md'
       - 'specs/*/.linear-parent'
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -17,38 +20,35 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Detect changed spec folders
+      - name: Detect changed tasks files
         id: detect
         run: |
           set -euo pipefail
           BEFORE="${{ github.event.before }}"
           AFTER="${{ github.sha }}"
-          TASK_FILES=$(git diff --name-only "$BEFORE" "$AFTER" -- 'specs/*/tasks.md')
-          PARENT_FILES=$(git diff --name-only "$BEFORE" "$AFTER" -- 'specs/*/.linear-parent')
-          # Derive unique spec directories
-          DIRS=$(printf "%s\n%s\n" "$TASK_FILES" "$PARENT_FILES" | awk -F/ '/^specs\//{print $1"/"$2"/"$3}' | sort -u | tr '\n' ' ' | sed 's/ *$//')
-          echo "spec_dirs=$DIRS" >> $GITHUB_OUTPUT
-          if [ -z "$DIRS" ]; then
-            echo "No relevant spec folder changes detected." >> $GITHUB_STEP_SUMMARY
+          CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- 'specs/*/tasks.md' | tr '\n' ' ' | sed 's/ *$//')
+          echo "changed=$CHANGED" >> $GITHUB_OUTPUT
+          if [ -z "$CHANGED" ]; then
+            echo "No tasks.md changes detected." >> $GITHUB_STEP_SUMMARY
           else
-            echo "Spec folders changed: $DIRS" >> $GITHUB_STEP_SUMMARY
+            echo "Changed files: $CHANGED" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Setup Node
-        if: ${{ steps.detect.outputs.spec_dirs != '' }}
+        if: ${{ steps.detect.outputs.changed != '' }}
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Sync each changed spec folder to Linear
-        if: ${{ steps.detect.outputs.spec_dirs != '' }}
+      - name: Sync each changed tasks file to Linear
+        if: ${{ steps.detect.outputs.changed != '' }}
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          for dir in ${{ steps.detect.outputs.spec_dirs }}; do
-            file="$dir/tasks.md"
+          for file in ${{ steps.detect.outputs.changed }}; do
+            dir=$(dirname "$file")
             parent=""
             if [ -f "$dir/.linear-parent" ]; then
               parent=$(cat "$dir/.linear-parent" | tr -d '\n' | tr -d '\r' | xargs)
