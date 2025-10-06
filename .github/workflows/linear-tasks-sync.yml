@@ -43,6 +43,8 @@ jobs:
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
+          LINEAR_TEAM_NAME: Prince Training
+          LINEAR_PROJECT_NAME: Training-Prince
         run: |
           set -euo pipefail
           for file in ${{ steps.detect.outputs.changed }}; do
