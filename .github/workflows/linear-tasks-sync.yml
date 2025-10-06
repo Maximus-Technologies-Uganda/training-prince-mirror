@@ -3,9 +3,7 @@ name: linear-tasks-sync
 on:
   push:
     branches:
-      - 'feature/**'
-      - '001-*'
-      - '???-*'
+      - '**'
     paths:
       - 'specs/*/tasks.md'
       - 'specs/*/.linear-parent'
