@@ -12,7 +12,8 @@ import fs from 'fs';
 import path from 'path';
 import https from 'https';
 
-const TASKS_FILE = '/Users/prnceb/Desktop/WORK/hello-world/specs/001-what-build-a/tasks.md';
+const DEFAULT_TASKS_FILE = '/Users/prnceb/Desktop/WORK/hello-world/specs/001-what-build-a/tasks.md';
+const TASKS_FILE = (process.env.TASKS_FILE && process.env.TASKS_FILE.trim()) || DEFAULT_TASKS_FILE;
 const LINEAR_GRAPHQL_URL = 'https://api.linear.app/graphql';
 
 function fail(message, exitCode = 1) {
@@ -122,7 +123,7 @@ async function getIssueIdByIdentifier(identifier) {
   const query = `
     query($teamKey: String!, $number: Float!) {
       issues(first: 1, filter: { number: { eq: $number }, team: { key: { eq: $teamKey } } }) {
-        nodes { id identifier team { id name key } }
+        nodes { id identifier team { id name key } project { id name } children(first: 500) { nodes { id title } } }
       }
     }
   `;
@@ -204,7 +205,7 @@ function parseTasksFromFile(filePath) {
     if (team.id !== derivedTeam.id) {
       console.warn(`Warning: Provided team \"${teamName}\" differs from parent's team \"${derivedTeam.name}\". Using parent's team.`);
     }
-    const project = await getProjectByName(projectName);
+    const project = parentIssue.project || (await getProjectByName(projectName));
     if (!project) {
       const all = await listAllProjects();
       console.error('Project not found by name. Available projects:');
@@ -213,8 +214,13 @@ function parseTasksFromFile(filePath) {
     }
     const parentId = parentIssue.id;
 
+    const existingTitles = new Set((parentIssue.children?.nodes || []).map(n => n.title));
     const created = [];
     for (const t of tasks) {
+      if (existingTitles.has(t.title)) {
+        console.log(`Skip existing: ${t.title}`);
+        continue;
+      }
       const issue = await createIssue({
         teamId: derivedTeam.id,
         projectId: project.id,
