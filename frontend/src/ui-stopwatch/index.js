@@ -82,6 +82,14 @@ export function initStopwatchUI() {
   if (!els.timeText) return;
   const clock = createClock('Africa/Kampala');
   const state = createUiState();
+  // Accessibility attributes
+  els.timeText.setAttribute?.('aria-live', 'polite');
+  els.timeText.setAttribute?.('role', 'status');
+  els.startBtn?.setAttribute?.('aria-label', 'Start stopwatch');
+  els.stopBtn?.setAttribute?.('aria-label', 'Stop stopwatch');
+  els.resetBtn?.setAttribute?.('aria-label', 'Reset stopwatch');
+  els.lapBtn?.setAttribute?.('aria-label', 'Record lap');
+  els.exportBtn?.setAttribute?.('aria-label', 'Export laps as CSV');
   render(state, els);
 
   els.startBtn?.addEventListener('click', () => {

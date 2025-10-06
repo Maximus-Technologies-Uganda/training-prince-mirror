@@ -48,13 +48,13 @@
 - [X] T010 Enforce guard transitions (no duplicate timers, no stop when stopped) in `frontend/src/ui-stopwatch/index.js`
 
 ### Phase 3.4: Integration
-- [ ] T011 Ensure Vitest coverage includes `ui-stopwatch`; verify ≥40% statements
-- [ ] T012 Ensure review‑packet includes `ui-coverage-stopwatch` in CI outputs
+- [X] T011 Ensure Vitest coverage includes `ui-stopwatch`; verify ≥40% statements
+- [X] T012 Ensure review‑packet includes `ui-coverage-stopwatch` in CI outputs
 
 ### Phase 3.5: Polish
-- [ ] T013 [P] Update quickstart with exact commands and file paths
-- [ ] T014 [P] Add README snippet linking UI and review‑packet location
-- [ ] T015 Accessibility labels for buttons and live region for time display
+- [X] T013 [P] Update quickstart with exact commands and file paths
+- [X] T014 [P] Add README snippet linking UI and review‑packet location
+- [X] T015 Accessibility labels for buttons and live region for time display
 
 ## Dependencies
 - T003–T006 before T007–T010 (TDD)
