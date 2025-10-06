@@ -5,6 +5,7 @@ on:
     branches:
       - 'feature/**'
       - '001-*'
+      - '???-*'
     paths:
       - 'specs/*/tasks.md'
 
