@@ -9,6 +9,8 @@ export default [
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
+        process: 'readonly',
+        Event: 'readonly',
       },
     },
     rules: {
@@ -18,7 +20,6 @@ export default [
       semi: ['error', 'always'],
       'comma-dangle': ['error', 'always-multiline'],
     },
+    ignores: ['dist/**', 'e2e/**', 'coverage/**'],
   },
 ];
-
-

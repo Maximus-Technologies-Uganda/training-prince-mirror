@@ -1,0 +1,20 @@
+:root {
+  --accent: #3b82f6;
+}
+.todo-app {
+  font-family: ui-sans-serif, system-ui;
+}
+.todo-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.todo-high-label {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+.todo-list {
+  list-style: disc;
+  padding-left: 1.25rem;
+}

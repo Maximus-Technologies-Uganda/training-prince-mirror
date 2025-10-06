@@ -84,4 +84,3 @@ describe('Quote UI interactions', () => {
     expect(shuffleButton.disabled).toBe(true);
   });
 });
-

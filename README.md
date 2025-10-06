@@ -185,3 +185,8 @@ node src/quote/index.js --by "Unknown Author"
 
 ## Coverage Index
 The Coverage Index and per‑app HTML reports are packaged in the GitHub Actions artifact named `review-packet` (on the `development` branch and PRs). Download the artifact and open `review-artifacts/index.html`.
+
+### UI To‑Do Coverage
+
+- Frontend UI module coverage is included under `ui-coverage-todo/` in the `review-packet` artifact.
+- Open `review-artifacts/index.html` and click `ui-todo` to view the HTML coverage report.

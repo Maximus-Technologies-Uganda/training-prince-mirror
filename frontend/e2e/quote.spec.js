@@ -11,4 +11,3 @@ test('filters quotes by author name', async ({ page }) => {
   const quoteDisplay = page.locator('#quote-display').first();
   await expect(quoteDisplay).toContainText(/Steve Jobs/i);
 });
-

@@ -4,26 +4,61 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quote UI</title>
+    <title>Hello World Apps</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div id="app" class="quote-app">
-      <h1>Expense Tracker</h1>
-      <div class="filters">
-        <label for="month-filter">Month:</label>
-        <input type="number" id="month-filter" placeholder="e.g., 3" min="1" max="12" />
-        <label for="category-filter">Category:</label>
-        <input type="text" id="category-filter" placeholder="e.g., food" />
-      </div>
-      <div id="expense-table">
-        >
-      </div>
-      <hr />
-      <div id="total-display">
-        <h2>Total: $0.00</h2>
-      </div>
+    <div id="app">
+      <section id="quote-app" class="quote-app">
+        <header class="quote-app__header">
+          <h1>Quote Explorer</h1>
+          <p>Find inspiration and filter quotes by your favourite authors.</p>
+        </header>
+        <section class="quote-app__controls" aria-label="Quote controls">
+          <label class="visually-hidden" for="author-filter">Filter quotes by author</label>
+          <input
+            type="text"
+            id="author-filter"
+            name="author-filter"
+            placeholder="Filter by author…"
+            autocomplete="off"
+          />
+          <button id="shuffle-quote" type="button">Show another quote</button>
+        </section>
+        <blockquote id="quote-display" class="quote-app__quote" cite="">
+          <p id="quote-text">Loading…</p>
+          <footer>— <cite id="quote-author">Unknown</cite></footer>
+        </blockquote>
+      </section>
+
+      <section id="todo-app" class="todo-app" aria-label="To-Do">
+        <h2>To‑Do</h2>
+        <div class="todo-controls">
+          <label class="visually-hidden" for="todo-input">Add a to‑do</label>
+          <input
+            id="todo-input"
+            type="text"
+            placeholder="What needs to be done?"
+            autocomplete="off"
+          />
+          <input id="todo-due" type="date" aria-label="Due date" />
+          <label for="todo-high" class="todo-high-label"
+            ><input id="todo-high" type="checkbox" /> High priority</label
+          >
+          <button id="todo-add" type="button">Add</button>
+        </div>
+        <p id="todo-error" role="alert" aria-live="polite"></p>
+        <div class="todo-filters">
+          <label><input id="filter-today" type="checkbox" /> Due today</label>
+          <label><input id="filter-high" type="checkbox" /> High priority</label>
+        </div>
+        <ul id="todo-list" class="todo-list"></ul>
+      </section>
     </div>
     <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      import { initTodoUI } from '/src/ui-todo/index.js';
+      initTodoUI();
+    </script>
   </body>
 </html>
