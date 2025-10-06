@@ -76,3 +76,4 @@ Task: "Vitest invalid transitions in frontend/src/ui-stopwatch/stopwatch.test.js
 - [ ] UI imports domain logic from src/stopwatch/, no duplication
 - [ ] Coverage ≥40% for ui-stopwatch and present in review‑packet
 - [ ] Playwright smoke passes (start then stop)
+
