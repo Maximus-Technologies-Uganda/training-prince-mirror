@@ -40,12 +40,16 @@
 - [ ] T004 [P] Vitest unit: CSV golden with sample laps in `frontend/src/ui-stopwatch/stopwatch.test.js`
 - [ ] T005 Vitest unit: guard invalid transitions (start while running, stop while stopped)
 - [ ] T006 [P] Playwright smoke: start then stop shows non-zero time in `frontend/e2e/stopwatch.smoke.spec.ts`
+ - [X] T003 [P] Vitest unit: CSV empty-state → header only in `frontend/src/ui-stopwatch/stopwatch.test.js`
+ - [X] T004 [P] Vitest unit: CSV golden with sample laps in `frontend/src/ui-stopwatch/stopwatch.test.js`
+ - [X] T005 Vitest unit: guard invalid transitions (start while running, stop while stopped)
+ - [X] T006 [P] Playwright smoke: start then stop shows non-zero time in `frontend/e2e/stopwatch.smoke.spec.ts`
 
 ### Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T007 Implement `clock.js` injectable seam (mirror `ui-todo/clock.js`) in `frontend/src/ui-stopwatch/clock.js`
-- [ ] T008 Implement UI controls (Start, Stop, Reset, Lap) and time display in `frontend/src/ui-stopwatch/index.js`
-- [ ] T009 Wire CSV export using `src/stopwatch/exporter.js` and `formatTime` in `frontend/src/ui-stopwatch/index.js`
-- [ ] T010 Enforce guard transitions (no duplicate timers, no stop when stopped) in `frontend/src/ui-stopwatch/index.js`
+- [X] T007 Implement `clock.js` injectable seam (mirror `ui-todo/clock.js`) in `frontend/src/ui-stopwatch/clock.js`
+- [X] T008 Implement UI controls (Start, Stop, Reset, Lap) and time display in `frontend/src/ui-stopwatch/index.js`
+- [X] T009 Wire CSV export using `src/stopwatch/exporter.js` and `formatTime` in `frontend/src/ui-stopwatch/index.js`
+- [X] T010 Enforce guard transitions (no duplicate timers, no stop when stopped) in `frontend/src/ui-stopwatch/index.js`
 
 ### Phase 3.4: Integration
 - [ ] T011 Ensure Vitest coverage includes `ui-stopwatch`; verify ≥40% statements
