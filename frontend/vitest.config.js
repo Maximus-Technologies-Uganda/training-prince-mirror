@@ -6,12 +6,6 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'lcov'],
     },
-    exclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/e2e/**',
-    ],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
   },
 });
-
-

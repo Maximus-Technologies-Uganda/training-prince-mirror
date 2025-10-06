@@ -11,5 +11,3 @@ describe('setupCounter', () => {
     expect(element.innerHTML).toContain('count is 1');
   });
 });
-
-
