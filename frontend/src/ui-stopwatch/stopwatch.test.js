@@ -22,6 +22,16 @@ describe('ui-stopwatch CSV export', () => {
     const csv = exportCsv(s4);
     expect(csv).toBe(['Lap,Time', '1,00:00.600', '2,00:00.600'].join('\n'));
   });
+
+  it('lap accumulates elapsedMs and stop preserves value', () => {
+    const clock = makeClock([1000, 1600, 1900]);
+    const { state: running } = start(createUiState(), clock);
+    const { state: afterLap } = lap(running, clock); // +600ms
+    expect(afterLap.elapsedMs).toBe(600);
+    const { state: stopped } = stop(afterLap, clock); // +300ms
+    expect(stopped.elapsedMs).toBe(900);
+    expect(stopped.isRunning).toBe(false);
+  });
 });
 
 describe('ui-stopwatch guards', () => {

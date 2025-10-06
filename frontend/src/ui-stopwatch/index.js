@@ -12,7 +12,7 @@ export function start(state, clock) {
     return { state, error: 'Already running' };
   }
   const now = clock?.nowMs ? clock.nowMs() : Date.now();
-  return { state: { ...state, isRunning: true, startedAt: now } };
+  return { state: { ...state, isRunning: true, startedAt: now, elapsedMs: 0 } };
 }
 
 export function stop(state, clock) {
@@ -39,7 +39,7 @@ export function lap(state, clock) {
   const elapsedSoFar = now - state.startedAt;
   const totalOfPrevious = state.laps.reduce((sum, t) => sum + t, 0);
   const thisLap = elapsedSoFar - totalOfPrevious;
-  return { state: { ...state, laps: [...state.laps, thisLap] } };
+  return { state: { ...state, laps: [...state.laps, thisLap], elapsedMs: elapsedSoFar } };
 }
 
 export function exportCsv(state) {
