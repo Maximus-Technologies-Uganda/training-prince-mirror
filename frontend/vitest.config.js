@@ -5,6 +5,10 @@ export default defineConfig({
     environment: 'jsdom',
     coverage: {
       reporter: ['text', 'lcov'],
+      thresholds: {
+        statements: 40,
+        lines: 40,
+      },
     },
     exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
   },

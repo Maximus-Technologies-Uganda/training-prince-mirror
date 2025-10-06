@@ -50,13 +50,17 @@ jobs:
           npm test -- tests/quote.*.test.js --coverage
           mv coverage coverage-quote
 
-      - name: Build frontend and run UI tests & coverage (ui-todo)
+      - name: Build frontend and run UI tests & coverage (ui modules)
         working-directory: frontend
         run: |
           npm ci
           npm run test -- --coverage
           mkdir -p ../review-artifacts
-          mv coverage ../review-artifacts/ui-coverage-todo
+          # move ui-todo coverage if exists
+          if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-todo || true; fi
+          # run stopwatch tests specifically and move coverage
+          npm run test -- --coverage src/ui-stopwatch
+          if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-stopwatch || true; fi
 
       - name: Prepare artifact directories
         run: |
@@ -73,6 +77,9 @@ jobs:
           done
           if [ -d review-artifacts/ui-coverage-todo ]; then
             echo "  <li><a href=\"./ui-coverage-todo/lcov-report/index.html\">ui-todo</a></li>" >> review-artifacts/index.html
+          fi
+          if [ -d review-artifacts/ui-coverage-stopwatch ]; then
+            echo "  <li><a href=\"./ui-coverage-stopwatch/lcov-report/index.html\">ui-stopwatch</a></li>" >> review-artifacts/index.html
           fi
           echo "</ul>" >> review-artifacts/index.html
 

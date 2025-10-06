@@ -12,7 +12,8 @@ import fs from 'fs';
 import path from 'path';
 import https from 'https';
 
-const TASKS_FILE = '/Users/prnceb/Desktop/WORK/hello-world/specs/001-what-build-a/tasks.md';
+const DEFAULT_TASKS_FILE = '/Users/prnceb/Desktop/WORK/hello-world/specs/001-what-build-a/tasks.md';
+const TASKS_FILE = (process.env.TASKS_FILE && process.env.TASKS_FILE.trim()) || DEFAULT_TASKS_FILE;
 const LINEAR_GRAPHQL_URL = 'https://api.linear.app/graphql';
 
 function fail(message, exitCode = 1) {
@@ -159,6 +160,19 @@ async function createIssue({ teamId, projectId, parentId, title }) {
   return res.issue;
 }
 
+async function issueExistsUnderParent(parentId, title) {
+  const query = `
+    query($parentId: ID!, $title: String!) {
+      issues(first: 1, filter: { parent: { id: { eq: $parentId } }, title: { eq: $title } }) {
+        nodes { id }
+      }
+    }
+  `;
+  const data = await graphqlRequest(query, { parentId, title });
+  const node = data?.issues?.nodes?.[0];
+  return Boolean(node?.id);
+}
+
 function parseTasksFromFile(filePath) {
   const raw = fs.readFileSync(filePath, 'utf8');
   const lines = raw.split(/\r?\n/);
@@ -215,6 +229,8 @@ function parseTasksFromFile(filePath) {
 
     const created = [];
     for (const t of tasks) {
+      const exists = await issueExistsUnderParent(parentId, t.title);
+      if (exists) { console.log(`Skip existing: ${t.title}`); continue; }
       const issue = await createIssue({
         teamId: derivedTeam.id,
         projectId: project.id,
