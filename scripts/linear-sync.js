@@ -160,6 +160,19 @@ async function createIssue({ teamId, projectId, parentId, title }) {
   return res.issue;
 }
 
+async function issueExistsUnderParent(parentId, title) {
+  const query = `
+    query($parentId: ID!, $title: String!) {
+      issues(first: 1, filter: { parent: { id: { eq: $parentId } }, title: { eq: $title } }) {
+        nodes { id }
+      }
+    }
+  `;
+  const data = await graphqlRequest(query, { parentId, title });
+  const node = data?.issues?.nodes?.[0];
+  return Boolean(node?.id);
+}
+
 function parseTasksFromFile(filePath) {
   const raw = fs.readFileSync(filePath, 'utf8');
   const lines = raw.split(/\r?\n/);
@@ -214,13 +227,10 @@ function parseTasksFromFile(filePath) {
     }
     const parentId = parentIssue.id;
 
-    const existingTitles = new Set();
     const created = [];
     for (const t of tasks) {
-      if (existingTitles.has(t.title)) {
-        console.log(`Skip existing: ${t.title}`);
-        continue;
-      }
+      const exists = await issueExistsUnderParent(parentId, t.title);
+      if (exists) { console.log(`Skip existing: ${t.title}`); continue; }
       const issue = await createIssue({
         teamId: derivedTeam.id,
         projectId: project.id,
