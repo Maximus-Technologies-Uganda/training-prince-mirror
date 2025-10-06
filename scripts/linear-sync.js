@@ -45,7 +45,7 @@ function graphqlRequest(query, variables) {
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': Buffer.byteLength(body),
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': `${apiKey}`
         }
       },
       (res) => {
@@ -73,28 +73,39 @@ function graphqlRequest(query, variables) {
 
 async function getTeamByName(name) {
   const query = `
-    query($name: String!) {
-      teams(first: 50, filter: { name: { eq: $name } }) {
-        nodes { id name key }
-      }
+    query {
+      teams(first: 200) { nodes { id name key } }
     }
   `;
-  const data = await graphqlRequest(query, { name });
+  const data = await graphqlRequest(query, {});
   const nodes = data?.teams?.nodes ?? [];
   return nodes.find(t => t.name === name) || null;
 }
 
-async function getProjectByName(name) {
+function normalizeName(s) {
+  return String(s || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '');
+}
+
+async function listAllProjects() {
   const query = `
-    query($name: String!) {
-      projects(first: 200, filter: { name: { eq: $name } }) {
-        nodes { id name }
-      }
+    query {
+      projects(first: 200) { nodes { id name } }
     }
   `;
-  const data = await graphqlRequest(query, { name });
-  const nodes = data?.projects?.nodes ?? [];
-  return nodes.find(p => p.name === name) || null;
+  const data = await graphqlRequest(query, {});
+  return data?.projects?.nodes ?? [];
+}
+
+async function getProjectByName(name) {
+  const projects = await listAllProjects();
+  const exact = projects.find(p => p.name === name);
+  if (exact) return exact;
+  const normalizedTarget = normalizeName(name);
+  const ci = projects.find(p => normalizeName(p.name) === normalizedTarget);
+  if (ci) return ci;
+  return null;
 }
 
 function parseIdentifier(identifier) {
@@ -111,7 +122,7 @@ async function getIssueIdByIdentifier(identifier) {
   const query = `
     query($teamKey: String!, $number: Float!) {
       issues(first: 1, filter: { number: { eq: $number }, team: { key: { eq: $teamKey } } }) {
-        nodes { id identifier }
+        nodes { id identifier team { id name key } }
       }
     }
   `;
@@ -120,7 +131,7 @@ async function getIssueIdByIdentifier(identifier) {
   if (!node) {
     fail(`Parent issue not found for ${identifier}`);
   }
-  return node.id;
+  return node;
 }
 
 async function createIssue({ teamId, projectId, parentId, title }) {
@@ -186,16 +197,26 @@ function parseTasksFromFile(filePath) {
       fail('No tasks parsed from file.');
     }
 
-    const team = await getTeamByName(teamName);
-    if (!team) fail(`Team not found: ${teamName}`);
+    const parentIssue = await getIssueIdByIdentifier(parentIdentifier);
+    const derivedTeam = parentIssue.team;
+    const team = (await getTeamByName(teamName)) || derivedTeam;
+    if (!team) fail(`Team not found by name and cannot derive from parent: ${teamName}`);
+    if (team.id !== derivedTeam.id) {
+      console.warn(`Warning: Provided team \"${teamName}\" differs from parent's team \"${derivedTeam.name}\". Using parent's team.`);
+    }
     const project = await getProjectByName(projectName);
-    if (!project) fail(`Project not found: ${projectName}`);
-    const parentId = await getIssueIdByIdentifier(parentIdentifier);
+    if (!project) {
+      const all = await listAllProjects();
+      console.error('Project not found by name. Available projects:');
+      for (const p of all) console.error(`- ${p.name}`);
+      fail(`Project not found: ${projectName}`);
+    }
+    const parentId = parentIssue.id;
 
     const created = [];
     for (const t of tasks) {
       const issue = await createIssue({
-        teamId: team.id,
+        teamId: derivedTeam.id,
         projectId: project.id,
         parentId,
         title: t.title
