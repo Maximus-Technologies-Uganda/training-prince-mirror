@@ -1,5 +1,19 @@
-import { describe, it, expect } from 'vitest';
-import { createUiState, start, stop, reset, lap, exportCsv } from './index.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+const clockQueue = [];
+
+vi.mock('./clock.js', () => ({
+  createClock: () => ({
+    nowMs: () => {
+      if (!clockQueue.length) {
+        throw new Error('Clock queue exhausted');
+      }
+      return clockQueue.shift();
+    },
+  }),
+}));
+
+import { createUiState, start, stop, reset, lap, exportCsv, initStopwatchUI } from './index.js';
 
 function makeClock(times) {
   let idx = 0;
@@ -31,6 +45,66 @@ describe('ui-stopwatch CSV export', () => {
     const { state: stopped } = stop(afterLap, clock); // +300ms
     expect(stopped.elapsedMs).toBe(900);
     expect(stopped.isRunning).toBe(false);
+  });
+});
+
+describe('ui-stopwatch DOM wiring', () => {
+  beforeEach(() => {
+    clockQueue.length = 0;
+    document.body.innerHTML = `
+      <div>
+        <div id="sw-time">00:00.000</div>
+        <div id="sw-error"></div>
+        <ul id="sw-laps"></ul>
+        <button id="sw-start">Start</button>
+        <button id="sw-stop">Stop</button>
+        <button id="sw-reset">Reset</button>
+        <button id="sw-lap">Lap</button>
+        <button id="sw-export">Export</button>
+      </div>
+    `;
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+  });
+
+  it('updates UI through button events and logs CSV', () => {
+    clockQueue.push(1000, 1600, 2100, 2600);
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    initStopwatchUI();
+    const startBtn = document.getElementById('sw-start');
+    const lapBtn = document.getElementById('sw-lap');
+    const stopBtn = document.getElementById('sw-stop');
+    const resetBtn = document.getElementById('sw-reset');
+    const exportBtn = document.getElementById('sw-export');
+    const error = document.getElementById('sw-error');
+    const time = document.getElementById('sw-time');
+    const lapsList = document.getElementById('sw-laps');
+
+    startBtn.click();
+    lapBtn.click();
+    stopBtn.click();
+
+    expect(time.textContent).toBe('00:01.100');
+    expect(lapsList.children).toHaveLength(1);
+
+    stopBtn.click();
+    expect(error.textContent).toBe('Not running');
+
+    resetBtn.click();
+    expect(time.textContent).toBe('00:00.000');
+    exportBtn.click();
+    expect(logSpy).toHaveBeenCalled();
+  });
+});
+
+describe('clock factory', () => {
+  it('uses provided nowFn', async () => {
+    const actual = await vi.importActual('./clock.js');
+    const clock = actual.createClock('Africa/Kampala', () => 1234);
+    expect(clock.nowMs()).toBe(1234);
   });
 });
 
