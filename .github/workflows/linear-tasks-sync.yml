@@ -24,12 +24,21 @@ jobs:
           set -euo pipefail
           BEFORE="${{ github.event.before }}"
           AFTER="${{ github.sha }}"
-          CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- 'specs/*/tasks.md' | tr '\n' ' ' | sed 's/ *$//')
-          echo "changed=$CHANGED" >> $GITHUB_OUTPUT
-          if [ -z "$CHANGED" ]; then
+          FILES=$(git diff --name-only "$BEFORE" "$AFTER" -- 'specs/*/tasks.md' 'specs/*/.linear-parent' | tr '\n' ' ' | sed 's/ *$//')
+          TASKS=""
+          for f in $FILES; do
+            if [[ "$f" == */tasks.md ]]; then
+              TASKS+="$f "
+            elif [[ "$f" == */.linear-parent ]]; then
+              TASKS+="${f%/.linear-parent}/tasks.md "
+            fi
+          done
+          TASKS=$(echo "$TASKS" | sed 's/ *$//')
+          echo "changed=$TASKS" >> $GITHUB_OUTPUT
+          if [ -z "$TASKS" ]; then
             echo "No tasks.md changes detected." >> $GITHUB_STEP_SUMMARY
           else
-            echo "Changed files: $CHANGED" >> $GITHUB_STEP_SUMMARY
+            echo "Changed files: $TASKS" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Setup Node
