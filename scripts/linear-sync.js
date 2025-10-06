@@ -123,7 +123,7 @@ async function getIssueIdByIdentifier(identifier) {
   const query = `
     query($teamKey: String!, $number: Float!) {
       issues(first: 1, filter: { number: { eq: $number }, team: { key: { eq: $teamKey } } }) {
-        nodes { id identifier team { id name key } project { id name } children(first: 500) { nodes { id title } } }
+        nodes { id identifier team { id name key } }
       }
     }
   `;
@@ -205,7 +205,7 @@ function parseTasksFromFile(filePath) {
     if (team.id !== derivedTeam.id) {
       console.warn(`Warning: Provided team \"${teamName}\" differs from parent's team \"${derivedTeam.name}\". Using parent's team.`);
     }
-    const project = parentIssue.project || (await getProjectByName(projectName));
+    const project = await getProjectByName(projectName);
     if (!project) {
       const all = await listAllProjects();
       console.error('Project not found by name. Available projects:');
@@ -214,7 +214,7 @@ function parseTasksFromFile(filePath) {
     }
     const parentId = parentIssue.id;
 
-    const existingTitles = new Set((parentIssue.children?.nodes || []).map(n => n.title));
+    const existingTitles = new Set();
     const created = [];
     for (const t of tasks) {
       if (existingTitles.has(t.title)) {
