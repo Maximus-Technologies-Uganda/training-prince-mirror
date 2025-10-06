@@ -1,50 +1,75 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: 0.0.0 → 1.1.0
+- Modified principles: [template placeholders] → concrete names (see Core Principles)
+- Added sections: Section 2 (Project Standards & Constraints), Section 3 (Workflow & Quality Gates)
+- Removed sections: None
+- Templates requiring updates:
+  ✅ .specify/templates/plan-template.md (reference/version alignment)
+  ✅ .specify/templates/spec-template.md (no conflicts; guidance aligned)
+  ✅ .specify/templates/tasks-template.md (no conflicts; category mapping consistent)
+  ⚠️ README.md: add brief pointer to constitution (optional)
+- Deferred items:
+  - TODO(RATIFICATION_DATE): Original adoption date unknown; needs project lead input
+-->
+
+# Hello-World UI Initiative Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. No Logic Duplication
+UIs MUST import and reuse existing core logic from `src/<app>` libraries.
+Reimplementation of backend functionality in the frontend is prohibited. Any
+UI-only utilities are limited to presentation and input handling. Rationale:
+prevents divergence, reduces bugs, and concentrates tests in one source of truth.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Test Coverage Mandate
+Each UI module MUST maintain ≥40% statement coverage, measured by Vitest unit
+tests, plus one Playwright smoke test per UI. Coverage must be reported per-app
+and included in the CI review‑packet. Failing to meet the threshold blocks merges.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Reviewability is Paramount
+The CI review‑packet is the primary artifact of record. It MUST include separate,
+indexed coverage reports for all backend and UI applications, accessible from a
+single `review-artifacts/index.html` index. PRs are reviewed primarily via this
+packet.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. PR Craft
+PRs MUST: be ≤300 LOC changed; pass all CI checks; and use the required PR
+description template including the full backend and UI coverage table and a
+`Spec:` link. Large changes MUST be split into incremental PRs.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Simplicity & Consistency
+Prefer simple, explicit solutions. Follow the project’s tech stack: Vite-powered
+vanilla JavaScript frontend, Vitest/Playwright for testing, ESLint + Prettier for
+linting/formatting. New tools require a justification and approval via Governance.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Project Standards & Constraints
+- Frontend lives in `frontend/` and is built with Vite. The final build in
+  `frontend/dist/` MUST be deployable to GitHub Pages.
+- Testing: Vitest for unit coverage; Playwright for a single smoke test per UI.
+- Linting/Formatting: ESLint + Prettier are required gates in CI.
+- Coverage: Per-app coverage artifacts MUST be generated and indexed in the
+  review‑packet artifact. Minimum UI coverage: 40% statements.
+- Backend logic authority: `src/<app>` packages remain the single source of truth.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Development Workflow & Quality Gates
+- Work begins from a feature spec linked in the PR body via `Spec: <url>`.
+- TDD encouraged; tests authored or updated alongside changes.
+- CI MUST run: lint, unit tests with coverage, Playwright smoke, and build.
+- Merge gates: all checks passing, coverage thresholds met, review‑packet updated.
+- Release: `frontend/dist/` MUST be build‑clean; deployment to GitHub Pages is
+  required by end of week for the current milestone.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+- This Constitution supersedes conflicting practices. Amendments require a PR
+  describing changes, rationale, version bump per semantic rules, and any
+  migration or process updates needed.
+- Versioning Policy:
+  - MAJOR: Backward‑incompatible removals/redefinitions of principles or governance.
+  - MINOR: New principle/section added or materially expanded guidance.
+  - PATCH: Clarifications or non‑semantic refinements.
+- Compliance Review: Reviewers MUST verify adherence (no logic duplication,
+  coverage thresholds, review‑packet completeness, PR craft) before approval.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.1.0 | **Ratified**: TODO(RATIFICATION_DATE): original adoption date unknown | **Last Amended**: 2025-10-06
