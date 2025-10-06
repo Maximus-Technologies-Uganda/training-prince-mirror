@@ -22,7 +22,8 @@
     "hello": "node src/hello/index.js",
     "temp": "node src/temp-converter/index.js",
     "stopwatch": "node src/stopwatch/index.js",
-    "quote": "node src/quote/index.js"
+    "quote": "node src/quote/index.js",
+    "linear:sync": "node scripts/linear-sync.js"
   },
   "repository": {
     "type": "git",
