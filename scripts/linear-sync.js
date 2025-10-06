@@ -120,19 +120,24 @@ function parseIdentifier(identifier) {
 
 async function getIssueIdByIdentifier(identifier) {
   const { teamKey, number } = parseIdentifier(identifier);
-  const query = `
-    query($teamKey: String!, $number: Float!) {
-      issues(first: 1, filter: { number: { eq: $number }, team: { key: { eq: $teamKey } } }) {
-        nodes { id identifier team { id name key } project { id name } children(first: 500) { nodes { id title } } }
+  const qTeam = `
+    query($teamKey: String!) { teamByKey(key: $teamKey) { id name key } }
+  `;
+  const dTeam = await graphqlRequest(qTeam, { teamKey });
+  const team = dTeam?.teamByKey;
+  if (!team) fail(`Team not found for key ${teamKey}`);
+
+  const qIssue = `
+    query($teamId: String!, $number: Int!) {
+      issueByNumber(teamId: $teamId, number: $number) {
+        id identifier team { id name key } project { id name } children(first: 500) { nodes { id title } }
       }
     }
   `;
-  const data = await graphqlRequest(query, { teamKey, number });
-  const node = data?.issues?.nodes?.[0];
-  if (!node) {
-    fail(`Parent issue not found for ${identifier}`);
-  }
-  return node;
+  const dIssue = await graphqlRequest(qIssue, { teamId: team.id, number });
+  const issue = dIssue?.issueByNumber;
+  if (!issue) fail(`Parent issue not found for ${identifier}`);
+  return issue;
 }
 
 async function createIssue({ teamId, projectId, parentId, title }) {
