@@ -1,0 +1,64 @@
+name: linear-tasks-sync
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - '001-*'
+    paths:
+      - 'specs/*/tasks.md'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed tasks files
+        id: detect
+        run: |
+          set -euo pipefail
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.sha }}"
+          CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" -- 'specs/*/tasks.md' | tr '\n' ' ' | sed 's/ *$//')
+          echo "changed=$CHANGED" >> $GITHUB_OUTPUT
+          if [ -z "$CHANGED" ]; then
+            echo "No tasks.md changes detected." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Changed files: $CHANGED" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Setup Node
+        if: ${{ steps.detect.outputs.changed != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync each changed tasks file to Linear
+        if: ${{ steps.detect.outputs.changed != '' }}
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          for file in ${{ steps.detect.outputs.changed }}; do
+            dir=$(dirname "$file")
+            parent=""
+            if [ -f "$dir/.linear-parent" ]; then
+              parent=$(cat "$dir/.linear-parent" | tr -d '\n' | tr -d '\r' | xargs)
+            fi
+            if [ -z "$parent" ] && [[ "$GITHUB_REF_NAME" =~ ([A-Za-z]+-[0-9]+) ]]; then
+              parent="${BASH_REMATCH[1]}"
+            fi
+            if [ -z "$parent" ]; then
+              echo "Skipping $file: cannot determine parent issue id" >> $GITHUB_STEP_SUMMARY
+              continue
+            fi
+            echo "Sync: $file -> $parent" >> $GITHUB_STEP_SUMMARY
+            TASKS_FILE="$file" LINEAR_PARENT_IDENTIFIER="$parent" node scripts/linear-sync.js
+          done
+
+
