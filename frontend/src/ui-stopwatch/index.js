@@ -72,6 +72,7 @@ function render(state, els) {
     state.laps.forEach((ms, i) => {
       const li = document.createElement('li');
       li.textContent = `Lap ${i + 1}: ${formatTime(ms)}`;
+      li.setAttribute('aria-label', `Lap ${i + 1} ${formatTime(ms)}`);
       els.lapsList.appendChild(li);
     });
   }
@@ -85,8 +86,11 @@ export function initStopwatchUI() {
   // Accessibility attributes
   els.timeText.setAttribute?.('aria-live', 'polite');
   els.timeText.setAttribute?.('role', 'status');
+  els.timeText.setAttribute?.('tabindex', '0');
   els.startBtn?.setAttribute?.('aria-label', 'Start stopwatch');
+  els.startBtn?.setAttribute?.('aria-pressed', 'false');
   els.stopBtn?.setAttribute?.('aria-label', 'Stop stopwatch');
+  els.stopBtn?.setAttribute?.('aria-pressed', 'false');
   els.resetBtn?.setAttribute?.('aria-label', 'Reset stopwatch');
   els.lapBtn?.setAttribute?.('aria-label', 'Record lap');
   els.exportBtn?.setAttribute?.('aria-label', 'Export laps as CSV');
@@ -97,6 +101,8 @@ export function initStopwatchUI() {
     const r = start(state, clock);
     if (r.error) return (els.error.textContent = r.error);
     Object.assign(state, r.state);
+    els.startBtn?.setAttribute('aria-pressed', 'true');
+    els.stopBtn?.setAttribute('aria-pressed', 'false');
   });
 
   els.stopBtn?.addEventListener('click', () => {
@@ -105,6 +111,8 @@ export function initStopwatchUI() {
     if (r.error) return (els.error.textContent = r.error);
     Object.assign(state, r.state);
     render(state, els);
+    els.startBtn?.setAttribute('aria-pressed', 'false');
+    els.stopBtn?.setAttribute('aria-pressed', 'true');
   });
 
   els.resetBtn?.addEventListener('click', () => {
@@ -113,6 +121,8 @@ export function initStopwatchUI() {
     if (r.error) return (els.error.textContent = r.error);
     Object.assign(state, r.state);
     render(state, els);
+    els.startBtn?.setAttribute('aria-pressed', 'false');
+    els.stopBtn?.setAttribute('aria-pressed', 'false');
   });
 
   els.lapBtn?.addEventListener('click', () => {

@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div id="app">
-      <section id="quote-app" class="quote-app">
+    <div id="app" class="app-grid" role="main">
+      <section id="quote-app" class="section-card quote-app" aria-labelledby="quote-heading">
         <header class="quote-app__header">
-          <h1>Quote Explorer</h1>
+          <h1 id="quote-heading">Quote Explorer</h1>
           <p>Find inspiration and filter quotes by your favourite authors.</p>
         </header>
         <section class="quote-app__controls" aria-label="Quote controls">
@@ -22,43 +22,138 @@
             name="author-filter"
             placeholder="Filter by author…"
             autocomplete="off"
+            aria-describedby="quote-helper"
           />
-          <button id="shuffle-quote" type="button">Show another quote</button>
+          <button id="shuffle-quote" type="button" aria-label="Show a different quote">Show another quote</button>
         </section>
-        <blockquote id="quote-display" class="quote-app__quote" cite="">
-          <p id="quote-text">Loading…</p>
+        <p id="quote-helper" class="visually-hidden">Type an author's name to narrow the results.</p>
+        <blockquote
+          id="quote-display"
+          class="quote-app__quote"
+          cite=""
+          role="status"
+          aria-live="polite"
+        >
+          <p id="quote-text" tabindex="0">Loading…</p>
           <footer>— <cite id="quote-author">Unknown</cite></footer>
         </blockquote>
       </section>
 
-      <section id="todo-app" class="todo-app" aria-label="To-Do">
-        <h2>To‑Do</h2>
-        <div class="todo-controls">
+      <section id="expense-app" class="section-card expense-app" aria-labelledby="expense-heading">
+        <h2 id="expense-heading">Expense Tracker</h2>
+        <form class="expense-controls" id="expense-form" novalidate>
+          <div class="expense-field">
+            <label for="exp-amount">Amount</label>
+            <input
+              id="exp-amount"
+              name="amount"
+              type="number"
+              step="0.01"
+              min="0"
+              inputmode="decimal"
+              required
+              aria-describedby="exp-error"
+            />
+          </div>
+          <div class="expense-field">
+            <label for="exp-category">Category</label>
+            <input
+              id="exp-category"
+              name="category"
+              type="text"
+              autocomplete="off"
+              required
+              aria-describedby="exp-error"
+            />
+          </div>
+          <div class="expense-field">
+            <label for="exp-month">Month (1–12)</label>
+            <input
+              id="exp-month"
+              name="month"
+              type="number"
+              min="1"
+              max="12"
+              inputmode="numeric"
+              aria-describedby="exp-error"
+            />
+          </div>
+          <button id="exp-add" type="submit">Record expense</button>
+        </form>
+        <p id="exp-error" class="expense-error" role="alert" aria-live="assertive" tabindex="-1"></p>
+        <div class="expense-summary" aria-live="polite">
+          <label for="exp-filter">Filter by category</label>
+          <select id="exp-filter" name="category-filter">
+            <option value="all">All categories</option>
+          </select>
+          <p class="expense-total">
+            <strong>Total:</strong> <span id="exp-total" aria-live="polite">0</span>
+          </p>
+        </div>
+        <div class="expense-table-wrapper">
+          <table class="expense-table" aria-describedby="exp-total">
+            <caption class="visually-hidden">Recorded expenses</caption>
+            <thead>
+              <tr>
+                <th scope="col">Amount</th>
+                <th scope="col">Category</th>
+                <th scope="col">Month</th>
+              </tr>
+            </thead>
+            <tbody id="exp-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="todo-app" class="section-card todo-app" aria-labelledby="todo-heading">
+        <h2 id="todo-heading">To‑Do</h2>
+        <div class="todo-controls" role="group" aria-label="Add a task">
           <label class="visually-hidden" for="todo-input">Add a to‑do</label>
           <input
             id="todo-input"
             type="text"
             placeholder="What needs to be done?"
             autocomplete="off"
+            aria-describedby="todo-helper"
           />
           <input id="todo-due" type="date" aria-label="Due date" />
           <label for="todo-high" class="todo-high-label"
             ><input id="todo-high" type="checkbox" /> High priority</label
           >
-          <button id="todo-add" type="button">Add</button>
+          <button id="todo-add" type="button">Add task</button>
         </div>
-        <p id="todo-error" role="alert" aria-live="polite"></p>
-        <div class="todo-filters">
+        <p id="todo-helper" class="visually-hidden">Due date is optional; high priority helps sorting.</p>
+        <p id="todo-error" role="alert" aria-live="assertive" tabindex="-1"></p>
+        <div class="todo-filters" role="group" aria-label="Filter tasks">
           <label><input id="filter-today" type="checkbox" /> Due today</label>
           <label><input id="filter-high" type="checkbox" /> High priority</label>
         </div>
-        <ul id="todo-list" class="todo-list"></ul>
+        <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
+      </section>
+
+      <section id="stopwatch-app" class="section-card stopwatch-app" aria-labelledby="stopwatch-heading">
+        <h2 id="stopwatch-heading">Stopwatch</h2>
+        <div class="stopwatch" role="group" aria-label="Stopwatch controls">
+          <output id="sw-time" class="stopwatch__time" aria-live="polite">00:00.000</output>
+          <p id="sw-error" class="stopwatch__error" role="alert" aria-live="assertive" tabindex="-1"></p>
+          <div class="stopwatch__controls">
+            <button id="sw-start" type="button">Start</button>
+            <button id="sw-stop" type="button">Stop</button>
+            <button id="sw-reset" type="button">Reset</button>
+            <button id="sw-lap" type="button">Lap</button>
+            <button id="sw-export" type="button">Export CSV</button>
+          </div>
+        </div>
+        <ul id="sw-laps" class="stopwatch__laps" aria-label="Recorded laps"></ul>
       </section>
     </div>
     <script type="module" src="/src/main.js"></script>
     <script type="module">
       import { initTodoUI } from '/src/ui-todo/index.js';
+      import { initStopwatchUI } from '/src/ui-stopwatch/index.js';
+
       initTodoUI();
+      initStopwatchUI();
     </script>
   </body>
 </html>

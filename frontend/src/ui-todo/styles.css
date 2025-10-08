@@ -6,15 +6,55 @@
 }
 .todo-controls {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   align-items: center;
 }
+
+.todo-controls input[type='text'],
+.todo-controls input[type='date'] {
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 15, 15, 0.6);
+  color: inherit;
+}
+
 .todo-high-label {
   display: inline-flex;
   gap: 0.4rem;
   align-items: center;
 }
+
 .todo-list {
-  list-style: disc;
-  padding-left: 1.25rem;
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.85rem;
+  background: rgba(15, 15, 15, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.todo-item__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.todo-item__actions {
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.todo-item__actions button {
+  padding: 0.45rem 0.9rem;
 }

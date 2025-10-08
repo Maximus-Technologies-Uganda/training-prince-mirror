@@ -1,8 +1,44 @@
 .stopwatch {
   display: grid;
+  gap: 1rem;
+}
+.stopwatch__time {
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+.stopwatch__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.stopwatch__laps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
   gap: 0.5rem;
 }
-.stopwatch__time { font-weight: bold; }
-.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.stopwatch__laps li {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 15, 15, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.stopwatch__error {
+  min-height: 1.25rem;
+  color: #f87171;
+  font-weight: 600;
+  text-align: center;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
 
 

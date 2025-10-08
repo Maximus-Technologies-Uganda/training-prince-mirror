@@ -20,6 +20,10 @@ export function addItem(state, text, opts = {}, clock) {
   const dueDate = opts?.dueDate || null;
   const highPriority = Boolean(opts?.highPriority);
 
+  if (!normalized) {
+    return { state, error: 'Task text is required.' };
+  }
+
   const duplicate = state.items.some((t) => {
     const sameText = normalizeText(t.text) === normalized;
     const sameDue = (t.dueDate || null) === (dueDate || null);
@@ -65,6 +69,21 @@ export function filterDueToday(state, clock) {
   return state.items.filter((t) => t.dueDate === today);
 }
 
+export function filterHighPriority(state) {
+  return state.items.filter((t) => t.highPriority === true);
+}
+
+export function getVisibleItems(state, filters, clock) {
+  let visible = state.items;
+  if (filters.today) {
+    visible = filterDueToday({ items: visible }, clock);
+  }
+  if (filters.high) {
+    visible = visible.filter((t) => t.highPriority === true);
+  }
+  return visible;
+}
+
 function getElements() {
   return {
     input: document.getElementById('todo-input'),
@@ -78,44 +97,49 @@ function getElements() {
   };
 }
 
-function renderList(state, elements, clock) {
-  const all = state.items;
-  const today = elements.filterToday?.checked;
-  const high = elements.filterHigh?.checked;
-  let visible = all;
-  if (today) {
-    visible = filterDueToday({ items: visible }, clock);
-  }
-  if (high) {
-    visible = visible.filter((t) => t.highPriority === true);
-  }
+function renderList(state, elements, clock, setError) {
+  const filters = {
+    today: elements.filterToday?.checked,
+    high: elements.filterHigh?.checked,
+  };
+  const visible = getVisibleItems(state, filters, clock);
   elements.list.innerHTML = '';
   visible.forEach((t, index) => {
     const li = document.createElement('li');
-    li.textContent = t.text;
+    li.className = 'todo-item';
+    const textContainer = document.createElement('span');
+    textContainer.className = 'todo-item__text';
+    textContainer.textContent = t.text;
     const toggle = document.createElement('button');
     toggle.textContent = t.completed ? 'Untoggle' : 'Toggle';
+    toggle.setAttribute('aria-label', `${t.completed ? 'Mark incomplete' : 'Mark complete'}: ${t.text}`);
     toggle.addEventListener('click', () => {
       const r = toggleItem(state, index);
       if (r.error) {
-        elements.error.textContent = r.error;
+        setError(r.error);
         return;
       }
       Object.assign(state, r.state);
-      renderList(state, elements, clock);
+      setError('');
+      renderList(state, elements, clock, setError);
     });
     const remove = document.createElement('button');
     remove.textContent = 'Remove';
+    remove.setAttribute('aria-label', `Remove task: ${t.text}`);
     remove.addEventListener('click', () => {
       const r = removeItem(state, index);
       if (r.error) {
-        elements.error.textContent = r.error;
+        setError(r.error);
         return;
       }
       Object.assign(state, r.state);
-      renderList(state, elements, clock);
+      setError('');
+      renderList(state, elements, clock, setError);
     });
-    li.append(' ', toggle, ' ', remove);
+    const actions = document.createElement('span');
+    actions.className = 'todo-item__actions';
+    actions.append(toggle, remove);
+    li.append(textContainer, actions);
     elements.list.appendChild(li);
   });
 }
@@ -126,27 +150,40 @@ export function initTodoUI() {
   const clock = createClock('Africa/Kampala');
   const state = createUiState();
 
-  renderList(state, elements, clock);
+  const setError = (message) => {
+    if (!elements.error) return;
+    elements.error.textContent = message ?? '';
+    if (message) {
+      elements.error.focus?.();
+    }
+  };
+
+  renderList(state, elements, clock, setError);
 
   elements.addBtn?.addEventListener('click', () => {
-    elements.error.textContent = '';
+    setError('');
     const text = elements.input.value;
     const dueDate = elements.due.value || null;
     const highPriority = Boolean(elements.high?.checked);
     if (dueDate && !/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) {
-      elements.error.textContent = 'Invalid date; expected YYYY-MM-DD.';
+      setError('Invalid date; expected YYYY-MM-DD.');
       return;
     }
     const r = addItem(state, text, { dueDate, highPriority }, clock);
     if (r.error) {
-      elements.error.textContent = r.error;
+      setError(r.error);
       return;
     }
     Object.assign(state, r.state);
     elements.input.value = '';
-    renderList(state, elements, clock);
+    renderList(state, elements, clock, setError);
+    elements.input.focus();
   });
 
-  elements.filterToday?.addEventListener('change', () => renderList(state, elements, clock));
-  elements.filterHigh?.addEventListener('change', () => renderList(state, elements, clock));
+  elements.filterToday?.addEventListener('change', () => {
+    renderList(state, elements, clock, setError);
+  });
+  elements.filterHigh?.addEventListener('change', () => {
+    renderList(state, elements, clock, setError);
+  });
 }
