@@ -1,5 +1,6 @@
 import './style.css';
 import { defaultQuotes, pickRandom, filterByAuthor } from '../../src/quote/core.js';
+import { createExpenseUi } from './ui-expense/index.js';
 
 const state = {
   quotes: defaultQuotes,
@@ -83,8 +84,19 @@ function initQuoteUI() {
   });
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initQuoteUI);
-} else {
+function initExpenseUI() {
+  const mount = document.getElementById('expense-app');
+  if (!mount) return;
+  createExpenseUi(mount);
+}
+
+function initUIs() {
   initQuoteUI();
+  initExpenseUI();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initUIs);
+} else {
+  initUIs();
 }
