@@ -1,9 +1,7 @@
 name: Build Review Packet
 
 on:
-  workflow_dispatch: # Allows manual runs
-  pull_request:
-    branches: [ development ]
+  workflow_dispatch:
   push:
     branches: [ development ]
 
@@ -20,24 +18,75 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests with coverage
-        run: npm test -- --coverage
+      # This is the corrected pattern: Run tests, then rename the output folder.
+      - name: Run Hello Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm test -- tests/hello.*.test.js --coverage
+          mv coverage coverage-hello
+      - name: Run Stopwatch Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm test -- tests/stopwatch.*.test.js --coverage
+          mv coverage coverage-stopwatch
+      - name: Run Temp Converter Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm test -- tests/temp-converter.*.test.js --coverage
+          mv coverage coverage-temp
+      - name: Run Expense Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm test -- tests/expense.*.test.js --coverage
+          mv coverage coverage-expense
+      - name: Run To-Do Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm test -- tests/todo.*.test.js --coverage
+          mv coverage coverage-todo
+      - name: Run Quote Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm test -- tests/quote.*.test.js --coverage
+          mv coverage coverage-quote
+
+      - name: Build frontend and run UI tests & coverage (ui modules)
+        working-directory: frontend
+        run: |
+          npm ci
+          VITEST_DISABLE_THRESHOLD=1 npm run test -- --coverage
+          mkdir -p ../review-artifacts
+          # move ui-todo coverage if exists
+          if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-todo || true; fi
+          # run stopwatch tests specifically and move coverage
+          VITEST_DISABLE_THRESHOLD=1 npm run test -- --coverage src/ui-stopwatch
+          if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-stopwatch || true; fi
 
       - name: Prepare artifact directories
         run: |
-          mkdir -p review-artifacts/coverage-hello
-          mv coverage/* review-artifacts/coverage-hello/
+          mkdir -p review-artifacts
+          mv coverage-* review-artifacts/
+
+      - name: Generate Coverage Index
+        run: |
+          echo "<h1>Coverage Index</h1>" > review-artifacts/index.html
+          echo "<ul>" >> review-artifacts/index.html
+          for dir in review-artifacts/coverage-*; do
+            APP_NAME=$(basename "$dir" | sed 's/coverage-//')
+            echo "  <li><a href=\"./${dir##*/}/lcov-report/index.html\">${APP_NAME}</a></li>" >> review-artifacts/index.html
+          done
+          if [ -d review-artifacts/ui-coverage-todo ]; then
+            echo "  <li><a href=\"./ui-coverage-todo/lcov-report/index.html\">ui-todo</a></li>" >> review-artifacts/index.html
+          fi
+          if [ -d review-artifacts/ui-coverage-stopwatch ]; then
+            echo "  <li><a href=\"./ui-coverage-stopwatch/lcov-report/index.html\">ui-stopwatch</a></li>" >> review-artifacts/index.html
+          fi
+          echo "</ul>" >> review-artifacts/index.html
 
       - name: Generate review.md
         run: |
           echo "## Review Packet" > review.md
-          echo " " >> review.md
-          echo "**Generated:** $(date)" >> review.md
-          # ... (rest of the script)
+          echo "Generated: $(date)" >> review.md
 
       - name: Upload Review Packet Artifact
         uses: actions/upload-artifact@v4

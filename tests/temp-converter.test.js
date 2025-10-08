@@ -11,10 +11,10 @@ describe('temperature converter logic', () => {
   });
   it('should throw an error for invalid or identical units', () => {
     // Test for an unknown unit like Kelvin
-    expect(() => convertTemperature(100, 'C', 'K')).toThrow('Invalid units provided for conversion.');
+    expect(() => convertTemperature(100, 'C', 'K')).toThrow('Invalid units. Must be C or F, got: C and K');
   
     // Test for identical units
-    expect(() => convertTemperature(100, 'F', 'F')).toThrow('Invalid units provided for conversion.');
+    expect(() => convertTemperature(100, 'F', 'F')).toThrow('Cannot convert from F to F (identical units)');
   });
   it('should correctly convert Fahrenheit to Celsius', () => {
     // Test freezing point
