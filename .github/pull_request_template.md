@@ -12,6 +12,9 @@ npm test -- --coverage
 ### Spec
 - Spec: <paste link to Linear doc or external spec>
 
+#### Acceptance Checklist (Spec)
+- [ ] All acceptance boxes in linked spec are checked
+
 | App | Statements | Branches | Functions | Lines |
 |-----|------------|----------|-----------|-------|
 | hello |  |  |  |  |

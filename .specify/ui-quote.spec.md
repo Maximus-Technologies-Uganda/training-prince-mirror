@@ -1,3 +1,9 @@
+# UI Quote Spec
+
+## Acceptance
+- [ ] Quote UI displays a random quote on load
+- [ ] Filter by author input shows only that author’s quotes
+- [ ] Coverage ≥ 40% statements (unit)
 # UI Quote 
 Why
 User wants to view a random quote and optionally filter by author.
