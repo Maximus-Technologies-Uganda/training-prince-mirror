@@ -65,7 +65,8 @@ export function getVisibleEntries(state) {
 
 export function getCategories(entries) {
   const uniq = new Set(entries.map((entry) => entry.category));
-  return Array.from(uniq).sort((a, b) => a.localeCompare(b));
+  const cats = Array.from(uniq).sort((a, b) => a.localeCompare(b));
+  return cats;
 }
 
 export function formatAmount(amount) {
