@@ -84,6 +84,7 @@ describe('ui-expense DOM behaviour', () => {
           <button type="submit">Add</button>
         </form>
         <p id="exp-error"></p>
+        <p id="exp-empty"></p>
         <select id="exp-filter"><option value="all">All categories</option></select>
         <p id="exp-total"></p>
         <table><tbody id="exp-rows"></tbody></table>
@@ -122,6 +123,15 @@ describe('ui-expense DOM behaviour', () => {
 
     expect(document.getElementById('exp-error').textContent).toMatch(/greater than zero/i);
     expect(document.querySelectorAll('#exp-rows tr')).toHaveLength(0);
+  });
+
+  it('shows empty state and total 0 when there are no entries', () => {
+    const root = document.getElementById('expense-app');
+    createExpenseUi(root);
+    const rows = document.querySelectorAll('#exp-rows tr');
+    expect(rows).toHaveLength(0);
+    expect(document.getElementById('exp-total').textContent).toMatch(/\$0\.00/);
+    expect(document.getElementById('exp-empty').textContent).toMatch(/No expenses found/i);
   });
 });
 
