@@ -33,6 +33,8 @@ const apiKey = requireEnv('LINEAR_API_KEY');
 const teamName = requireEnv('LINEAR_TEAM_NAME');
 const projectName = requireEnv('LINEAR_PROJECT_NAME');
 const parentIdentifier = requireEnv('LINEAR_PARENT_IDENTIFIER'); // e.g., PRI-25
+const targetStateName = (process.env.LINEAR_TARGET_STATE_NAME && process.env.LINEAR_TARGET_STATE_NAME.trim()) || 'In Progress';
+const updateExisting = ((process.env.LINEAR_UPDATE_EXISTING || 'true').toLowerCase() === 'true');
 
 function graphqlRequest(query, variables) {
   return new Promise((resolve, reject) => {
@@ -135,6 +137,17 @@ async function getIssueIdByIdentifier(identifier) {
   return node;
 }
 
+async function getTeamStatesById(teamId) {
+  const query = `
+    query($teamId: String!) {
+      team(id: $teamId) { id states(first: 100) { nodes { id name } } }
+    }
+  `;
+  const data = await graphqlRequest(query, { teamId });
+  const nodes = data?.team?.states?.nodes ?? [];
+  return nodes;
+}
+
 async function createIssue({ teamId, projectId, parentId, title }) {
   const mutation = `
     mutation($input: IssueCreateInput!) {
@@ -160,7 +173,7 @@ async function createIssue({ teamId, projectId, parentId, title }) {
   return res.issue;
 }
 
-async function issueExistsUnderParent(parentId, title) {
+async function findIssueUnderParentByTitle(parentId, title) {
   const query = `
     query($parentId: ID!, $title: String!) {
       issues(first: 1, filter: { parent: { id: { eq: $parentId } }, title: { eq: $title } }) {
@@ -170,7 +183,18 @@ async function issueExistsUnderParent(parentId, title) {
   `;
   const data = await graphqlRequest(query, { parentId, title });
   const node = data?.issues?.nodes?.[0];
-  return Boolean(node?.id);
+  return node?.id || null;
+}
+
+async function updateIssueState(issueId, stateId) {
+  const mutation = `
+    mutation($id: String!, $stateId: String!) {
+      issueUpdate(id: $id, input: { stateId: $stateId }) { success }
+    }
+  `;
+  const data = await graphqlRequest(mutation, { id: issueId, stateId });
+  const ok = data?.issueUpdate?.success;
+  if (!ok) fail(`Failed to update state for issue ${issueId}`);
 }
 
 function parseTasksFromFile(filePath) {
@@ -239,17 +263,29 @@ function parseTasksFromFile(filePath) {
     const parentId = parentIssue.id;
 
     const created = [];
+    const teamStates = await getTeamStatesById(derivedTeam.id);
+    const targetState = teamStates.find(s => s.name === targetStateName) || teamStates.find(s => (s.name || '').toLowerCase() === targetStateName.toLowerCase());
+    let targetStateId = targetState?.id || null;
+    if (!targetStateId) {
+      console.warn(`Warning: Target state "${targetStateName}" not found on team; skipping state updates.`);
+    }
     for (const t of tasks) {
-      const exists = await issueExistsUnderParent(parentId, t.title);
-      if (exists) { console.log(`Skip existing: ${t.title}`); continue; }
-      const issue = await createIssue({
-        teamId: derivedTeam.id,
-        projectId: project.id,
-        parentId,
-        title: t.title
-      });
+      const existingId = await findIssueUnderParentByTitle(parentId, t.title);
+      if (existingId) {
+        console.log(`Exists: ${t.title}`);
+        if (updateExisting && targetStateId) {
+          await updateIssueState(existingId, targetStateId);
+          console.log(`Updated state -> ${targetStateName}`);
+        }
+        continue;
+      }
+      const issue = await createIssue({ teamId: derivedTeam.id, projectId: project.id, parentId, title: t.title });
       created.push(issue);
       console.log(`Created: ${issue.identifier} -> ${issue.title}`);
+      if (targetStateId) {
+        await updateIssueState(issue.id, targetStateId);
+        console.log(`Set state -> ${targetStateName}`);
+      }
     }
 
     console.log(`Done. Created ${created.length} sub-issues under ${parentIdentifier}.`);
