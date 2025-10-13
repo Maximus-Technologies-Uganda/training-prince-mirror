@@ -17,18 +17,18 @@
 - [x] T009 [P] E2E smoke: page loads; enter 0 C→F shows 32 [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/temp.smoke.spec.ts`]
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T010 Import conversion logic from `src/temp-converter` into UI module; wire auto-convert on change [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.js`]
-- [ ] T011 Implement rounding to 2 dp and trim trailing zeros for display [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.js`]
-- [ ] T012 Implement error handling: identical units and non-numeric → inline error (aria-live assertive); clear result [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.js`]
-- [ ] T013 Implement inputs-cleared behavior → clear error and result (neutral) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.js`]
+- [x] T010 Import conversion logic from `src/temp-converter` into UI module; wire auto-convert on change [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.js`]
+- [x] T011 Implement rounding to 2 dp and trim trailing zeros for display [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.js`]
+- [x] T012 Implement error handling: identical units and non-numeric → inline error (aria-live assertive); clear result [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.js`]
+- [x] T013 Implement inputs-cleared behavior → clear error and result (neutral) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.js`]
 
 ## Phase 3.4: Integration & A11y
-- [ ] T014 Ensure `#temp-result` is aria-live="polite" (or output) and `#temp-error` aria-live="assertive" [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
-- [ ] T015 Labels associated to inputs; default units C→F; keyboard order logical [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
+- [x] T014 Ensure `#temp-result` is aria-live="polite" (or output) and `#temp-error` aria-live="assertive" [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
+- [x] T015 Labels associated to inputs; default units C→F; keyboard order logical [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
 
 ## Phase 3.5: Polish & Coverage
-- [ ] T016 Verify UI coverage ≥40% statements; export lcov HTML into `ui-coverage-temp` [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/vitest.config.js`]
-- [ ] T017 Update quickstart.md if test commands or paths change [Path: `/Users/prnceb/Desktop/WORK/hello-world/specs/008-feat-ui-temp/quickstart.md`]
+- [x] T016 Verify UI coverage ≥40% statements; export lcov HTML into `ui-coverage-temp` [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/vitest.config.js`]
+- [x] T017 Update quickstart.md if test commands or paths change [Path: `/Users/prnceb/Desktop/WORK/hello-world/specs/008-feat-ui-temp/quickstart.md`]
 
 ## Dependencies
 - Tests (T004–T009) before implementation (T010–T013)
