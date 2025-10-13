@@ -2,7 +2,35 @@
 import fs from 'fs';
 import path from 'path';
 
+function getActiveFeatureSpecPath(rootDir) {
+  // Prefer CI-provided branch names first (pull_request uses GITHUB_HEAD_REF)
+  const envBranch = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME;
+  if (envBranch) {
+    const byEnv = path.join(rootDir, 'specs', envBranch, 'spec.md');
+    if (fs.existsSync(byEnv)) return byEnv;
+  }
+  try {
+    // Prefer current git branch name mapping
+    const head = require('child_process').execSync('git rev-parse --abbrev-ref HEAD', { cwd: rootDir }).toString().trim();
+    if (head && head !== 'HEAD') {
+      const candidate = path.join(rootDir, 'specs', head, 'spec.md');
+      if (fs.existsSync(candidate)) return candidate;
+    }
+  } catch (_) {}
+  // Fallback: last created feature
+  try {
+    const metaPath = path.join(rootDir, '.specify/.last-created-feature.json');
+    const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+    if (meta && meta.SPEC_FILE && fs.existsSync(meta.SPEC_FILE)) return meta.SPEC_FILE;
+  } catch (_) {}
+  // Final fallback: none
+  return null;
+}
+
 function findSpecFiles(rootDir) {
+  const targeted = getActiveFeatureSpecPath(rootDir);
+  if (targeted) return [targeted];
+  // fallback to prior behavior scanning all specs
   const specsDir = path.join(rootDir, 'specs');
   if (!fs.existsSync(specsDir)) return [];
   const featureDirs = fs.readdirSync(specsDir).map((d) => path.join(specsDir, d)).filter((p) => fs.statSync(p).isDirectory());
