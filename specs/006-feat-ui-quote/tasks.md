@@ -8,10 +8,10 @@
 - [ ] T002 [P] Validate Playwright base URL config usable via `BASE_URL` env [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/quote.spec.js`]
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
-- [ ] T003 [P] Unit test: initial random quote renders on load [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.test.js`]
-- [ ] T004 [P] Unit test: case-insensitive filter updates to author’s quote [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.test.js`]
-- [ ] T005 [P] Unit test: empty state shows "No quotes found" and disables shuffle [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.test.js`]
-- [ ] T006 [P] E2E smoke: typing author updates displayed quote [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/quote.spec.js`]
+- [x] T003 [P] Unit test: initial random quote renders on load [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.test.js`]
+- [x] T004 [P] Unit test: case-insensitive filter updates to author’s quote [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.test.js`]
+- [x] T005 [P] Unit test: empty state shows "No quotes found" and disables shuffle [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.test.js`]
+- [x] T006 [P] E2E smoke: typing author updates displayed quote [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/quote.spec.js`]
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 - [ ] T007 Import `src/quote/core.js` into UI; render random quote; wire live filter [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.js`]
