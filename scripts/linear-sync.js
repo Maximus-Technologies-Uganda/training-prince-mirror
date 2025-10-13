@@ -288,9 +288,15 @@ function parseTasksFromFile(filePath) {
     };
 
     // Prefer by workflow type if available
-    const startedState = teamStates.find(s => String(s.type || '').toLowerCase() === 'started');
+    const startedStates = teamStates.filter(s => String(s.type || '').toLowerCase() === 'started');
     const completedState = teamStates.find(s => String(s.type || '').toLowerCase() === 'completed');
-    let targetStateId = startedState?.id || findStateId(targetStateName, ['in progress', 'active', 'doing', 'started']);
+
+    // Prefer explicit "In Progress" among started states
+    const inProgressState = startedStates.find(s => byName(s.name) === 'inprogress')
+      || startedStates.find(s => byName(s.name).includes('progress'))
+      || null;
+
+    let targetStateId = inProgressState?.id || findStateId(targetStateName, ['in progress', 'active', 'doing', 'started']);
     let doneStateId = completedState?.id || findStateId(doneStateName, ['done', 'completed', 'complete', 'closed', 'resolved', 'finished']);
 
     console.log('Team states:');
