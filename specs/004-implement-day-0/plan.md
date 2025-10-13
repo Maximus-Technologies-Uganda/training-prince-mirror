@@ -47,11 +47,7 @@ Establish repo hygiene and CI readiness before UI features: move runtime state i
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-Gates per Constitution v1.1.0:
-- Reviewability: Single indexed review-packet (PASS via workflow changes)
-- Test Coverage Mandate: UI threshold ≥40% (SCaffolded; enforcement later) (PASS for scaffold)
-- No Logic Duplication: UI reuses CLI cores (not impacted by this feature) (PASS)
-- PR Craft: Template + checks present (PASS)
+[Gates determined based on constitution file]
 
 ## Project Structure
 
@@ -206,7 +202,7 @@ ios/ or android/
 
 **Phase Status**:
 - [x] Phase 0: Research complete (/plan command)
-- [ ] Phase 1: Design complete (/plan command)
+- [x] Phase 1: Design complete (/plan command)
 - [ ] Phase 2: Task planning complete (/plan command - describe approach only)
 - [ ] Phase 3: Tasks generated (/tasks command)
 - [ ] Phase 4: Implementation complete
