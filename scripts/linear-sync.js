@@ -189,7 +189,7 @@ async function findIssueUnderParentByTitle(parentId, title) {
 
 async function updateIssueState(issueId, stateId) {
   const mutation = `
-    mutation($id: String!, $stateId: String!) {
+    mutation($id: ID!, $stateId: ID!) {
       issueUpdate(id: $id, input: { stateId: $stateId }) { success }
     }
   `;
