@@ -1,5 +1,5 @@
 import './styles.css';
-import { addExpense as coreAddExpense, calculateTotal } from './core.js';
+import { addExpense as coreAddExpense, calculateTotal } from '../../../src/expense/core.js';
 
 export function createExpenseState() {
   return { entries: [], filter: 'all' };
@@ -65,7 +65,8 @@ export function getVisibleEntries(state) {
 
 export function getCategories(entries) {
   const uniq = new Set(entries.map((entry) => entry.category));
-  return Array.from(uniq).sort((a, b) => a.localeCompare(b));
+  const cats = Array.from(uniq).sort((a, b) => a.localeCompare(b));
+  return cats;
 }
 
 export function formatAmount(amount) {
@@ -81,10 +82,16 @@ export function formatMonth(month) {
 
 export function calculateTotalForFilter(entries, filter) {
   if (!entries.length) return 0;
-  if (!filter || filter === 'all') {
+  if (!filter || (typeof filter === 'string' && filter === 'all')) {
     return calculateTotal(entries, null);
   }
-  return calculateTotal(entries, { category: filter });
+  if (typeof filter === 'string') {
+    return calculateTotal(entries, { category: filter });
+  }
+  const f = {};
+  if (filter.category) f.category = filter.category;
+  if (filter.month != null) f.month = filter.month;
+  return calculateTotal(entries, Object.keys(f).length ? f : null);
 }
 
 function getElements(root) {
@@ -94,6 +101,7 @@ function getElements(root) {
     category: root.querySelector('#exp-category'),
     month: root.querySelector('#exp-month'),
     error: root.querySelector('#exp-error'),
+    empty: root.querySelector('#exp-empty'),
     filter: root.querySelector('#exp-filter'),
     total: root.querySelector('#exp-total'),
     rows: root.querySelector('#exp-rows'),
@@ -119,6 +127,10 @@ function render(state, els) {
     row.append(amountCell, categoryCell, monthCell);
     els.rows.appendChild(row);
   });
+
+  if (els.empty) {
+    els.empty.textContent = visible.length === 0 ? 'No expenses found' : '';
+  }
 
   if (els.total) {
     const total = calculateTotalForFilter(state.entries, state.filter);

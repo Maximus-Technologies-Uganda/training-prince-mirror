@@ -34,6 +34,7 @@ const teamName = requireEnv('LINEAR_TEAM_NAME');
 const projectName = requireEnv('LINEAR_PROJECT_NAME');
 const parentIdentifier = requireEnv('LINEAR_PARENT_IDENTIFIER'); // e.g., PRI-25
 const targetStateName = (process.env.LINEAR_TARGET_STATE_NAME && process.env.LINEAR_TARGET_STATE_NAME.trim()) || 'In Progress';
+const doneStateName = (process.env.LINEAR_DONE_STATE_NAME && process.env.LINEAR_DONE_STATE_NAME.trim()) || 'Done';
 const updateExisting = ((process.env.LINEAR_UPDATE_EXISTING || 'true').toLowerCase() === 'true');
 
 function graphqlRequest(query, variables) {
@@ -188,7 +189,7 @@ async function findIssueUnderParentByTitle(parentId, title) {
 
 async function updateIssueState(issueId, stateId) {
   const mutation = `
-    mutation($id: String!, $stateId: String!) {
+    mutation($id: String!, $stateId: String) {
       issueUpdate(id: $id, input: { stateId: $stateId }) { success }
     }
   `;
@@ -209,16 +210,18 @@ function parseTasksFromFile(filePath) {
       currentCategory = phaseMatch[1].trim();
       continue;
     }
-    const taskMatch = /^-\s*\[[ xX]\]\s*T(\d{3})(.*)$/.exec(line);
+    const taskMatch = /^-\s*\[([ xX])\]\s*T(\d{3})(.*)$/.exec(line);
     if (taskMatch) {
-      const id = taskMatch[1];
-      const rest = taskMatch[2].trim();
+      const box = taskMatch[1];
+      const id = taskMatch[2];
+      const rest = taskMatch[3].trim();
+      const completed = /x/i.test(box);
       const hasParallel = /\[P\]/.test(rest);
       // remove [P] token and any leading separators
       const cleaned = rest.replace(/\[P\]\s*/g, '').trim();
       const description = cleaned.replace(/^:|^-\s*/, '').trim();
       const title = `T${id}: [${currentCategory}]${hasParallel ? ' [P]' : ''}: ${description}`;
-      tasks.push({ id: `T${id}`, title, category: currentCategory, parallel: hasParallel, description });
+      tasks.push({ id: `T${id}`, title, category: currentCategory, parallel: hasParallel, description, completed });
       continue;
     }
 
@@ -228,7 +231,7 @@ function parseTasksFromFile(filePath) {
       const id = enumMatch[1];
       const description = enumMatch[2].trim();
       const title = `T${id}: [${currentCategory || 'Ordered'}]: ${description}`;
-      tasks.push({ id: `T${id}`, title, category: currentCategory || 'Ordered', parallel: false, description });
+      tasks.push({ id: `T${id}`, title, category: currentCategory || 'Ordered', parallel: false, description, completed: false });
       continue;
     }
   }
@@ -264,27 +267,31 @@ function parseTasksFromFile(filePath) {
 
     const created = [];
     const teamStates = await getTeamStatesById(derivedTeam.id);
-    const targetState = teamStates.find(s => s.name === targetStateName) || teamStates.find(s => (s.name || '').toLowerCase() === targetStateName.toLowerCase());
-    let targetStateId = targetState?.id || null;
-    if (!targetStateId) {
-      console.warn(`Warning: Target state "${targetStateName}" not found on team; skipping state updates.`);
-    }
+    const findStateId = (name) => {
+      const s = teamStates.find(ss => ss.name === name) || teamStates.find(ss => (ss.name || '').toLowerCase() === String(name || '').toLowerCase());
+      return s?.id || null;
+    };
+    const targetStateId = findStateId(targetStateName);
+    const doneStateId = findStateId(doneStateName);
+    if (!targetStateId) console.warn(`Warning: Target state "${targetStateName}" not found on team; skipping 'In Progress' updates.`);
+    if (!doneStateId) console.warn(`Warning: Done state "${doneStateName}" not found on team; skipping 'Done' updates.`);
     for (const t of tasks) {
       const existingId = await findIssueUnderParentByTitle(parentId, t.title);
+      const desiredStateId = t.completed ? doneStateId : targetStateId;
       if (existingId) {
         console.log(`Exists: ${t.title}`);
-        if (updateExisting && targetStateId) {
-          await updateIssueState(existingId, targetStateId);
-          console.log(`Updated state -> ${targetStateName}`);
+        if (updateExisting && desiredStateId) {
+          await updateIssueState(existingId, desiredStateId);
+          console.log(`Updated state -> ${t.completed ? doneStateName : targetStateName}`);
         }
         continue;
       }
       const issue = await createIssue({ teamId: derivedTeam.id, projectId: project.id, parentId, title: t.title });
       created.push(issue);
       console.log(`Created: ${issue.identifier} -> ${issue.title}`);
-      if (targetStateId) {
-        await updateIssueState(issue.id, targetStateId);
-        console.log(`Set state -> ${targetStateName}`);
+      if (desiredStateId) {
+        await updateIssueState(issue.id, desiredStateId);
+        console.log(`Set state -> ${t.completed ? doneStateName : targetStateName}`);
       }
     }
 

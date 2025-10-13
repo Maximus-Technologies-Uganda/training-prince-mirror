@@ -24,3 +24,5 @@
 - [x] T015: Update `README.md` to add the "How to review me" box.
 - [x] T016: Update `README.md` to add the "Frontend" section placeholder.
 - [x] T017: Stage all changes and perform a final commit with the exact message: `chore(repo): move runtime to /data, ignore; remove stray files`.
+ 
+<!-- sync: trigger Linear status update -->

@@ -11,6 +11,10 @@ on:
 
 jobs:
   sync:
+    # Only run for feature branches (e.g., feature/... or ...-feat-...)
+    if: >-
+      github.ref_type == 'branch' &&
+      (startsWith(github.ref_name, 'feature/') || contains(github.ref_name, '-feat-'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

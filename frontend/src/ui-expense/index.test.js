@@ -51,6 +51,28 @@ describe('ui-expense pure helpers', () => {
   });
 });
 
+describe('ui-expense totals — table-driven filters', () => {
+  const entries = [
+    { amount: 10, category: 'Food', month: 1 },
+    { amount: 20, category: 'Fuel', month: 1 },
+    { amount: 30, category: 'Food', month: 2 },
+    { amount: 40, category: 'Travel', month: 2 },
+  ];
+
+  const cases = [
+    { name: 'month only', filter: { month: 1 }, expected: 30 },
+    { name: 'category only', filter: { category: 'Food' }, expected: 40 },
+    { name: 'both filters', filter: { month: 1, category: 'Food' }, expected: 10 },
+    { name: 'no filters', filter: null, expected: 100 },
+  ];
+
+  for (const c of cases) {
+    it(`calculates total for ${c.name}`, () => {
+      expect(calculateTotalForFilter(entries, c.filter)).toBe(c.expected);
+    });
+  }
+});
+
 describe('ui-expense DOM behaviour', () => {
   beforeEach(() => {
     document.body.innerHTML = `
@@ -62,6 +84,7 @@ describe('ui-expense DOM behaviour', () => {
           <button type="submit">Add</button>
         </form>
         <p id="exp-error"></p>
+        <p id="exp-empty"></p>
         <select id="exp-filter"><option value="all">All categories</option></select>
         <p id="exp-total"></p>
         <table><tbody id="exp-rows"></tbody></table>
@@ -100,6 +123,15 @@ describe('ui-expense DOM behaviour', () => {
 
     expect(document.getElementById('exp-error').textContent).toMatch(/greater than zero/i);
     expect(document.querySelectorAll('#exp-rows tr')).toHaveLength(0);
+  });
+
+  it('shows empty state and total 0 when there are no entries', () => {
+    const root = document.getElementById('expense-app');
+    createExpenseUi(root);
+    const rows = document.querySelectorAll('#exp-rows tr');
+    expect(rows).toHaveLength(0);
+    expect(document.getElementById('exp-total').textContent).toMatch(/\$0\.00/);
+    expect(document.getElementById('exp-empty').textContent).toMatch(/No expenses found/i);
   });
 });
 
