@@ -292,6 +292,13 @@ function parseTasksFromFile(filePath) {
     const completedState = teamStates.find(s => String(s.type || '').toLowerCase() === 'completed');
     let targetStateId = startedState?.id || findStateId(targetStateName, ['in progress', 'active', 'doing', 'started']);
     let doneStateId = completedState?.id || findStateId(doneStateName, ['done', 'completed', 'complete', 'closed', 'resolved', 'finished']);
+
+    console.log('Team states:');
+    for (const s of teamStates) {
+      console.log(`- ${s.name} (type=${s.type || 'n/a'}, id=${s.id})`);
+    }
+    console.log(`Selected target(In Progress) stateId=${targetStateId || 'null'}`);
+    console.log(`Selected done stateId=${doneStateId || 'null'}`);
     if (!targetStateId) console.warn(`Warning: Target state "${targetStateName}" not found on team; skipping 'In Progress' updates.`);
     if (!doneStateId) console.warn(`Warning: Done state "${doneStateName}" not found on team; skipping 'Done' updates.`);
     const existingIssues = await listIssuesUnderParent(parentId);
