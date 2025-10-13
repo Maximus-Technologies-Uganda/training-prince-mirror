@@ -52,6 +52,17 @@ describe('Quote UI interactions', () => {
     vi.restoreAllMocks();
   });
 
+  it('renders a random quote on load (seeded)', async () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    await loadQuoteUi();
+
+    const quoteAuthor = document.getElementById('quote-author');
+    const quoteText = document.getElementById('quote-text');
+
+    expect(quoteAuthor.textContent).toBe('Franklin D. Roosevelt');
+    expect(quoteText.textContent).toBe('The only limit to our realization of tomorrow is our doubts of today.');
+  });
+
   it('displays a quote by the filtered author', async () => {
     vi.spyOn(Math, 'random').mockReturnValue(0);
     await loadQuoteUi();
@@ -79,7 +90,7 @@ describe('Quote UI interactions', () => {
     filterInput.value = 'unknown person';
     filterInput.dispatchEvent(new Event('input', { bubbles: true }));
 
-    expect(quoteText.textContent).toBe('No quotes found. Try a different author.');
+    expect(quoteText.textContent).toBe('No quotes found');
     expect(quoteAuthor.textContent).toBe('');
     expect(shuffleButton.disabled).toBe(true);
   });
