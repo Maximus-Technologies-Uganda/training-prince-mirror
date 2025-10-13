@@ -42,11 +42,18 @@ function findSpecFiles(rootDir) {
   return specFiles;
 }
 
+function parseStatus(text) {
+  // Match lines like: **Status**: Draft / Ready
+  const m = /\*\*Status\*\*:\s*([^\n]+)/i.exec(text);
+  return (m?.[1] || '').trim().toLowerCase();
+}
+
 function lintSpec(filePath) {
   const text = fs.readFileSync(filePath, 'utf8');
   const unchecked = (text.match(/\[ \]/g) || []).length;
   const hasChecklist = /Review & Acceptance Checklist/i.test(text);
-  return { filePath, unchecked, hasChecklist };
+  const status = parseStatus(text); // 'draft' | 'ready' | etc.
+  return { filePath, unchecked, hasChecklist, status };
 }
 
 function main() {
@@ -54,15 +61,20 @@ function main() {
   const specFiles = findSpecFiles(root);
   let failures = 0;
   for (const file of specFiles) {
-    const { unchecked, hasChecklist } = lintSpec(file);
+    const { unchecked, hasChecklist, status } = lintSpec(file);
     if (!hasChecklist) {
       console.error(`Spec missing checklist: ${file}`);
       failures++;
       continue;
     }
+    const isReady = status === 'ready';
     if (unchecked > 0) {
-      console.error(`Unchecked acceptance boxes in ${file}: ${unchecked}`);
-      failures++;
+      if (isReady) {
+        console.error(`Unchecked acceptance boxes in ${file}: ${unchecked}`);
+        failures++;
+      } else {
+        console.log(`WARN (non-blocking): ${file} has ${unchecked} unchecked boxes but status='${status || 'unknown'}'.`);
+      }
     } else {
       console.log(`OK: ${file}`);
     }

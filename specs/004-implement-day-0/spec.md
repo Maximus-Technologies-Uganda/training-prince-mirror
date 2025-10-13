@@ -2,7 +2,7 @@
 
 **Feature Branch**: `004-implement-day-0`  
 **Created**: 2025-10-10  
-**Status**: Draft  
+**Status**: Ready  
 **Input**: User description: "Implement Day 0 Blockers to prepare the repository for Week 3 UI development..."
 
 ## Execution Flow (main)
@@ -52,6 +52,17 @@ When creating this spec from a user prompt:
 
 ---
 
+## Clarifications
+
+### Session 2025-10-10
+- Q: Should spec-lint fail the PR if any acceptance boxes are unchecked across all `specs/*/spec.md` files? → A: Only fail for the active feature’s spec.
+- Q: Confirm the CI artifact and backend app set used for the coverage index. → A: Artifact is `review-packet`; apps: hello, stopwatch, temp-converter, expense, todo, quote.
+- Q: UI coverage directory naming for future reports: confirm path schema. → A: `review-artifacts/ui-coverage-<app>/lcov-report/`.
+- Q: Which UI modules are in scope for initial coverage scaffolding in CI? → A: quote, expense, temp, todo, stopwatch.
+- Q: README “How to review me” scope: confirm mention of where to find the artifact. → A: Only mention PR runs.
+
+---
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### Primary User Story
@@ -73,13 +84,13 @@ As a reviewer and CI operator, I need a clean, consistent repository with standa
 
 ### Functional Requirements
 - **FR-001**: CI MUST upload a single artifact named `review-packet`.
-- **FR-002**: Artifact MUST include six backend coverage folders under `review-artifacts/coverage-<app>/lcov-report/`.
+- **FR-002**: Artifact MUST include six backend coverage folders under `review-artifacts/coverage-<app>/lcov-report/` (apps: `hello`, `stopwatch`, `temp-converter`, `expense`, `todo`, `quote`).
 - **FR-003**: Index page `review-artifacts/index.html` MUST link to each of the six reports.
-- **FR-004**: UI coverage directories MUST be placed at `review-artifacts/ui-coverage-<app>/lcov-report/` when present.
-- **FR-005**: README MUST include "How to review me" and a placeholder "Frontend" section.
+- **FR-004**: UI coverage directories MUST be placed at `review-artifacts/ui-coverage-<app>/lcov-report/` when present (UIs in scope: `quote`, `expense`, `temp`, `todo`, `stopwatch`).
+- **FR-005**: README MUST include "How to review me" (mention PR runs only) and a placeholder "Frontend" section.
 - **FR-006**: Runtime state MUST be stored under `/data` and `/data` MUST be git-ignored.
 - **FR-007**: Repo MUST include `/.specify/` directory with UI spec stubs.
-- **FR-008**: A `spec:lint` script MUST fail CI when acceptance boxes are unchecked.
+- **FR-008**: A `spec:lint` script MUST fail CI when acceptance boxes are unchecked in the active feature’s spec.
 
 *Example of marking unclear requirements:*
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
