@@ -2,7 +2,7 @@
 
 **Feature Branch**: `004-implement-day-0`  
 **Created**: 2025-10-10  
-**Status**: Ready  
+**Status**: Draft  
 **Input**: User description: "Implement Day 0 Blockers to prepare the repository for Week 3 UI development..."
 
 ## Execution Flow (main)
