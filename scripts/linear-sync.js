@@ -267,12 +267,24 @@ function parseTasksFromFile(filePath) {
 
     const created = [];
     const teamStates = await getTeamStatesById(derivedTeam.id);
-    const findStateId = (name) => {
-      const s = teamStates.find(ss => ss.name === name) || teamStates.find(ss => (ss.name || '').toLowerCase() === String(name || '').toLowerCase());
-      return s?.id || null;
+    const byName = (n) => String(n || '').toLowerCase();
+    const findStateId = (preferredName, synonyms = []) => {
+      const lowerPreferred = byName(preferredName);
+      let s = teamStates.find(ss => byName(ss.name) === lowerPreferred);
+      if (s) return s.id || null;
+      for (const syn of synonyms) {
+        const lowerSyn = byName(syn);
+        s = teamStates.find(ss => {
+          const ln = byName(ss.name);
+          return ln === lowerSyn || ln.includes(lowerSyn);
+        });
+        if (s) return s.id || null;
+      }
+      return null;
     };
-    const targetStateId = findStateId(targetStateName);
-    const doneStateId = findStateId(doneStateName);
+
+    const targetStateId = findStateId(targetStateName, ['in progress', 'active', 'doing', 'started']);
+    const doneStateId = findStateId(doneStateName, ['done', 'completed', 'complete', 'closed', 'resolved', 'finished']);
     if (!targetStateId) console.warn(`Warning: Target state "${targetStateName}" not found on team; skipping 'In Progress' updates.`);
     if (!doneStateId) console.warn(`Warning: Done state "${doneStateName}" not found on team; skipping 'Done' updates.`);
     for (const t of tasks) {
