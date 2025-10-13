@@ -2,7 +2,7 @@
 
 **Feature Branch**: `008-feat-ui-temp`  
 **Created**: 2025-10-13  
-**Status**: Draft  
+**Status**: Ready  
 **Input**: User description: "feat(ui-temp): Implement the Temperature Converter UI\n\n**Goal:**\nBuild a UI for the temperature converter that allows users to input a value and select units to convert between Celsius and Fahrenheit.\n\n**Functional Requirements:**\n- The UI must have an input field for a numeric value.\n- It must have controls (e.g., dropdowns) to select the \"from\" unit and the \"to\" unit (Celsius/Fahrenheit).\n- The UI must display the rounded result (1-2 decimal places).\n- All conversion logic must be reused from the existing backend `temp-converter` core module. No business logic should be duplicated.\n- The UI must handle and display clear error states for invalid inputs (e.g., non-numeric values) and invalid operations (e.g., converting a unit to itself).\n\n**Testing Requirements:**\n- **Vitest (Unit Tests):** Tests must cover successful conversions (C→F, F→C), the identical-units error case, and the non-numeric input error case.\n- **Playwright (E2E Smoke Test):** A smoke test must verify that the page loads correctly and that it successfully converts a sample value.\n\n**Definition of Done:**
 - A pull request is submitted that links to the `/.specify/ui-temp.spec.md` file.
 - The `review-packet` is green, and the UI statement coverage for the Temp module is ≥40%."
@@ -26,7 +26,7 @@ As a user, I want to enter a temperature value, select source and target units (
 2. Given the page is loaded, When I enter 32 and choose from "Fahrenheit" to "Celsius", Then I see the result 0 (rounded to 2 dp; trailing zeros trimmed).
 3. Given the page is loaded, When I select the same unit for both from and to, Then an inline error is shown and announced (aria-live="assertive"); the result area is cleared (no value).
 4. Given the page is loaded, When I enter a non-numeric value (e.g., "abc"), Then an inline error is shown and announced (aria-live="assertive"); the result area is cleared (no value).
-5. Given a valid value and unit selection, When I change the value or either unit, Then the displayed result updates immediately (auto-convert) and is rounded to 1–2 decimals.
+5. Given a valid value and unit selection, When I change the value or either unit, Then the displayed result updates immediately (auto-convert) and is rounded to 2 dp; trailing zeros are trimmed.
 6. Given the page is loaded, Then the default units are From "Celsius" and To "Fahrenheit".
 7. Given inputs are cleared, Then any prior errors are cleared and the result area is empty (neutral state).
 
@@ -56,17 +56,17 @@ As a user, I want to enter a temperature value, select source and target units (
 ## Review & Acceptance Checklist
 
 ### Content Quality
-- [ ] No implementation details (languages, frameworks, APIs)
-- [ ] Focused on user value and business needs
-- [ ] Written for non-technical stakeholders
-- [ ] All mandatory sections completed
+- [x] No implementation details (languages, frameworks, APIs)
+- [x] Focused on user value and business needs
+- [x] Written for non-technical stakeholders
+- [x] All mandatory sections completed
 
 ### Requirement Completeness
-- [ ] No [NEEDS CLARIFICATION] markers remain
-- [ ] Requirements are testable and unambiguous  
-- [ ] Success criteria are measurable
-- [ ] Scope is clearly bounded
-- [ ] Dependencies and assumptions identified
+- [x] No [NEEDS CLARIFICATION] markers remain
+- [x] Requirements are testable and unambiguous  
+- [x] Success criteria are measurable
+- [x] Scope is clearly bounded
+- [x] Dependencies and assumptions identified
 
 ---
 
