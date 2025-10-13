@@ -44,17 +44,30 @@ As a user, I can filter my expenses by month and/or category and see the matchin
 - No expenses match the filters → show an empty table state and total 0.
 - Invalid filter values (not parsable) → ignore and treat as no filter selected.
 
+## Clarifications
+
+### Session 2025-10-13
+- Q: How should “month” be input? → A: Numeric 1–12.
+- Q: Category input style? → A: Dropdown of known categories.
+- Q: Source of “known categories”? → A: Derived from existing expense data.
+- Q: Empty-state behavior when filters match 0 items? → A: Show “No expenses found” and total 0.
+- Q: Table columns minimal set? → A: Date, Category, Amount.
+ - Note: Category dropdown is dynamically populated from the current in-memory expense entries.
+
 ## Requirements (mandatory)
 
 ### Functional Requirements
-- FR-001: The UI MUST provide inputs to filter by month and category.
-- FR-002: The UI MUST display a table of filtered expenses including at least date/month, category, and amount.
+- FR-001: The UI MUST provide inputs to filter by month (numeric 1–12) and category via a dropdown of known categories.
+- FR-006: Category dropdown MUST be populated from the unique set of categories present in the current expense data (deduplicated, sorted alphabetically), and include an "All" option.
+- FR-002: The UI MUST display a table of filtered expenses with columns: Month, Category, Amount.
 - FR-003: The UI MUST show a total amount for the currently filtered results.
+- FR-003a: When 0 items match, the UI MUST display text "No expenses found" and show total 0.
 - FR-004: The UI MUST import and reuse business logic from `src/expense/core.js`; no duplication in the frontend.
 - FR-005: The UI MUST update the table and total reactively when filters change.
 
 ### Key Entities
-- Expense item: { date/month, category, amount }
+- Expense item: { month: integer (1–12), category: string, amount: number }
+- Category options: derived from expense data (unique categories, sorted; includes "All").
 
 ---
 

@@ -1,5 +1,5 @@
 import './styles.css';
-import { addExpense as coreAddExpense, calculateTotal } from './core.js';
+import { addExpense as coreAddExpense, calculateTotal } from '../../../src/expense/core.js';
 
 export function createExpenseState() {
   return { entries: [], filter: 'all' };
