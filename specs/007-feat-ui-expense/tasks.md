@@ -17,8 +17,8 @@
 - [x] T009 Render table with columns: Date, Category, Amount; compute total via core
 
 ## Phase 2.3: Polish & A11y
-- [ ] T010 Labels associated to inputs; keyboard focus order logical
-- [ ] T011 Ensure UI coverage ≥40% statements; export lcov HTML
+- [x] T010 Labels associated to inputs; keyboard focus order logical
+- [x] T011 Ensure UI coverage ≥40% statements; export lcov HTML
 
 ## Validation Checklist
 - [ ] Tests precede implementation (T001–T006 before T007–T009)
