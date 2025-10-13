@@ -24,7 +24,8 @@
     "stopwatch": "node src/stopwatch/index.js",
     "quote": "node src/quote/index.js",
     "linear:sync": "node scripts/linear-sync.js",
-    "spec:lint": "node scripts/spec-lint.js"
+    "spec:lint": "node scripts/spec-lint.js",
+    "test:e2e": "playwright test"
   },
   "repository": {
     "type": "git",
@@ -39,7 +40,8 @@
   "homepage": "https://github.com/Maximus-Technologies-Uganda/training-prince#readme",
   "devDependencies": {
     "@vitest/coverage-v8": "^3.2.4",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "@playwright/test": "^1.48.2"
   },
   "dependencies": {
     "assertion-error": "^2.0.1",

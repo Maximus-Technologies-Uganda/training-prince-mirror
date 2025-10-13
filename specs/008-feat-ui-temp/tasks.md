@@ -4,7 +4,7 @@
 **Prerequisites**: plan.md (required), research.md, data-model.md, contracts/
 
 ## Phase 3.1: Setup
-- [ ] T001 Ensure frontend project has Vite + Vitest + Playwright configured [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/`]
+- [x] T001 Ensure frontend project has Vite + Vitest + Playwright configured [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/`]
 - [ ] T002 [P] Add DOM contracts to `index.html` (ids: `#temp-value`, `#temp-from`, `#temp-to`, `#temp-result`, `#temp-error`) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
 - [ ] T003 [P] Create UI module scaffolding `frontend/src/ui-temp/index.js` + `index.test.js` [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/`]
 
