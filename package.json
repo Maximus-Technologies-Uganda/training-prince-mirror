@@ -25,7 +25,7 @@
     "quote": "node src/quote/index.js",
     "linear:sync": "node scripts/linear-sync.js",
     "spec:lint": "node scripts/spec-lint.js",
-    "test:e2e": "playwright test"
+    "test:e2e": "npx playwright test frontend/e2e"
   },
   "repository": {
     "type": "git",
