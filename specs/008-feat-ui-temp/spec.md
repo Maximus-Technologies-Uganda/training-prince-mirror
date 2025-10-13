@@ -13,6 +13,7 @@
 - Q: How should conversion be triggered? → A: Auto-convert on any input/unit change
 - Q: How should errors be presented? → A: Inline + aria-live assertive; result cleared
 - Q: What rounding/display rule should the result use? → A: Round to 2 dp, trim trailing zeros
+- Q: What should be the default units on first load? → A: From Celsius → To Fahrenheit
 
 ## User Scenarios & Testing (mandatory)
 
@@ -25,6 +26,7 @@ As a user, I want to enter a temperature value, select source and target units (
 3. Given the page is loaded, When I select the same unit for both from and to, Then an inline error is shown and announced (aria-live="assertive"); the result area is cleared (no value).
 4. Given the page is loaded, When I enter a non-numeric value (e.g., "abc"), Then an inline error is shown and announced (aria-live="assertive"); the result area is cleared (no value).
 5. Given a valid value and unit selection, When I change the value or either unit, Then the displayed result updates immediately (auto-convert) and is rounded to 1–2 decimals.
+6. Given the page is loaded, Then the default units are From "Celsius" and To "Fahrenheit".
 
 ### Edge Cases
 - Very large or very small numeric values should still return a converted result without UI breakage.
@@ -40,6 +42,7 @@ As a user, I want to enter a temperature value, select source and target units (
 - **FR-004**: The UI MUST reuse conversion logic from the existing temperature converter core; no business logic is duplicated in the UI.
 - **FR-005**: The UI MUST display inline error messages announced via aria-live="assertive" for non-numeric inputs and identical-unit conversions; the result area is cleared while errors are present.
 - **FR-006**: The UI MUST auto-convert on change (value or unit) with no explicit convert button; the result updates reactively when inputs change.
+- **FR-007**: On first load, defaults MUST be From "Celsius" and To "Fahrenheit".
 
 ### Key Entities (include if feature involves data)
 - **ConversionRequest**: value (number), fromUnit ("C" | "F"), toUnit ("C" | "F").
