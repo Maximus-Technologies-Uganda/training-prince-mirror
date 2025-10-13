@@ -24,7 +24,7 @@
 
 ## Phase 3.5: Polish
 - [x] T012 [P] Ensure UI coverage ≥40% statements; export lcov HTML [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/vitest.config.js`]
-- [ ] T013 [P] Update quickstart if UI details changed [Path: `/Users/prnceb/Desktop/WORK/hello-world/specs/006-feat-ui-quote/quickstart.md`]
+- [x] T013 [P] Update quickstart if UI details changed [Path: `/Users/prnceb/Desktop/WORK/hello-world/specs/006-feat-ui-quote/quickstart.md`]
 
 ## Dependencies
 - Tests (T003–T006) before implementation (T007–T009)
