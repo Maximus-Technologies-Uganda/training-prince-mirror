@@ -14,17 +14,17 @@
 - [x] T006 [P] E2E smoke: typing author updates displayed quote [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/quote.spec.js`]
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T007 Import `src/quote/core.js` into UI; render random quote; wire live filter [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.js`]
-- [ ] T008 Implement empty state: text → "No quotes found"; author blank; disable shuffle [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.js`]
-- [ ] T009 Add repeat-avoidance on shuffle when >1 filtered result [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.js`]
+- [x] T007 Import `src/quote/core.js` into UI; render random quote; wire live filter [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.js`]
+- [x] T008 Implement empty state: text → "No quotes found"; author blank; disable shuffle [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.js`]
+- [x] T009 Add repeat-avoidance on shuffle when >1 filtered result [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.js`]
 
 ## Phase 3.4: Integration & A11y
-- [ ] T010 Ensure label "Author" correctly associated with input `#author-filter` and announced [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
-- [ ] T011 Quote region uses `role="status"` and is aria-live polite [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
+- [x] T010 Ensure label "Author" correctly associated with input `#author-filter` and announced [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
+- [x] T011 Quote region uses `role="status"` and is aria-live polite [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
 
 ## Phase 3.5: Polish
-- [ ] T012 [P] Ensure UI coverage ≥40% statements; export lcov HTML [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/vitest.config.js`]
-- [ ] T013 [P] Update quickstart if UI details changed [Path: `/Users/prnceb/Desktop/WORK/hello-world/specs/006-feat-ui-quote/quickstart.md`]
+- [x] T012 [P] Ensure UI coverage ≥40% statements; export lcov HTML [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/vitest.config.js`]
+- [x] T013 [P] Update quickstart if UI details changed [Path: `/Users/prnceb/Desktop/WORK/hello-world/specs/006-feat-ui-quote/quickstart.md`]
 
 ## Dependencies
 - Tests (T003–T006) before implementation (T007–T009)
