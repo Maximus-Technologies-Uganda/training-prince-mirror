@@ -12,7 +12,7 @@
 - [x] T006 [P] E2E smoke: page loads and totals area visible
 
 ## Phase 2.2: Core Implementation
-- [ ] T007 Import `src/expense/core.js`; derive category options from data (unique, sorted, add "All")
+- [x] T007 Import `src/expense/core.js`; derive category options from data (unique, sorted, add "All")
 - [x] T008 Implement filters UI: month (1–12) + category dropdown; reactive updates
 - [x] T009 Render table with columns: Date, Category, Amount; compute total via core
 
