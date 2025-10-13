@@ -52,3 +52,4 @@ Task: "T009 E2E smoke: page loads; enter 0 C→F shows 32"
 <!-- sync: touch to retrigger linear-tasks-sync -->
 \n
  
+
