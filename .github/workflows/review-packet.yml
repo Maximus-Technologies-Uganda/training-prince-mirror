@@ -91,24 +91,17 @@ jobs:
           mkdir -p review-artifacts
           mv coverage-* review-artifacts/
 
+      - name: Scaffold UI coverage directories
+        run: |
+          mkdir -p review-artifacts/ui-coverage-quote
+          mkdir -p review-artifacts/ui-coverage-expense
+          mkdir -p review-artifacts/ui-coverage-temp
+          mkdir -p review-artifacts/ui-coverage-todo
+          mkdir -p review-artifacts/ui-coverage-stopwatch
+
       - name: Generate Coverage Index
         run: |
-          echo "<h1>Coverage Index</h1>" > review-artifacts/index.html
-          echo "<h2>Backend Coverage</h2>" >> review-artifacts/index.html
-          echo "<ul>" >> review-artifacts/index.html
-          for dir in review-artifacts/coverage-*; do
-            APP_NAME=$(basename "$dir" | sed 's/coverage-//')
-            echo "  <li><a href=\"./${dir##*/}/lcov-report/index.html\">${APP_NAME}</a></li>" >> review-artifacts/index.html
-          done
-          echo "</ul>" >> review-artifacts/index.html
-          echo "<h2>UI Coverage</h2>" >> review-artifacts/index.html
-          echo "<ul>" >> review-artifacts/index.html
-          for dir in review-artifacts/ui-coverage-*; do
-            [ -d "$dir" ] || continue
-            APP_NAME=$(basename "$dir" | sed 's/ui-coverage-//')
-            echo "  <li><a href=\"./${dir##*/}/lcov-report/index.html\">ui-${APP_NAME}</a></li>" >> review-artifacts/index.html
-          done
-          echo "</ul>" >> review-artifacts/index.html
+          node scripts/generate-coverage-index.js
 
       - name: Generate review.md
         run: |

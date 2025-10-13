@@ -24,7 +24,7 @@
     "stopwatch": "node src/stopwatch/index.js",
     "quote": "node src/quote/index.js",
     "linear:sync": "node scripts/linear-sync.js",
-    "spec:lint": "node .specify/scripts/spec-lint.js"
+    "spec:lint": "node scripts/spec-lint.js"
   },
   "repository": {
     "type": "git",

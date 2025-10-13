@@ -12,6 +12,9 @@ npm test -- --coverage
 ### Spec
 - Spec: <paste link to Linear doc or external spec>
 
+### Spec
+- Link: [/.specify/ui-<app>.spec.md](/.specify/ui-<app>.spec.md)
+
 #### Acceptance Checklist (Spec)
 - [ ] All acceptance boxes in linked spec are checked
 
@@ -23,6 +26,12 @@ npm test -- --coverage
 | expense |  |  |  |  |
 | todo |  |  |  |  |
 | quote |  |  |  |  |
+
+### Acceptance
+- [ ] Spec linked and all boxes ticked
+- [ ] Screenshots added
+- [ ] Artifact & Coverage Index verified
+- [ ] Coverage targets met
 
 ### Acceptance checklist
 - [ ] Negative tests added (where applicable)
