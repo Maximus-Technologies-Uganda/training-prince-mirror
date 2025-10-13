@@ -9,12 +9,12 @@
 - [x] T003 [P] Create UI module scaffolding `frontend/src/ui-temp/index.js` + `index.test.js` [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/`]
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
-- [ ] T004 [P] Unit: C→F conversion displays 32 (rounded 2 dp; trim zeros) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
-- [ ] T005 [P] Unit: F→C conversion displays 0 (rounded 2 dp; trim zeros) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
-- [ ] T006 [P] Unit: identical units → inline error (aria-live assertive), result cleared [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
-- [ ] T007 [P] Unit: non-numeric input → inline error (aria-live assertive), result cleared [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
-- [ ] T008 [P] Unit: inputs cleared → neutral state (no error, no result) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
-- [ ] T009 [P] E2E smoke: page loads; enter 0 C→F shows 32 [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/temp.smoke.spec.ts`]
+- [x] T004 [P] Unit: C→F conversion displays 32 (rounded 2 dp; trim zeros) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
+- [x] T005 [P] Unit: F→C conversion displays 0 (rounded 2 dp; trim zeros) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
+- [x] T006 [P] Unit: identical units → inline error (aria-live assertive), result cleared [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
+- [x] T007 [P] Unit: non-numeric input → inline error (aria-live assertive), result cleared [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
+- [x] T008 [P] Unit: inputs cleared → neutral state (no error, no result) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
+- [x] T009 [P] E2E smoke: page loads; enter 0 C→F shows 32 [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/temp.smoke.spec.ts`]
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 - [ ] T010 Import conversion logic from `src/temp-converter` into UI module; wire auto-convert on change [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.js`]
