@@ -18,9 +18,9 @@
 - [x] T011: Verify the `review-packet.yml` workflow generates coverage for all six backend apps.
 - [x] T012: Update the `review-packet.yml` workflow to scaffold UI coverage directories.
 - [x] T013: Update the script that generates `review-artifacts/index.html` to include backend links and a UI section.
-- [ ] T014: Confirm the final artifact is named `review-packet`.
+- [x] T014: Confirm the final artifact is named `review-packet`.
 
 ## Phase 4: Documentation & Final Commit
-- [ ] T015: Update `README.md` to add the "How to review me" box.
-- [ ] T016: Update `README.md` to add the "Frontend" section placeholder.
-- [ ] T017: Stage all changes and perform a final commit with the exact message: `chore(repo): move runtime to /data, ignore; remove stray files`.
+- [x] T015: Update `README.md` to add the "How to review me" box.
+- [x] T016: Update `README.md` to add the "Frontend" section placeholder.
+- [x] T017: Stage all changes and perform a final commit with the exact message: `chore(repo): move runtime to /data, ignore; remove stray files`.
