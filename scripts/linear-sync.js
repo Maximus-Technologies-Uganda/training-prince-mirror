@@ -202,6 +202,21 @@ async function updateIssueState(issueId, stateId) {
   if (!ok) fail(`Failed to update state for issue ${issueId}`);
 }
 
+async function updateIssueTimestamps(issueId, { completed }) {
+  const nowIso = new Date().toISOString();
+  const mutation = `
+    mutation($id: String!, $completedAt: DateTime, $startedAt: DateTime) {
+      issueUpdate(id: $id, input: { completedAt: $completedAt, startedAt: $startedAt }) { success }
+    }
+  `;
+  const variables = completed
+    ? { id: issueId, completedAt: nowIso, startedAt: null }
+    : { id: issueId, completedAt: null, startedAt: nowIso };
+  const data = await graphqlRequest(mutation, variables);
+  const ok = data?.issueUpdate?.success;
+  if (!ok) console.warn(`Warning: Failed to update timestamps for issue ${issueId}`);
+}
+
 function parseTasksFromFile(filePath) {
   const raw = fs.readFileSync(filePath, 'utf8');
   const lines = raw.split(/\r?\n/);
@@ -302,6 +317,8 @@ function parseTasksFromFile(filePath) {
             await updateIssueState(m.id, desiredStateId);
             console.log(`Updated state -> ${t.completed ? doneStateName : targetStateName}`);
           }
+          // Also toggle timestamps to reinforce transitions across custom workflows
+          await updateIssueTimestamps(m.id, { completed: t.completed });
         }
         continue;
       }
@@ -312,6 +329,7 @@ function parseTasksFromFile(filePath) {
         await updateIssueState(issue.id, desiredStateId);
         console.log(`Set state -> ${t.completed ? doneStateName : targetStateName}`);
       }
+      await updateIssueTimestamps(issue.id, { completed: t.completed });
     }
 
     console.log(`Done. Created ${created.length} sub-issues under ${parentIdentifier}.`);
