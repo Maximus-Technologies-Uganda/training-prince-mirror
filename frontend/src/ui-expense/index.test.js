@@ -51,6 +51,28 @@ describe('ui-expense pure helpers', () => {
   });
 });
 
+describe('ui-expense totals — table-driven filters', () => {
+  const entries = [
+    { amount: 10, category: 'Food', month: 1 },
+    { amount: 20, category: 'Fuel', month: 1 },
+    { amount: 30, category: 'Food', month: 2 },
+    { amount: 40, category: 'Travel', month: 2 },
+  ];
+
+  const cases = [
+    { name: 'month only', filter: { month: 1 }, expected: 30 },
+    { name: 'category only', filter: { category: 'Food' }, expected: 40 },
+    { name: 'both filters', filter: { month: 1, category: 'Food' }, expected: 10 },
+    { name: 'no filters', filter: null, expected: 100 },
+  ];
+
+  for (const c of cases) {
+    it(`calculates total for ${c.name}`, () => {
+      expect(calculateTotalForFilter(entries, c.filter)).toBe(c.expected);
+    });
+  }
+});
+
 describe('ui-expense DOM behaviour', () => {
   beforeEach(() => {
     document.body.innerHTML = `
