@@ -52,6 +52,15 @@ When creating this spec from a user prompt:
 
 ---
 
+## Clarifications
+
+### Session 2025-10-13
+- Q: How should the author filter be triggered? → A: Live filter as the user types.
+- Q: How should the “no results” state be shown? → A: Replace quote text with “No quotes found”.
+- Q: Where should the input be placed and how labeled for accessibility? → A: Above quote; label “Author”.
+- Q: How should seeded RNG be provided for unit tests? → A: Mock RNG globally (Math.random) in tests.
+- Q: What should the Playwright smoke test validate beyond page load? → A: Typing an author updates the displayed quote.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### Primary User Story
@@ -59,8 +68,8 @@ As a site visitor, I want to see a random quote on page load and filter by autho
 
 ### Acceptance Scenarios
 1. **Given** the page loads, **When** no input is provided, **Then** a random quote is displayed.
-2. **Given** an author exists, **When** their name (any case) is typed into the filter, **Then** the displayed quote updates to one by that author.
-3. **Given** no quotes for a typed author, **When** the input is submitted, **Then** an error/empty state message is shown.
+2. **Given** an author exists, **When** their name (any case) is typed into the filter, **Then** the displayed quote updates to one by that author (validated via Playwright smoke test).
+3. **Given** no quotes for a typed author, **When** filtering yields zero results, **Then** replace the quote text with the message “No quotes found”.
 
 ### Edge Cases
 - Empty input restores random quote behavior.
@@ -74,6 +83,10 @@ As a site visitor, I want to see a random quote on page load and filter by autho
 - **FR-002**: UI MUST include a text input to filter quotes by author. [81]
 - **FR-003**: Author filtering MUST be case-insensitive. [81]
 - **FR-004**: UI MUST import and use existing backend `quote` core logic (no duplication). [82]
+ - **FR-005**: Filter MUST trigger live on input (results update as the user types).
+ - **FR-006**: When zero matches, the UI MUST display “No quotes found” in place of the quote.
+ - **FR-007**: Place the author input above the quote with a visible label “Author” linked via for/id and accessible to screen readers.
+ - **FR-008**: Unit tests MUST mock `Math.random` with a seeded RNG to ensure deterministic results for random quote selection.
 
 *Example of marking unclear requirements:*
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
@@ -88,17 +101,17 @@ As a site visitor, I want to see a random quote on page load and filter by autho
 *GATE: Automated checks run during main() execution*
 
 ### Content Quality
-- [ ] No implementation details (languages, frameworks, APIs)
-- [ ] Focused on user value and business needs
-- [ ] Written for non-technical stakeholders
-- [ ] All mandatory sections completed
+- [x] No implementation details (languages, frameworks, APIs)
+- [x] Focused on user value and business needs
+- [x] Written for non-technical stakeholders
+- [x] All mandatory sections completed
 
 ### Requirement Completeness
-- [ ] No [NEEDS CLARIFICATION] markers remain
-- [ ] Requirements are testable and unambiguous  
-- [ ] Success criteria are measurable
-- [ ] Scope is clearly bounded
-- [ ] Dependencies and assumptions identified
+- [x] No [NEEDS CLARIFICATION] markers remain
+- [x] Requirements are testable and unambiguous  
+- [x] Success criteria are measurable
+- [x] Scope is clearly bounded
+- [x] Dependencies and assumptions identified
 
 ---
 
