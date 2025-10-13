@@ -174,17 +174,21 @@ async function createIssue({ teamId, projectId, parentId, title }) {
   return res.issue;
 }
 
-async function findIssueUnderParentByTitle(parentId, title) {
+async function listIssuesUnderParent(parentId) {
   const query = `
-    query($parentId: ID!, $title: String!) {
-      issues(first: 1, filter: { parent: { id: { eq: $parentId } }, title: { eq: $title } }) {
-        nodes { id }
+    query($parentId: ID!) {
+      issues(first: 200, filter: { parent: { id: { eq: $parentId } } }) {
+        nodes { id identifier title }
       }
     }
   `;
-  const data = await graphqlRequest(query, { parentId, title });
-  const node = data?.issues?.nodes?.[0];
-  return node?.id || null;
+  const data = await graphqlRequest(query, { parentId });
+  return data?.issues?.nodes ?? [];
+}
+
+function matchIssuesByTaskId(issues, taskId) {
+  const needle = `T${taskId}:`;
+  return issues.filter(i => (i?.title || '').startsWith(needle));
 }
 
 async function updateIssueState(issueId, stateId) {
@@ -287,14 +291,17 @@ function parseTasksFromFile(filePath) {
     const doneStateId = findStateId(doneStateName, ['done', 'completed', 'complete', 'closed', 'resolved', 'finished']);
     if (!targetStateId) console.warn(`Warning: Target state "${targetStateName}" not found on team; skipping 'In Progress' updates.`);
     if (!doneStateId) console.warn(`Warning: Done state "${doneStateName}" not found on team; skipping 'Done' updates.`);
+    const existingIssues = await listIssuesUnderParent(parentId);
     for (const t of tasks) {
-      const existingId = await findIssueUnderParentByTitle(parentId, t.title);
       const desiredStateId = t.completed ? doneStateId : targetStateId;
-      if (existingId) {
-        console.log(`Exists: ${t.title}`);
-        if (updateExisting && desiredStateId) {
-          await updateIssueState(existingId, desiredStateId);
-          console.log(`Updated state -> ${t.completed ? doneStateName : targetStateName}`);
+      const matches = matchIssuesByTaskId(existingIssues, t.id.replace(/^T/, ''));
+      if (matches.length > 0) {
+        for (const m of matches) {
+          console.log(`Exists: ${m.identifier} -> ${m.title}`);
+          if (updateExisting && desiredStateId) {
+            await updateIssueState(m.id, desiredStateId);
+            console.log(`Updated state -> ${t.completed ? doneStateName : targetStateName}`);
+          }
         }
         continue;
       }
