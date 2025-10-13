@@ -1,7 +1,7 @@
 # Week 2 CLI Projects - Hardening Complete
 
 > How to review me:
-> - Go to GitHub Actions → latest run for `review-packet` on `development` or your PR.
+> - Go to GitHub Actions → latest run for `review-packet` on your PR.
 > - Download the artifact named `review-packet`.
 > - Open `review-artifacts/index.html` for the Coverage Index and links (Backend + UI Coverage sections).
 
