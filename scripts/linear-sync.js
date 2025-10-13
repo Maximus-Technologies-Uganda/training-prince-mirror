@@ -141,7 +141,7 @@ async function getIssueIdByIdentifier(identifier) {
 async function getTeamStatesById(teamId) {
   const query = `
     query($teamId: String!) {
-      team(id: $teamId) { id states(first: 100) { nodes { id name } } }
+      team(id: $teamId) { id states(first: 100) { nodes { id name type } } }
     }
   `;
   const data = await graphqlRequest(query, { teamId });
@@ -287,8 +287,11 @@ function parseTasksFromFile(filePath) {
       return null;
     };
 
-    const targetStateId = findStateId(targetStateName, ['in progress', 'active', 'doing', 'started']);
-    const doneStateId = findStateId(doneStateName, ['done', 'completed', 'complete', 'closed', 'resolved', 'finished']);
+    // Prefer by workflow type if available
+    const startedState = teamStates.find(s => String(s.type || '').toLowerCase() === 'started');
+    const completedState = teamStates.find(s => String(s.type || '').toLowerCase() === 'completed');
+    let targetStateId = startedState?.id || findStateId(targetStateName, ['in progress', 'active', 'doing', 'started']);
+    let doneStateId = completedState?.id || findStateId(doneStateName, ['done', 'completed', 'complete', 'closed', 'resolved', 'finished']);
     if (!targetStateId) console.warn(`Warning: Target state "${targetStateName}" not found on team; skipping 'In Progress' updates.`);
     if (!doneStateId) console.warn(`Warning: Done state "${doneStateName}" not found on team; skipping 'Done' updates.`);
     const existingIssues = await listIssuesUnderParent(parentId);
