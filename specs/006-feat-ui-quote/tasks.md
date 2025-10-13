@@ -4,8 +4,8 @@
 **Prerequisites**: plan.md (required), research.md, data-model.md, contracts/
 
 ## Phase 3.1: Setup
-- [ ] T001 Ensure `frontend/vitest.config.js` thresholds enforce ≥40% statements (no change needed) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/vitest.config.js`]
-- [ ] T002 [P] Validate Playwright base URL config usable via `BASE_URL` env [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/quote.spec.js`]
+- [x] T001 Ensure `frontend/vitest.config.js` thresholds enforce ≥40% statements (no change needed) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/vitest.config.js`]
+- [x] T002 [P] Validate Playwright base URL config usable via `BASE_URL` env [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/quote.spec.js`]
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 - [x] T003 [P] Unit test: initial random quote renders on load [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/main.test.js`]
