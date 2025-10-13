@@ -54,13 +54,37 @@ jobs:
         working-directory: frontend
         run: |
           npm ci
-          VITEST_DISABLE_THRESHOLD=1 npm run test -- --coverage
           mkdir -p ../review-artifacts
-          # move ui-todo coverage if exists
-          if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-todo || true; fi
-          # run stopwatch tests specifically and move coverage
-          VITEST_DISABLE_THRESHOLD=1 npm run test -- --coverage src/ui-stopwatch
-          if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-stopwatch || true; fi
+          # ui-todo
+          if [ -d src/ui-todo ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test -- --coverage src/ui-todo
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-todo || true; fi
+          fi
+          # ui-stopwatch
+          if [ -d src/ui-stopwatch ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test -- --coverage src/ui-stopwatch
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-stopwatch || true; fi
+          fi
+          # ui-expense
+          if [ -d src/ui-expense ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test -- --coverage src/ui-expense
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-expense || true; fi
+          fi
+          # ui-temp (if added later)
+          if [ -d src/ui-temp ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test -- --coverage src/ui-temp
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-temp || true; fi
+          fi
+          # ui-quote (if added later)
+          if [ -d src/ui-quote ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test -- --coverage src/ui-quote
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-quote || true; fi
+          fi
 
       - name: Prepare artifact directories
         run: |
@@ -70,17 +94,20 @@ jobs:
       - name: Generate Coverage Index
         run: |
           echo "<h1>Coverage Index</h1>" > review-artifacts/index.html
+          echo "<h2>Backend Coverage</h2>" >> review-artifacts/index.html
           echo "<ul>" >> review-artifacts/index.html
           for dir in review-artifacts/coverage-*; do
             APP_NAME=$(basename "$dir" | sed 's/coverage-//')
             echo "  <li><a href=\"./${dir##*/}/lcov-report/index.html\">${APP_NAME}</a></li>" >> review-artifacts/index.html
           done
-          if [ -d review-artifacts/ui-coverage-todo ]; then
-            echo "  <li><a href=\"./ui-coverage-todo/lcov-report/index.html\">ui-todo</a></li>" >> review-artifacts/index.html
-          fi
-          if [ -d review-artifacts/ui-coverage-stopwatch ]; then
-            echo "  <li><a href=\"./ui-coverage-stopwatch/lcov-report/index.html\">ui-stopwatch</a></li>" >> review-artifacts/index.html
-          fi
+          echo "</ul>" >> review-artifacts/index.html
+          echo "<h2>UI Coverage</h2>" >> review-artifacts/index.html
+          echo "<ul>" >> review-artifacts/index.html
+          for dir in review-artifacts/ui-coverage-*; do
+            [ -d "$dir" ] || continue
+            APP_NAME=$(basename "$dir" | sed 's/ui-coverage-//')
+            echo "  <li><a href=\"./${dir##*/}/lcov-report/index.html\">ui-${APP_NAME}</a></li>" >> review-artifacts/index.html
+          done
           echo "</ul>" >> review-artifacts/index.html
 
       - name: Generate review.md

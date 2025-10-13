@@ -52,6 +52,8 @@ export function createStopwatch() {
 }
 
 export function saveState(state) {
+  // Ensure data directory exists to prevent ENOENT on fresh clones
+  try { fs.mkdirSync('data', { recursive: true }); } catch (_) {}
   const data = JSON.stringify(state, null, 2);
   fs.writeFileSync(DB_FILE, data);
 }

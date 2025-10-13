@@ -24,7 +24,13 @@ jobs:
           set -euo pipefail
           BEFORE="${{ github.event.before }}"
           AFTER="${{ github.sha }}"
-          FILES=$(git diff --name-only "$BEFORE" "$AFTER" -- 'specs/*/tasks.md' 'specs/*/.linear-parent' | tr '\n' ' ' | sed 's/ *$//')
+          ZERO_SHA="0000000000000000000000000000000000000000"
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "$ZERO_SHA" ] || ! git cat-file -e "$BEFORE"^{commit} 2>/dev/null; then
+            # First commit or new branch push: diff against this commit only
+            FILES=$(git diff-tree --no-commit-id --name-only -r "$AFTER" -- 'specs/*/tasks.md' 'specs/*/.linear-parent' | tr '\n' ' ' | sed 's/ *$//')
+          else
+            FILES=$(git diff --name-only "$BEFORE" "$AFTER" -- 'specs/*/tasks.md' 'specs/*/.linear-parent' | tr '\n' ' ' | sed 's/ *$//')
+          fi
           TASKS=""
           for f in $FILES; do
             if [[ "$f" == */tasks.md ]]; then

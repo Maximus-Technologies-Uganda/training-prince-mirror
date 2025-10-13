@@ -50,6 +50,8 @@ export function loadTodos() {
 }
 
 export function saveTodos(todos) {
+  // Ensure data directory exists to prevent ENOENT on fresh clones
+  try { fs.mkdirSync('data', { recursive: true }); } catch (_) {}
   const data = JSON.stringify(todos, null, 2);
   fs.writeFileSync(DB_FILE, data);
   console.log('To-do list saved.');

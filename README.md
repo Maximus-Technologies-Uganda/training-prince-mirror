@@ -1,9 +1,9 @@
 # Week 2 CLI Projects - Hardening Complete
 
 > How to review me:
-> - Go to GitHub Actions → latest run for `review-packet` on `development`.
+> - Go to GitHub Actions → latest run for `review-packet` on `development` or your PR.
 > - Download the artifact named `review-packet`.
-> - Open `review-artifacts/index.html` for the Coverage Index and links.
+> - Open `review-artifacts/index.html` for the Coverage Index and links (Backend + UI Coverage sections).
 
 ### PR Spec requirement
 - Every PR must include a line in the description with a link to the specification or Linear ticket:
@@ -16,6 +16,26 @@
 ✅ **Coverage Targets Exceeded**: All CLIs meet or exceed workbook requirements (≥50-60%)
 ✅ **Review Packet**: Per-app HTML coverage structure implemented
 ✅ **Test Isolation**: All tests passing in full suite
+
+## Frontend
+
+These UIs reuse the hardened CLI cores and now ship with accessibility labels, keyboard support, and documented coverage.
+
+<p align="center">
+  <img src="frontend/quote-ui.png" alt="Quote UI screenshot" width="600" />
+</p>
+
+<p align="center">
+  <img src="frontend/expense-ui.png" alt="Expense UI screenshot" width="600" />
+</p>
+
+<p align="center">
+  <img src="frontend/todo-ui.png" alt="To-Do UI screenshot" width="600" />
+</p>
+
+<p align="center">
+  <img src="frontend/stopwatch-ui.png" alt="Stopwatch UI screenshot" width="600" />
+</p>
 
 ### Installation
 - **Clone the repository**
@@ -184,7 +204,7 @@ node src/quote/index.js --by "Unknown Author"
 ```
 
 ## Coverage Index
-The Coverage Index and per‑app HTML reports are packaged in the GitHub Actions artifact named `review-packet` (on the `development` branch and PRs). Download the artifact and open `review-artifacts/index.html`.
+The Coverage Index and per-app HTML reports are packaged in the GitHub Actions artifact named `review-packet` (on the `development` branch and PRs). Download the artifact and open `review-artifacts/index.html`. The Coverage Index now includes dedicated UI coverage reports alongside the CLI summaries.
 
 ### UI Coverage (To‑Do and Stopwatch)
 
