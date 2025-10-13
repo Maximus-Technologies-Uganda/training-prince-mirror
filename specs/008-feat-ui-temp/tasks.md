@@ -5,10 +5,8 @@
 
 ## Phase 3.1: Setup
 - [x] T001 Ensure frontend project has Vite + Vitest + Playwright configured [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/`]
-- [ ] T002 [P] Add DOM contracts to `index.html` (ids: `#temp-value`, `#temp-from`, `#temp-to`, `#temp-result`, `#temp-error`) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
-- [ ] T003 [P] Create UI module scaffolding `frontend/src/ui-temp/index.js` + `index.test.js` [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/`]
- - [x] T002 [P] Add DOM contracts to `index.html` (ids: `#temp-value`, `#temp-from`, `#temp-to`, `#temp-result`, `#temp-error`) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
- - [x] T003 [P] Create UI module scaffolding `frontend/src/ui-temp/index.js` + `index.test.js` [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/`]
+- [x] T002 [P] Add DOM contracts to `index.html` (ids: `#temp-value`, `#temp-from`, `#temp-to`, `#temp-result`, `#temp-error`) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/index.html`]
+- [x] T003 [P] Create UI module scaffolding `frontend/src/ui-temp/index.js` + `index.test.js` [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/`]
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 - [ ] T004 [P] Unit: C→F conversion displays 32 (rounded 2 dp; trim zeros) [Path: `/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-temp/index.test.js`]
