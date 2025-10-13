@@ -48,3 +48,5 @@ Task: "T007 Unit: non-numeric input → inline error (aria-live assertive), resu
 Task: "T008 Unit: inputs cleared → neutral state"
 Task: "T009 E2E smoke: page loads; enter 0 C→F shows 32"
 ```
+
+<!-- sync: touch to retrigger linear-tasks-sync -->
