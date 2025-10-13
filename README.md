@@ -19,7 +19,7 @@
 
 ## Frontend
 
-These UIs reuse the hardened CLI cores and now ship with accessibility labels, keyboard support, and documented coverage.
+Placeholder for Week 3 UI work. UIs will reuse the hardened CLI cores and ship with accessibility labels, keyboard support, and documented coverage.
 
 <p align="center">
   <img src="frontend/quote-ui.png" alt="Quote UI screenshot" width="600" />

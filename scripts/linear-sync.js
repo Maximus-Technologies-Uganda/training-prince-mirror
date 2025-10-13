@@ -195,6 +195,17 @@ function parseTasksFromFile(filePath) {
       const description = cleaned.replace(/^:|^-\s*/, '').trim();
       const title = `T${id}: [${currentCategory}]${hasParallel ? ' [P]' : ''}: ${description}`;
       tasks.push({ id: `T${id}`, title, category: currentCategory, parallel: hasParallel, description });
+      continue;
+    }
+
+    // Support enumerated task format: "T001. Description..."
+    const enumMatch = /^T(\d{3})\.\s+(.+)$/.exec(line);
+    if (enumMatch) {
+      const id = enumMatch[1];
+      const description = enumMatch[2].trim();
+      const title = `T${id}: [${currentCategory || 'Ordered'}]: ${description}`;
+      tasks.push({ id: `T${id}`, title, category: currentCategory || 'Ordered', parallel: false, description });
+      continue;
     }
   }
   return tasks;
