@@ -141,7 +141,7 @@ async function getIssueIdByIdentifier(identifier) {
 async function getTeamStatesById(teamId) {
   const query = `
     query($teamId: String!) {
-      team(id: $teamId) { id states(first: 100) { nodes { id name } } }
+      team(id: $teamId) { id states(first: 100) { nodes { id name type } } }
     }
   `;
   const data = await graphqlRequest(query, { teamId });
@@ -174,17 +174,21 @@ async function createIssue({ teamId, projectId, parentId, title }) {
   return res.issue;
 }
 
-async function findIssueUnderParentByTitle(parentId, title) {
+async function listIssuesUnderParent(parentId) {
   const query = `
-    query($parentId: ID!, $title: String!) {
-      issues(first: 1, filter: { parent: { id: { eq: $parentId } }, title: { eq: $title } }) {
-        nodes { id }
+    query($parentId: ID!) {
+      issues(first: 200, filter: { parent: { id: { eq: $parentId } } }) {
+        nodes { id identifier title }
       }
     }
   `;
-  const data = await graphqlRequest(query, { parentId, title });
-  const node = data?.issues?.nodes?.[0];
-  return node?.id || null;
+  const data = await graphqlRequest(query, { parentId });
+  return data?.issues?.nodes ?? [];
+}
+
+function matchIssuesByTaskId(issues, taskId) {
+  const needle = `T${taskId}:`;
+  return issues.filter(i => (i?.title || '').startsWith(needle));
 }
 
 async function updateIssueState(issueId, stateId) {
@@ -267,22 +271,53 @@ function parseTasksFromFile(filePath) {
 
     const created = [];
     const teamStates = await getTeamStatesById(derivedTeam.id);
-    const findStateId = (name) => {
-      const s = teamStates.find(ss => ss.name === name) || teamStates.find(ss => (ss.name || '').toLowerCase() === String(name || '').toLowerCase());
-      return s?.id || null;
+    const byName = (n) => String(n || '').toLowerCase();
+    const findStateId = (preferredName, synonyms = []) => {
+      const lowerPreferred = byName(preferredName);
+      let s = teamStates.find(ss => byName(ss.name) === lowerPreferred);
+      if (s) return s.id || null;
+      for (const syn of synonyms) {
+        const lowerSyn = byName(syn);
+        s = teamStates.find(ss => {
+          const ln = byName(ss.name);
+          return ln === lowerSyn || ln.includes(lowerSyn);
+        });
+        if (s) return s.id || null;
+      }
+      return null;
     };
-    const targetStateId = findStateId(targetStateName);
-    const doneStateId = findStateId(doneStateName);
+
+    // Prefer by workflow type if available
+    const startedStates = teamStates.filter(s => String(s.type || '').toLowerCase() === 'started');
+    const completedState = teamStates.find(s => String(s.type || '').toLowerCase() === 'completed');
+
+    // Prefer explicit "In Progress" among started states
+    const inProgressState = startedStates.find(s => byName(s.name) === 'inprogress')
+      || startedStates.find(s => byName(s.name).includes('progress'))
+      || null;
+
+    let targetStateId = inProgressState?.id || findStateId(targetStateName, ['in progress', 'active', 'doing', 'started']);
+    let doneStateId = completedState?.id || findStateId(doneStateName, ['done', 'completed', 'complete', 'closed', 'resolved', 'finished']);
+
+    console.log('Team states:');
+    for (const s of teamStates) {
+      console.log(`- ${s.name} (type=${s.type || 'n/a'}, id=${s.id})`);
+    }
+    console.log(`Selected target(In Progress) stateId=${targetStateId || 'null'}`);
+    console.log(`Selected done stateId=${doneStateId || 'null'}`);
     if (!targetStateId) console.warn(`Warning: Target state "${targetStateName}" not found on team; skipping 'In Progress' updates.`);
     if (!doneStateId) console.warn(`Warning: Done state "${doneStateName}" not found on team; skipping 'Done' updates.`);
+    const existingIssues = await listIssuesUnderParent(parentId);
     for (const t of tasks) {
-      const existingId = await findIssueUnderParentByTitle(parentId, t.title);
       const desiredStateId = t.completed ? doneStateId : targetStateId;
-      if (existingId) {
-        console.log(`Exists: ${t.title}`);
-        if (updateExisting && desiredStateId) {
-          await updateIssueState(existingId, desiredStateId);
-          console.log(`Updated state -> ${t.completed ? doneStateName : targetStateName}`);
+      const matches = matchIssuesByTaskId(existingIssues, t.id.replace(/^T/, ''));
+      if (matches.length > 0) {
+        for (const m of matches) {
+          console.log(`Exists: ${m.identifier} -> ${m.title}`);
+          if (updateExisting && desiredStateId) {
+            await updateIssueState(m.id, desiredStateId);
+            console.log(`Updated state -> ${t.completed ? doneStateName : targetStateName}`);
+          }
         }
         continue;
       }

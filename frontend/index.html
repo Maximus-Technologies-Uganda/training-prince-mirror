@@ -106,6 +106,26 @@
         </div>
       </section>
 
+      <section id="temp-app" class="section-card temp-app" aria-labelledby="temp-heading">
+        <h2 id="temp-heading">Temperature Converter</h2>
+        <div class="temp-controls" role="group" aria-label="Conversion inputs">
+          <label for="temp-value">Value</label>
+          <input id="temp-value" type="number" inputmode="decimal" aria-describedby="temp-error" />
+          <label for="temp-from">From</label>
+          <select id="temp-from" aria-describedby="temp-error">
+            <option value="C">Celsius (C)</option>
+            <option value="F">Fahrenheit (F)</option>
+          </select>
+          <label for="temp-to">To</label>
+          <select id="temp-to" aria-describedby="temp-error">
+            <option value="F">Fahrenheit (F)</option>
+            <option value="C">Celsius (C)</option>
+          </select>
+        </div>
+        <p id="temp-error" role="alert" aria-live="assertive" tabindex="-1"></p>
+        <p id="temp-result" role="status" aria-live="polite"></p>
+      </section>
+
       <section id="todo-app" class="section-card todo-app" aria-labelledby="todo-heading">
         <h2 id="todo-heading">To‑Do</h2>
         <div class="todo-controls" role="group" aria-label="Add a task">
@@ -152,9 +172,11 @@
     <script type="module">
       import { initTodoUI } from '/src/ui-todo/index.js';
       import { initStopwatchUI } from '/src/ui-stopwatch/index.js';
+      import { initTempUI } from '/src/ui-temp/index.js';
 
       initTodoUI();
       initStopwatchUI();
+      initTempUI();
     </script>
   </body>
 </html>

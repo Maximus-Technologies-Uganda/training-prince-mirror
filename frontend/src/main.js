@@ -27,7 +27,7 @@ function renderQuote(elements, quote) {
   }
 
   if (!targetQuote) {
-    elements.quoteText.textContent = 'No quotes found. Try a different author.';
+    elements.quoteText.textContent = 'No quotes found';
     elements.quoteAuthor.textContent = '';
     elements.quoteBlock?.setAttribute('cite', '');
     elements.shuffleButton.disabled = true;

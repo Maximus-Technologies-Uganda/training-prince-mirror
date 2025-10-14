@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { convertTemperature } from './core.js';
+export { convertTemperature as convert };
 
 function run(argv = process.argv.slice(2)) {
   const args = argv;
