@@ -73,17 +73,21 @@
 - [x] T021 [P] Unit tests for timer logic in `tests/stopwatch-ui-unit.test.js`
 - [x] T022 [P] Unit tests for CSV export in `tests/stopwatch-ui-csv.test.js`
 - [x] T023 Performance validation (<200ms response, 60fps updates)
-- [x] T024 [P] Update frontend documentation in `frontend/README.md`
+- [x] T024 [P] Update GitHub Pages deployment documentation in `frontend/README.md`
 - [x] T025 Remove any code duplication
 - [x] T026 Run quickstart validation scenarios
 - [x] T027 Verify ≥40% statement coverage
+- [x] T028 [P] Create CSV golden output validation test in `tests/stopwatch-ui-golden.test.js`
+- [x] T029 [P] Test reset-while-running edge case in `tests/stopwatch-ui-edge.test.js`
 
 ## Dependencies
 - Tests (T004-T008) before implementation (T009-T016)
 - T009 blocks T010-T016 (all in same file)
 - T017 blocks T018 (both in index.js)
 - T019 depends on T009-T016 (needs timer logic)
-- Implementation before polish (T021-T027)
+- Implementation before polish (T021-T029)
+- T028 depends on T015, T016 (needs CSV export implementation)
+- T029 depends on T009, T013 (needs timer and reset logic)
 
 ## Parallel Example
 ```
@@ -93,6 +97,12 @@ Task: "Contract test backend integration in tests/stopwatch-ui-integration.test.
 Task: "Integration test timer operations in tests/stopwatch-ui-timer.test.js"
 Task: "Integration test CSV export in tests/stopwatch-ui-export.test.js"
 Task: "E2E smoke test in frontend/e2e/stopwatch.smoke.spec.ts"
+
+# Launch T021, T022, T028, T029 together (all different test files):
+Task: "Unit tests for timer logic in tests/stopwatch-ui-unit.test.js"
+Task: "Unit tests for CSV export in tests/stopwatch-ui-csv.test.js"
+Task: "Create CSV golden output validation test in tests/stopwatch-ui-golden.test.js"
+Task: "Test reset-while-running edge case in tests/stopwatch-ui-edge.test.js"
 ```
 
 ## Notes
