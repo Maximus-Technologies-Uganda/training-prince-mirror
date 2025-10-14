@@ -1,0 +1,116 @@
+
+# Implementation Plan: UI — To-Do
+
+**Branch**: `009-feat-ui-todo` | **Date**: 2025-10-14 | **Spec**: `/Users/prnceb/Desktop/WORK/hello-world/specs/009-feat-ui-todo/spec.md`
+**Input**: Feature specification from `/Users/prnceb/Desktop/WORK/hello-world/specs/009-feat-ui-todo/spec.md`
+
+## Summary
+The To-Do UI must allow users to add, toggle, and remove tasks while filtering by `due-today` and `high-priority`. The UI reuses `src/todo` core logic for all task mutations, respects the shared clock abstraction for date boundaries, blocks duplicates with inline feedback, and surfaces core validation errors. Unit coverage (≥40% statements) and a Playwright smoke test are mandatory per constitution and spec.
+
+## Technical Context
+**Language/Version**: JavaScript (ES modules via Vite)  
+**Primary Dependencies**: Vite dev server/build, Vitest + @vitest/coverage-v8, Playwright, existing `src/todo` core module  
+**Storage**: Filesystem JSON managed by backend core (`data/todo.json`)  
+**Testing**: Vitest for unit (coverage), Playwright for smoke; spec:lint already enforced  
+**Target Platform**: Web browser (Vite dev server, static deploy via Pages)  
+**Project Type**: Web application (backend core + frontend UI)  
+**Performance Goals**: Instant UI response (<100ms) on task operations and filter toggles  
+**Constraints**: No logic duplication (import `src/todo/core.js` APIs), maintain shared clock abstraction for testability, ensure inline error accessibility  
+**Scale/Scope**: Single-user personal task list; expected <500 tasks in-memory at once
+
+## Constitution Check
+- **No Logic Duplication**: Plan uses `src/todo/core.js` for add/toggle/remove/filter helpers; frontend only manages DOM bindings.  
+- **Test Coverage Mandate**: Vitest suite for duplicate guard, due-today boundary, invalid toggles; Playwright smoke to add & toggle task; ensure coverage ≥40% statements.  
+- **Reviewability**: Update review-packet generation by exporting UI coverage to `ui-coverage-todo`; confirm index links.  
+- **PR Craft & Simplicity**: Keep changes focused within `frontend/` modules and supporting docs; ensure PR ≤300 LOC.
+
+✅ Initial Constitution Check: PASS
+
+## Project Structure
+
+### Documentation (this feature)
+```
+specs/009-feat-ui-todo/
+├── plan.md              # This file (/plan command output)
+├── research.md          # Phase 0 output (/plan command)
+├── data-model.md        # Phase 1 output (/plan command)
+├── quickstart.md        # Phase 1 output (/plan command)
+├── contracts/           # Phase 1 output (/plan command)
+│   └── README.md
+└── tasks.md             # Phase 2 output (/tasks command - NOT created by /plan)
+```
+
+### Source Code (repository root)
+```
+frontend/
+├── index.html
+├── src/
+│   ├── main.js
+│   ├── ui-quote/
+│   ├── ui-expense/
+│   ├── ui-temp/
+│   ├── ui-stopwatch/        # planned later in week
+│   └── ui-todo/             # new folder for this feature
+└── e2e/
+    ├── quote.spec.js
+    ├── expense.smoke.spec.ts
+    ├── temp.smoke.spec.ts
+    └── todo.smoke.spec.ts   # to be added
+
+src/
+├── todo/
+│   ├── core.js              # existing business logic (reuse here)
+│   └── index.js
+├── quote/
+├── expense/
+└── temp-converter/
+```
+
+**Structure Decision**: Web application structure—reuse existing `frontend/` UI modules and `src/todo/core.js`; add `frontend/src/ui-todo` for UI wiring and tests, plus Playwright spec under `frontend/e2e`.
+
+## Phase 0: Outline & Research
+- Confirm available API surface in `src/todo/core.js` (add, toggle, remove, filter helpers, clock injection) to avoid duplication.  
+- Determine strategy for injecting clock abstraction into UI without leaking DOM-specific concerns (likely pass reference from core).  
+- Identify accessibility expectations for inline errors and toggle controls (ARIA labels, keyboard order).  
+- Review existing UI modules for patterns (state management, coverage hooks) to ensure consistency.
+
+**Output**: `research.md`
+
+## Phase 1: Design & Contracts
+- Draft `data-model.md` describing `ToDoItem`, `FilterState`, and UI view-model pieces (derived lists, counts).  
+- Create `contracts/README.md` for DOM IDs, event flows, aria-live regions, and clock injection contract.  
+- Update `quickstart.md` with commands to run unit & smoke tests, coverage expectations, and checklist for spec:lint/Linear sync.  
+- Add Vitest spec scaffolding and Playwright smoke test outline referencing DOM contracts.  
+- Run `.specify/scripts/bash/update-agent-context.sh cursor` after documenting new tech touchpoints (no new dependencies expected).
+
+✅ Post-Design Constitution Check: PASS (design continues to rely on shared core, coverage + review commitments unchanged)
+
+## Phase 2: Task Planning Approach
+**Task Generation Strategy**: Use clarified entities/contracts to produce T-style checklist. Emphasize TDD: write unit tests (duplicate guard, due-today boundary, invalid toggle) before implementing UI bindings; include Playwright smoke; tasks for wiring coverage export and index entry verification.  
+**Ordering Strategy**: Start with scaffolding module + imports, then unit tests (core reuse), then UI implementation, followed by Playwright smoke, accessibility pass, coverage polish, doc updates, Linear sync verification. Mark parallelizable tasks (e.g., documentation updates vs. test authoring) with `[P]`.
+
+## Phase 3+: Future Implementation
+Implementation and validation will follow after /tasks output.
+
+## Complexity Tracking
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| *(none)* | | |
+
+## Progress Tracking
+**Phase Status**:
+- [x] Phase 0: Research complete (/plan command)
+- [x] Phase 1: Design complete (/plan command)
+- [ ] Phase 2: Task planning complete (/plan command - describe approach only)
+- [ ] Phase 3: Tasks generated (/tasks command)
+- [ ] Phase 4: Implementation complete
+- [ ] Phase 5: Validation passed
+
+**Gate Status**:
+- [x] Initial Constitution Check: PASS
+- [x] Post-Design Constitution Check: PASS
+- [x] All NEEDS CLARIFICATION resolved
+- [ ] Complexity deviations documented
+
+---
+*Based on Constitution v1.1.0 - See `/memory/constitution.md`*
