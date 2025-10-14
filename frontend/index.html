@@ -110,44 +110,46 @@
         <h2 id="temp-heading">Temperature Converter</h2>
         <div class="temp-controls" role="group" aria-label="Conversion inputs">
           <label for="temp-value">Value</label>
-          <input id="temp-value" type="number" inputmode="decimal" aria-describedby="temp-error" />
+          <input id="temp-value" type="number" inputmode="decimal" aria-describedby="temp-error temp-result" placeholder="Enter temperature value" />
           <label for="temp-from">From</label>
-          <select id="temp-from" aria-describedby="temp-error">
+          <select id="temp-from" aria-describedby="temp-error temp-result">
             <option value="C">Celsius (C)</option>
             <option value="F">Fahrenheit (F)</option>
           </select>
           <label for="temp-to">To</label>
-          <select id="temp-to" aria-describedby="temp-error">
+          <select id="temp-to" aria-describedby="temp-error temp-result">
             <option value="F">Fahrenheit (F)</option>
             <option value="C">Celsius (C)</option>
           </select>
         </div>
         <p id="temp-error" role="alert" aria-live="assertive" tabindex="-1"></p>
-        <p id="temp-result" role="status" aria-live="polite"></p>
+        <p id="temp-result" role="status" aria-live="polite" aria-label="Conversion result"></p>
       </section>
 
       <section id="todo-app" class="section-card todo-app" aria-labelledby="todo-heading">
         <h2 id="todo-heading">To‑Do</h2>
         <div class="todo-controls" role="group" aria-label="Add a task">
-          <label class="visually-hidden" for="todo-input">Add a to‑do</label>
+          <label for="todo-input">Task description</label>
           <input
             id="todo-input"
             type="text"
             placeholder="What needs to be done?"
             autocomplete="off"
             aria-describedby="todo-helper"
+            required
           />
-          <input id="todo-due" type="date" aria-label="Due date" />
+          <label for="todo-due">Due date (optional)</label>
+          <input id="todo-due" type="date" aria-describedby="todo-helper" />
           <label for="todo-high" class="todo-high-label"
-            ><input id="todo-high" type="checkbox" /> High priority</label
+            ><input id="todo-high" type="checkbox" aria-describedby="todo-helper" /> High priority</label
           >
-          <button id="todo-add" type="button">Add task</button>
+          <button id="todo-add" type="button" aria-describedby="todo-helper">Add task</button>
         </div>
         <p id="todo-helper" class="visually-hidden">Due date is optional; high priority helps sorting.</p>
         <p id="todo-error" role="alert" aria-live="assertive" tabindex="-1"></p>
         <div class="todo-filters" role="group" aria-label="Filter tasks">
-          <label><input id="filter-today" type="checkbox" /> Due today</label>
-          <label><input id="filter-high" type="checkbox" /> High priority</label>
+          <label for="filter-today"><input id="filter-today" type="checkbox" /> Due today</label>
+          <label for="filter-high"><input id="filter-high" type="checkbox" /> High priority</label>
         </div>
         <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
       </section>
@@ -155,14 +157,14 @@
       <section id="stopwatch-app" class="section-card stopwatch-app" aria-labelledby="stopwatch-heading">
         <h2 id="stopwatch-heading">Stopwatch</h2>
         <div class="stopwatch-container">
-          <div class="timer-display">00:00.00</div>
-          <div class="controls">
-            <button class="start-btn">Start</button>
-            <button class="stop-btn" disabled>Stop</button>
-            <button class="reset-btn">Reset</button>
-            <button class="export-btn">Export CSV</button>
+          <div class="timer-display" role="timer" aria-live="polite" aria-label="Elapsed time">00:00.00</div>
+          <div class="controls" role="group" aria-label="Stopwatch controls">
+            <button class="start-btn" aria-label="Start stopwatch">Start</button>
+            <button class="stop-btn" disabled aria-label="Stop stopwatch">Stop</button>
+            <button class="reset-btn" aria-label="Reset stopwatch">Reset</button>
+            <button class="export-btn" aria-label="Export lap times as CSV file">Export CSV</button>
           </div>
-          <div class="laps-display">
+          <div class="laps-display" role="region" aria-label="Recorded lap times" aria-live="polite">
             <!-- Dynamic lap list will be populated here -->
           </div>
         </div>

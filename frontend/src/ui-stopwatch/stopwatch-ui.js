@@ -133,19 +133,28 @@ export class StopwatchUI {
     this.stopBtn.disabled = !this.state.running;
     this.resetBtn.disabled = false;
     this.exportBtn.disabled = false;
+    
+    // Update ARIA labels for better accessibility
+    if (this.state.running) {
+      this.startBtn.setAttribute('aria-label', 'Stopwatch is running');
+      this.stopBtn.setAttribute('aria-label', 'Stop stopwatch');
+    } else {
+      this.startBtn.setAttribute('aria-label', 'Start stopwatch');
+      this.stopBtn.setAttribute('aria-label', 'Stop stopwatch (disabled)');
+    }
   }
 
   updateLapsDisplay() {
     if (this.state.laps.length === 0) {
-      this.lapsDisplay.innerHTML = '<div class="no-laps">No laps recorded</div>';
+      this.lapsDisplay.innerHTML = '<div class="no-laps" role="status" aria-live="polite">No laps recorded</div>';
       return;
     }
     
     const lapsHtml = this.state.laps.map(lap => 
-      `<div class="lap-item">Lap ${lap.lapNumber}: ${this.formatTime(lap.elapsedTime)}</div>`
+      `<div class="lap-item" role="listitem" aria-label="Lap ${lap.lapNumber}: ${this.formatTime(lap.elapsedTime)}">Lap ${lap.lapNumber}: ${this.formatTime(lap.elapsedTime)}</div>`
     ).join('');
     
-    this.lapsDisplay.innerHTML = lapsHtml;
+    this.lapsDisplay.innerHTML = `<div class="laps-list" role="list" aria-label="Recorded lap times">${lapsHtml}</div>`;
   }
 
   startDisplayUpdates() {
