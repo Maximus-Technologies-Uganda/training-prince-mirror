@@ -28,10 +28,10 @@ describe('Reset While Running Edge Case Tests', () => {
     // Mock DOM elements
     mockElements = {
       '.timer-display': { textContent: '00:00.00' },
-      '.start-btn': { disabled: false, addEventListener: vi.fn() },
-      '.stop-btn': { disabled: true, addEventListener: vi.fn() },
-      '.reset-btn': { disabled: false, addEventListener: vi.fn() },
-      '.export-btn': { disabled: false, addEventListener: vi.fn() },
+      '.start-btn': { disabled: false, addEventListener: vi.fn(), setAttribute: vi.fn() },
+      '.stop-btn': { disabled: true, addEventListener: vi.fn(), setAttribute: vi.fn() },
+      '.reset-btn': { disabled: false, addEventListener: vi.fn(), setAttribute: vi.fn() },
+      '.export-btn': { disabled: false, addEventListener: vi.fn(), setAttribute: vi.fn() },
       '.laps-display': { innerHTML: '' }
     };
 
@@ -136,7 +136,7 @@ describe('Reset While Running Edge Case Tests', () => {
       
       // Verify laps are cleared
       expect(stopwatchUI.state.laps).toHaveLength(0);
-      expect(mockElements['.laps-display'].innerHTML).toBe('<div class="no-laps">No laps recorded</div>');
+      expect(mockElements['.laps-display'].innerHTML).toBe('<div class="no-laps" role="status" aria-live="polite">No laps recorded</div>');
     });
 
     it('should save cleared state to localStorage when reset while running', () => {

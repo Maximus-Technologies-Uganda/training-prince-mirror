@@ -30,10 +30,10 @@ describe('StopwatchUI Timer Logic Unit Tests', () => {
     // Mock DOM elements
     mockElements = {
       '.timer-display': { textContent: '00:00.00' },
-      '.start-btn': { disabled: false, addEventListener: vi.fn() },
-      '.stop-btn': { disabled: true, addEventListener: vi.fn() },
-      '.reset-btn': { disabled: false, addEventListener: vi.fn() },
-      '.export-btn': { disabled: false, addEventListener: vi.fn() },
+      '.start-btn': { disabled: false, addEventListener: vi.fn(), setAttribute: vi.fn() },
+      '.stop-btn': { disabled: true, addEventListener: vi.fn(), setAttribute: vi.fn() },
+      '.reset-btn': { disabled: false, addEventListener: vi.fn(), setAttribute: vi.fn() },
+      '.export-btn': { disabled: false, addEventListener: vi.fn(), setAttribute: vi.fn() },
       '.laps-display': { innerHTML: '' }
     };
 
