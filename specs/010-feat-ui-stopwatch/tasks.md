@@ -70,13 +70,13 @@
 - [x] T020 Update main.js entry point in `frontend/src/main.js`
 
 ## Phase 3.5: Polish
-- [ ] T021 [P] Unit tests for timer logic in `tests/stopwatch-ui-unit.test.js`
-- [ ] T022 [P] Unit tests for CSV export in `tests/stopwatch-ui-csv.test.js`
-- [ ] T023 Performance validation (<200ms response, 60fps updates)
-- [ ] T024 [P] Update frontend documentation in `frontend/README.md`
-- [ ] T025 Remove any code duplication
-- [ ] T026 Run quickstart validation scenarios
-- [ ] T027 Verify ≥40% statement coverage
+- [x] T021 [P] Unit tests for timer logic in `tests/stopwatch-ui-unit.test.js`
+- [x] T022 [P] Unit tests for CSV export in `tests/stopwatch-ui-csv.test.js`
+- [x] T023 Performance validation (<200ms response, 60fps updates)
+- [x] T024 [P] Update frontend documentation in `frontend/README.md`
+- [x] T025 Remove any code duplication
+- [x] T026 Run quickstart validation scenarios
+- [x] T027 Verify ≥40% statement coverage
 
 ## Dependencies
 - Tests (T004-T008) before implementation (T009-T016)
