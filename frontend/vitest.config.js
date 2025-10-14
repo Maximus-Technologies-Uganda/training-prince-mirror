@@ -7,6 +7,7 @@ export default defineConfig({
     environment: 'jsdom',
     coverage: {
       reporter: ['text', 'lcov', 'html'],
+      include: ['src/ui-todo/**/*.js'],
       ...(disableThreshold
         ? {}
         : {
