@@ -54,20 +54,20 @@
 - [x] T008 [P] E2E smoke test in `frontend/e2e/stopwatch.smoke.spec.ts`
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T009 [P] Timer state management in `frontend/src/ui-stopwatch/stopwatch-ui.js`
-- [ ] T010 [P] Backend module integration imports in `frontend/src/ui-stopwatch/stopwatch-ui.js`
-- [ ] T011 [P] Time formatting utility in `frontend/src/ui-stopwatch/stopwatch-ui.js`
-- [ ] T012 Timer display updates in `frontend/src/ui-stopwatch/stopwatch-ui.js`
-- [ ] T013 Button state management in `frontend/src/ui-stopwatch/stopwatch-ui.js`
-- [ ] T014 Lap recording logic in `frontend/src/ui-stopwatch/stopwatch-ui.js`
-- [ ] T015 CSV export functionality in `frontend/src/ui-stopwatch/stopwatch-ui.js`
-- [ ] T016 CSV download implementation in `frontend/src/ui-stopwatch/stopwatch-ui.js`
+- [x] T009 [P] Timer state management in `frontend/src/ui-stopwatch/stopwatch-ui.js`
+- [x] T010 [P] Backend module integration imports in `frontend/src/ui-stopwatch/stopwatch-ui.js`
+- [x] T011 [P] Time formatting utility in `frontend/src/ui-stopwatch/stopwatch-ui.js`
+- [x] T012 Timer display updates in `frontend/src/ui-stopwatch/stopwatch-ui.js`
+- [x] T013 Button state management in `frontend/src/ui-stopwatch/stopwatch-ui.js`
+- [x] T014 Lap recording logic in `frontend/src/ui-stopwatch/stopwatch-ui.js`
+- [x] T015 CSV export functionality in `frontend/src/ui-stopwatch/stopwatch-ui.js`
+- [x] T016 CSV download implementation in `frontend/src/ui-stopwatch/stopwatch-ui.js`
 
 ## Phase 3.4: Integration
-- [ ] T017 Wire up HTML elements to JavaScript in `frontend/src/ui-stopwatch/index.js`
-- [ ] T018 Event handling for all buttons in `frontend/src/ui-stopwatch/index.js`
-- [ ] T019 State persistence with localStorage in `frontend/src/ui-stopwatch/stopwatch-ui.js`
-- [ ] T020 Update main.js entry point in `frontend/src/main.js`
+- [x] T017 Wire up HTML elements to JavaScript in `frontend/src/ui-stopwatch/index.js`
+- [x] T018 Event handling for all buttons in `frontend/src/ui-stopwatch/index.js`
+- [x] T019 State persistence with localStorage in `frontend/src/ui-stopwatch/stopwatch-ui.js`
+- [x] T020 Update main.js entry point in `frontend/src/main.js`
 
 ## Phase 3.5: Polish
 - [ ] T021 [P] Unit tests for timer logic in `tests/stopwatch-ui-unit.test.js`

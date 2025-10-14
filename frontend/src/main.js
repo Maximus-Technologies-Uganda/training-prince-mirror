@@ -3,7 +3,7 @@ import { defaultQuotes, pickRandom, filterByAuthor } from '../../src/quote/core.
 import { createExpenseUi } from './ui-expense/index.js';
 import { initTodoUI } from './ui-todo/index.js';
 import { initTempUI } from './ui-temp/index.js';
-import { initStopwatchUI } from './ui-stopwatch/index.js';
+import './ui-stopwatch/index.js';
 
 const state = {
   quotes: defaultQuotes,
@@ -98,7 +98,7 @@ function initUIs() {
   initExpenseUI();
   initTodoUI();
   initTempUI();
-  initStopwatchUI();
+  // Stopwatch UI initializes itself via DOMContentLoaded listener
 }
 
 if (document.readyState === 'loading') {
