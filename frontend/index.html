@@ -154,18 +154,18 @@
 
       <section id="stopwatch-app" class="section-card stopwatch-app" aria-labelledby="stopwatch-heading">
         <h2 id="stopwatch-heading">Stopwatch</h2>
-        <div class="stopwatch" role="group" aria-label="Stopwatch controls">
-          <output id="sw-time" class="stopwatch__time" aria-live="polite">00:00.000</output>
-          <p id="sw-error" class="stopwatch__error" role="alert" aria-live="assertive" tabindex="-1"></p>
-          <div class="stopwatch__controls">
-            <button id="sw-start" type="button">Start</button>
-            <button id="sw-stop" type="button">Stop</button>
-            <button id="sw-reset" type="button">Reset</button>
-            <button id="sw-lap" type="button">Lap</button>
-            <button id="sw-export" type="button">Export CSV</button>
+        <div class="stopwatch-container">
+          <div class="timer-display">00:00.00</div>
+          <div class="controls">
+            <button class="start-btn">Start</button>
+            <button class="stop-btn" disabled>Stop</button>
+            <button class="reset-btn">Reset</button>
+            <button class="export-btn">Export CSV</button>
+          </div>
+          <div class="laps-display">
+            <!-- Dynamic lap list will be populated here -->
           </div>
         </div>
-        <ul id="sw-laps" class="stopwatch__laps" aria-label="Recorded laps"></ul>
       </section>
     </div>
     <script type="module" src="/src/main.js"></script>

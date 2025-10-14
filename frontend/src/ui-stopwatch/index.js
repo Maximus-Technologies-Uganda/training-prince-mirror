@@ -3,7 +3,7 @@
 
 import { StopwatchUI } from './stopwatch-ui.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+function initStopwatchUI() {
   const container = document.querySelector('.stopwatch-container');
   
   if (!container) {
@@ -17,4 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (error) {
     console.error('Failed to initialize Stopwatch UI:', error);
   }
-});
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initStopwatchUI);
+} else {
+  initStopwatchUI();
+}
