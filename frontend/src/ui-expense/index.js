@@ -218,5 +218,3 @@ export function initExpenseUI() {
   createExpenseUi(root);
 }
 
-export { calculateTotalForFilter };
-
