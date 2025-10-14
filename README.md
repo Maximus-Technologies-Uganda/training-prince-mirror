@@ -19,7 +19,26 @@
 
 ## Frontend
 
-Placeholder for Week 3 UI work. UIs will reuse the hardened CLI cores and ship with accessibility labels, keyboard support, and documented coverage.
+Modern web UI built with Vite, featuring reusable core logic, accessibility support, and comprehensive test coverage.
+
+### Available UIs
+- **Quote**: Random quotes with author filtering
+- **Expense**: Personal expense tracking with categories
+- **Temperature Converter**: Celsius/Fahrenheit conversion
+- **To-Do**: Task management with due dates and priority filtering
+- **Stopwatch**: Precision timing with lap tracking
+
+### Development
+```bash
+# Start dev server
+npm run dev
+
+# Run UI tests
+cd frontend && npm test
+
+# Run E2E tests
+npm run test:e2e
+```
 
 <p align="center">
   <img src="frontend/quote-ui.png" alt="Quote UI screenshot" width="600" />
