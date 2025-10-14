@@ -218,5 +218,5 @@ export function initExpenseUI() {
   createExpenseUi(root);
 }
 
-export { formatMonth, calculateTotalForFilter };
+export { calculateTotalForFilter };
 
