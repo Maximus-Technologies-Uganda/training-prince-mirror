@@ -41,9 +41,9 @@
 - Paths based on plan.md structure: frontend UI module importing backend core logic
 
 ## Phase 3.1: Setup
-- [ ] T001 Create frontend UI module structure in `frontend/src/ui-stopwatch/`
-- [ ] T002 Initialize stopwatch UI HTML page in `frontend/src/ui-stopwatch/index.html`
-- [ ] T003 [P] Configure CSS styling in `frontend/src/ui-stopwatch/style.css`
+- [x] T001 Create frontend UI module structure in `frontend/src/ui-stopwatch/`
+- [x] T002 Initialize stopwatch UI HTML page in `frontend/src/ui-stopwatch/index.html`
+- [x] T003 [P] Configure CSS styling in `frontend/src/ui-stopwatch/style.css`
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
