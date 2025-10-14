@@ -1,13 +1,13 @@
 // StopwatchUI Class - Timer State Management
 // Imports backend modules and implements timer state management
 
-import { Stopwatch } from '../../../src/stopwatch/core.js';
-import { CSVExporter } from '../../../src/stopwatch/exporter.js';
+import { createStopwatch, formatTime as backendFormatTime } from '../../../src/stopwatch/core.js';
+import { exportLapsAsTable } from '../../../src/stopwatch/exporter.js';
 
 export class StopwatchUI {
   constructor(containerElement) {
     this.container = containerElement;
-    this.stopwatch = new Stopwatch();
+    this.stopwatch = createStopwatch();
     this.state = {
       running: false,
       startTime: 0,
@@ -64,13 +64,14 @@ export class StopwatchUI {
     
     this.state.running = false;
     this.state.elapsedTime = Date.now() - this.state.startTime;
-    this.stopwatch.stop();
+    this.stopwatch.lap(); // Record lap in backend
     
-    // Record lap
+    // Record lap in our state
     this.recordLap();
     
     this.updateButtonStates();
     this.stopDisplayUpdates();
+    this.updateDisplay(); // Update display with final time
     
     // Dispatch event
     this.container.dispatchEvent(new CustomEvent('timer:stop'));
@@ -81,7 +82,7 @@ export class StopwatchUI {
     this.state.startTime = 0;
     this.state.elapsedTime = 0;
     this.state.laps = [];
-    this.stopwatch.reset();
+    this.stopwatch = createStopwatch(); // Create new stopwatch instance
     
     this.updateButtonStates();
     this.stopDisplayUpdates();
@@ -189,14 +190,14 @@ export class StopwatchUI {
   }
 
   generateCSVContent() {
-    const headers = ['Lap Number', 'Elapsed Time'];
-    const rows = this.state.laps.map(lap => [
-      lap.lapNumber.toString(),
-      this.formatTime(lap.elapsedTime)
-    ]);
+    // Convert our lap format to backend format
+    const backendLaps = this.state.laps.map(lap => ({ time: lap.elapsedTime }));
     
-    const csvRows = [headers, ...rows];
-    return CSVExporter.exportLaps(this.state.laps);
+    // Use backend exporter to generate CSV
+    const tableContent = exportLapsAsTable(backendLaps);
+    
+    // Convert tab-separated to comma-separated
+    return tableContent.replace(/\t/g, ',');
   }
 
   exportCSV() {
