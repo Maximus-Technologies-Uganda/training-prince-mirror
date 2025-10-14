@@ -3,7 +3,9 @@
 > How to review me:
 > - Go to GitHub Actions → latest run for `review-packet` on your PR.
 > - Download the artifact named `review-packet`.
-> - Open `review-artifacts/index.html` for the Coverage Index and links (Backend + UI Coverage sections).
+> - Open `review-artifacts/index.html` for the **unified Coverage Index** (main entry point for both backend and UI test coverage).
+> - The Coverage Index provides direct links to Backend Coverage and UI Coverage sections.
+> - Use the Coverage Index to navigate between CLI coverage reports and frontend UI coverage reports.
 
 ### PR Spec requirement
 - Every PR must include a line in the description with a link to the specification or Linear ticket:
@@ -30,6 +32,33 @@ Modern web UI built with Vite, featuring reusable core logic, accessibility supp
 - **To-Do**: Task management with due dates and priority filtering
 - **Stopwatch**: Precision timing with lap tracking
 
+### UI Screenshots
+
+#### Quote Explorer
+<p align="center">
+  <img src="frontend/quote-ui.png" alt="Quote UI screenshot showing random quote display with author filtering" width="600" />
+</p>
+
+#### Expense Tracker
+<p align="center">
+  <img src="frontend/expense-ui.png" alt="Expense UI screenshot showing expense form and tracking table" width="600" />
+</p>
+
+#### Temperature Converter
+<p align="center">
+  <img src="frontend/temp-ui.png" alt="Temperature Converter UI screenshot showing conversion interface" width="600" />
+</p>
+
+#### To-Do Manager
+<p align="center">
+  <img src="frontend/todo-ui.png" alt="To-Do UI screenshot showing task management interface" width="600" />
+</p>
+
+#### Stopwatch Timer
+<p align="center">
+  <img src="frontend/stopwatch-ui.png" alt="Stopwatch UI screenshot showing timer controls and lap tracking" width="600" />
+</p>
+
 ### Development
 ```bash
 # Start dev server
@@ -41,22 +70,6 @@ cd frontend && npm test
 # Run E2E tests
 npm run test:e2e
 ```
-
-<p align="center">
-  <img src="frontend/quote-ui.png" alt="Quote UI screenshot" width="600" />
-</p>
-
-<p align="center">
-  <img src="frontend/expense-ui.png" alt="Expense UI screenshot" width="600" />
-</p>
-
-<p align="center">
-  <img src="frontend/todo-ui.png" alt="To-Do UI screenshot" width="600" />
-</p>
-
-<p align="center">
-  <img src="frontend/stopwatch-ui.png" alt="Stopwatch UI screenshot" width="600" />
-</p>
 
 ### Installation
 - **Clone the repository**
@@ -225,7 +238,16 @@ node src/quote/index.js --by "Unknown Author"
 ```
 
 ## Coverage Index
-The Coverage Index and per-app HTML reports are packaged in the GitHub Actions artifact named `review-packet` (on the `development` branch and PRs). Download the artifact and open `review-artifacts/index.html`. The Coverage Index now includes dedicated UI coverage reports alongside the CLI summaries.
+The **unified Coverage Index** (`review-artifacts/index.html`) is the main entry point for all test coverage reports. It's packaged in the GitHub Actions artifact named `review-packet` (available on the `development` branch and PRs).
+
+### How to Access Coverage Reports
+1. **Download the artifact**: Go to GitHub Actions → latest run for `review-packet` on your PR
+2. **Open the Coverage Index**: Navigate to `review-artifacts/index.html` in the downloaded artifact
+3. **Navigate coverage sections**: Use the Coverage Index to access both Backend Coverage and UI Coverage sections
+
+### Coverage Sections Available
+- **Backend Coverage**: CLI application test coverage (Hello, Stopwatch, Temp-Converter, Expense, To-Do, Quote)
+- **UI Coverage**: Frontend application test coverage (To-Do UI, Stopwatch UI, and other UI components)
 
 ### UI Coverage (To‑Do and Stopwatch)
 
