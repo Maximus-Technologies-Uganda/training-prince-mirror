@@ -47,11 +47,11 @@
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
-- [ ] T004 [P] Contract test StopwatchUI class in `frontend/src/ui-stopwatch/stopwatch-ui.test.js`
-- [ ] T005 [P] Contract test backend integration in `tests/stopwatch-ui-integration.test.js`
-- [ ] T006 [P] Integration test timer operations in `tests/stopwatch-ui-timer.test.js`
-- [ ] T007 [P] Integration test CSV export in `tests/stopwatch-ui-export.test.js`
-- [ ] T008 [P] E2E smoke test in `frontend/e2e/stopwatch.smoke.spec.ts`
+- [x] T004 [P] Contract test StopwatchUI class in `frontend/src/ui-stopwatch/stopwatch-ui.test.js`
+- [x] T005 [P] Contract test backend integration in `tests/stopwatch-ui-integration.test.js`
+- [x] T006 [P] Integration test timer operations in `tests/stopwatch-ui-timer.test.js`
+- [x] T007 [P] Integration test CSV export in `tests/stopwatch-ui-export.test.js`
+- [x] T008 [P] E2E smoke test in `frontend/e2e/stopwatch.smoke.spec.ts`
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 - [ ] T009 [P] Timer state management in `frontend/src/ui-stopwatch/stopwatch-ui.js`
