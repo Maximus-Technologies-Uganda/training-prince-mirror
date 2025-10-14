@@ -21,6 +21,8 @@
 
 Modern web UI built with Vite, featuring reusable core logic, accessibility support, and comprehensive test coverage.
 
+🌐 **Live Demo**: [View the application on GitHub Pages](https://maximus-technologies-uganda.github.io/training-prince/)
+
 ### Available UIs
 - **Quote**: Random quotes with author filtering
 - **Expense**: Personal expense tracking with categories
