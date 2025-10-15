@@ -46,7 +46,7 @@ Modern web UI built with Vite, featuring reusable core logic, accessibility supp
 
 #### Temperature Converter
 <p align="center">
-  <img src="frontend/temp-ui.png" alt="Temperature Converter UI screenshot showing conversion interface" width="600" />
+  <em>Screenshot coming soon - Temperature Converter UI with Celsius/Fahrenheit conversion</em>
 </p>
 
 #### To-Do Manager
