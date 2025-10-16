@@ -42,10 +42,10 @@
 - **Testing**: `frontend/e2e/`, `tests/`
 
 ## Phase 3.1: Setup
-- [ ] T001 Create /data/ directory structure for state files
-- [ ] T002 Update .gitignore to include /data/ directory
-- [ ] T003 [P] Configure CI pipeline for unified coverage reporting
-- [ ] T004 [P] Setup Playwright configuration for smoke tests
+- [x] T001 Create /data/ directory structure for state files
+- [x] T002 Update .gitignore to include /data/ directory
+- [x] T003 [P] Configure CI pipeline for unified coverage reporting
+- [x] T004 [P] Setup Playwright configuration for smoke tests
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**

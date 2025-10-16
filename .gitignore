@@ -38,3 +38,5 @@ coverage-summary.json
 # OS generated files
 .DS_Store
 Thumbs.db
+# Data directory for runtime state files
+data/
