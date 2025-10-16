@@ -1,16 +1,27 @@
-# Week 2 CLI Projects - Hardening Complete
+# Day 0: CI Maturity, Review Packet Parity, and Repository Hygiene
 
-> How to review me:
-> - Go to GitHub Actions → latest run for `review-packet` on your PR.
+> **How to review me:**
+> - Go to GitHub Actions → latest run for `Day 0 CI Pipeline` on your PR.
 > - Download the artifact named `review-packet`.
 > - Open `review-artifacts/index.html` for the **unified Coverage Index** (main entry point for both backend and UI test coverage).
 > - The Coverage Index provides direct links to Backend Coverage and UI Coverage sections.
 > - Use the Coverage Index to navigate between CLI coverage reports and frontend UI coverage reports.
+> - Check `review-artifacts/review.md` for comprehensive review metadata including environment details, commit history, and coverage summaries.
+> - Review `test-results/smoke-test-report.html` for E2E test results and artifacts.
 
 ### PR Spec requirement
 - Every PR must include a line in the description with a link to the specification or Linear ticket:
   - `Spec: https://...` (Linear issue URL or external spec doc)
 - PR titles must start with the Linear key, for example: `DEV-123: Short description`.
+
+## Day 0 CI Maturity Status
+
+✅ **Unified Coverage Reporting**: Backend and UI coverage consolidated into single review packet
+✅ **Repository Hygiene**: State files migrated to `/data/` directory with proper `.gitignore` configuration
+✅ **E2E Smoke Testing**: Playwright smoke tests for all 5 applications with artifact capture
+✅ **Enriched Review Metadata**: Comprehensive review.md with environment details, commit history, and coverage summaries
+✅ **CI Pipeline Integration**: 4-phase pipeline with artifact handling and failure recovery
+✅ **Review Packet Navigation**: Interactive index.html with coverage summaries and test results
 
 ## Week 2 Status
 

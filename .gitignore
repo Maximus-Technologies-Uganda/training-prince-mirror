@@ -40,3 +40,6 @@ coverage-summary.json
 Thumbs.db
 # Data directory for runtime state files
 data/
+
+# Runtime state files
+/data/

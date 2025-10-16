@@ -81,11 +81,11 @@
 - [x] T030 Enrich review.md with environment and commit metadata
 
 ## Phase 3.5: Repository Hygiene
-- [ ] T031 Migrate existing state files to /data/ directory
-- [ ] T032 Handle state file migration conflicts
-- [ ] T033 Clean up stray and temporary files
-- [ ] T034 Update README.md with "How to review me" section
-- [ ] T035 Verify .gitignore configuration
+- [x] T031 Migrate existing state files to /data/ directory
+- [x] T032 Handle state file migration conflicts
+- [x] T033 Clean up stray and temporary files
+- [x] T034 Update README.md with "How to review me" section
+- [x] T035 Verify .gitignore configuration
 
 ## Phase 3.6: Smoke Testing
 - [ ] T036 [P] Create quote filtering smoke test in frontend/e2e/quote.spec.js
