@@ -1,0 +1,83 @@
+name: Update Linear Status
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_ids:
+        description: 'Comma-separated task IDs to mark as done'
+        required: true
+        default: 'T001,T002,T003,T004'
+
+jobs:
+  update-linear:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Linear Status
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          LINEAR_TEAM_NAME: Prince Training
+          LINEAR_PROJECT_NAME: Training-Prince
+        run: |
+          echo "Updating Linear status for tasks: ${{ github.event.inputs.task_ids }}"
+          
+          # Split task IDs
+          IFS=',' read -ra TASKS <<< "${{ github.event.inputs.task_ids }}"
+          
+          # Get team ID
+          TEAM_QUERY='query { teams(first: 200) { nodes { id name key } } }'
+          TEAM_RESPONSE=$(curl -s -X POST \
+              -H "Content-Type: application/json" \
+              -H "Authorization: $LINEAR_API_KEY" \
+              -d "{\"query\": \"$TEAM_QUERY\"}" \
+              https://api.linear.app/graphql)
+          
+          TEAM_ID=$(echo "$TEAM_RESPONSE" | jq -r '.data.teams.nodes[] | select(.name == "Prince Training") | .id')
+          echo "Team ID: $TEAM_ID"
+          
+          # Get team states
+          STATES_QUERY="query(\$teamId: String!) { team(id: \$teamId) { id states(first: 100) { nodes { id name type } } } }"
+          STATES_RESPONSE=$(curl -s -X POST \
+              -H "Content-Type: application/json" \
+              -H "Authorization: $LINEAR_API_KEY" \
+              -d "{\"query\": \"$STATES_QUERY\", \"variables\": {\"teamId\": \"$TEAM_ID\"}}" \
+              https://api.linear.app/graphql)
+          
+          # Find "Done" state
+          DONE_STATE_ID=$(echo "$STATES_RESPONSE" | jq -r '.data.team.states.nodes[] | select(.name == "Done" or .name == "done" or .name == "Completed" or .name == "completed") | .id' | head -1)
+          echo "Done State ID: $DONE_STATE_ID"
+          
+          # Find issues by title pattern
+          ISSUE_QUERY="query(\$teamId: String!) { issues(first: 200, filter: { team: { id: { eq: \$teamId } } }) { nodes { id identifier title } } }"
+          ISSUE_RESPONSE=$(curl -s -X POST \
+              -H "Content-Type: application/json" \
+              -H "Authorization: $LINEAR_API_KEY" \
+              -d "{\"query\": \"$ISSUE_QUERY\", \"variables\": {\"teamId\": \"$TEAM_ID\"}}" \
+              https://api.linear.app/graphql)
+          
+          # Update each task
+          for task in "${TASKS[@]}"; do
+              echo "Updating $task..."
+              
+              # Find the specific task issue
+              ISSUE_ID=$(echo "$ISSUE_RESPONSE" | jq -r ".data.issues.nodes[] | select(.title | contains(\"$task\")) | .id" | head -1)
+              
+              if [ -n "$ISSUE_ID" ]; then
+                  # Update issue status
+                  UPDATE_MUTATION="mutation(\$id: String!, \$stateId: String!) { issueUpdate(id: \$id, input: { stateId: \$stateId }) { success } }"
+                  UPDATE_RESPONSE=$(curl -s -X POST \
+                      -H "Content-Type: application/json" \
+                      -H "Authorization: $LINEAR_API_KEY" \
+                      -d "{\"query\": \"$UPDATE_MUTATION\", \"variables\": {\"id\": \"$ISSUE_ID\", \"stateId\": \"$DONE_STATE_ID\"}}" \
+                      https://api.linear.app/graphql)
+                  
+                  SUCCESS=$(echo "$UPDATE_RESPONSE" | jq -r '.data.issueUpdate.success')
+                  
+                  if [ "$SUCCESS" = "true" ]; then
+                      echo "✅ Updated $task to Done"
+                  else
+                      echo "❌ Failed to update $task"
+                  fi
+              else
+                  echo "❌ Could not find issue for $task"
+              fi
+          done
