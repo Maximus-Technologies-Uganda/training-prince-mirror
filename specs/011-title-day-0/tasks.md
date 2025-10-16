@@ -88,13 +88,13 @@
 - [x] T035 Verify .gitignore configuration
 
 ## Phase 3.6: Smoke Testing
-- [ ] T036 [P] Create quote filtering smoke test in frontend/e2e/quote.spec.js
-- [ ] T037 [P] Create expense calculation smoke test in frontend/e2e/expense.smoke.spec.ts
-- [ ] T038 [P] Create temperature conversion smoke test in frontend/e2e/temp.smoke.spec.ts
-- [ ] T039 [P] Create todo management smoke test in frontend/e2e/todo.smoke.spec.ts
-- [ ] T040 [P] Create stopwatch timing smoke test in frontend/e2e/stopwatch.smoke.spec.ts
-- [ ] T041 Configure Playwright artifact capture on failure
-- [ ] T042 Integrate smoke tests into CI pipeline
+- [x] T036 [P] Create quote filtering smoke test in frontend/e2e/quote.spec.js
+- [x] T037 [P] Create expense calculation smoke test in frontend/e2e/expense.smoke.spec.ts
+- [x] T038 [P] Create temperature conversion smoke test in frontend/e2e/temp.smoke.spec.ts
+- [x] T039 [P] Create todo management smoke test in frontend/e2e/todo.smoke.spec.ts
+- [x] T040 [P] Create stopwatch timing smoke test in frontend/e2e/stopwatch.smoke.spec.ts
+- [x] T041 Configure Playwright artifact capture on failure
+- [x] T042 Integrate smoke tests into CI pipeline
 
 ## Phase 3.7: Polish
 - [ ] T043 [P] Unit tests for coverage report models in tests/unit/test-coverage-models.js
