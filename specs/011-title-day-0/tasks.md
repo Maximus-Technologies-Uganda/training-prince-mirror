@@ -49,14 +49,14 @@
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
-- [ ] T005 [P] Contract test coverage generation API in tests/contract/test-coverage-generation.js
-- [ ] T006 [P] Contract test review packet generation API in tests/contract/test-review-packet-generation.js
-- [ ] T007 [P] Contract test state file migration API in tests/contract/test-state-file-migration.js
-- [ ] T008 [P] Contract test smoke test execution API in tests/contract/test-smoke-test-execution.js
-- [ ] T009 [P] Contract test review packet access API in tests/contract/test-review-packet-access.js
-- [ ] T010 [P] Integration test unified coverage reporting in tests/integration/test-coverage-reporting.js
-- [ ] T011 [P] Integration test repository hygiene in tests/integration/test-repository-hygiene.js
-- [ ] T012 [P] Integration test smoke test execution in tests/integration/test-smoke-tests.js
+- [x] T005 [P] Contract test coverage generation API in tests/contract/test-coverage-generation.js
+- [x] T006 [P] Contract test review packet generation API in tests/contract/test-review-packet-generation.js
+- [x] T007 [P] Contract test state file migration API in tests/contract/test-state-file-migration.js
+- [x] T008 [P] Contract test smoke test execution API in tests/contract/test-smoke-test-execution.js
+- [x] T009 [P] Contract test review packet access API in tests/contract/test-review-packet-access.js
+- [x] T010 [P] Integration test unified coverage reporting in tests/integration/test-coverage-reporting.js
+- [x] T011 [P] Integration test repository hygiene in tests/integration/test-repository-hygiene.js
+- [x] T012 [P] Integration test smoke test execution in tests/integration/test-smoke-tests.js
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 - [ ] T013 [P] Coverage Report entity model in src/models/coverage-report.js
