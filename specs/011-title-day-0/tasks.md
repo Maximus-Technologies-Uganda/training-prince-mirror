@@ -65,11 +65,11 @@
 - [x] T016 [P] State File entity model in src/models/state-file.js
 - [x] T017 [P] Smoke Test entity model in src/models/smoke-test.js
 - [x] T018 [P] Review Metadata entity model in src/models/review-metadata.js
-- [ ] T019 Coverage generation service in scripts/generate-coverage.js
-- [ ] T020 Review packet generation service in scripts/generate-review-packet.js
-- [ ] T021 State file migration service in scripts/migrate-state-files.js
-- [ ] T022 Smoke test execution service in scripts/run-smoke-tests.js
-- [ ] T023 Review packet access service in scripts/access-review-packet.js
+- [x] T019 Coverage generation service in scripts/generate-coverage.js
+- [x] T020 Review packet generation service in scripts/generate-review-packet.js
+- [x] T021 State file migration service in scripts/migrate-state-files.js
+- [x] T022 Smoke test execution service in scripts/run-smoke-tests.js
+- [x] T023 Review packet access service in scripts/access-review-packet.js
 
 ## Phase 3.4: Integration
 - [ ] T024 Integrate coverage generation into CI pipeline
