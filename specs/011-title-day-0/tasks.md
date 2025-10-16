@@ -59,12 +59,12 @@
 - [x] T012 [P] Integration test smoke test execution in tests/integration/test-smoke-tests.js
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T013 [P] Coverage Report entity model in src/models/coverage-report.js
-- [ ] T014 [P] UI Coverage Report entity model in src/models/ui-coverage-report.js
-- [ ] T015 [P] Review Packet entity model in src/models/review-packet.js
-- [ ] T016 [P] State File entity model in src/models/state-file.js
-- [ ] T017 [P] Smoke Test entity model in src/models/smoke-test.js
-- [ ] T018 [P] Review Metadata entity model in src/models/review-metadata.js
+- [x] T013 [P] Coverage Report entity model in src/models/coverage-report.js
+- [x] T014 [P] UI Coverage Report entity model in src/models/ui-coverage-report.js
+- [x] T015 [P] Review Packet entity model in src/models/review-packet.js
+- [x] T016 [P] State File entity model in src/models/state-file.js
+- [x] T017 [P] Smoke Test entity model in src/models/smoke-test.js
+- [x] T018 [P] Review Metadata entity model in src/models/review-metadata.js
 - [ ] T019 Coverage generation service in scripts/generate-coverage.js
 - [ ] T020 Review packet generation service in scripts/generate-review-packet.js
 - [ ] T021 State file migration service in scripts/migrate-state-files.js
