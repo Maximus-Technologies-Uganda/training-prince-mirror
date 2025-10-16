@@ -179,3 +179,4 @@ Task: "Create stopwatch timing smoke test in frontend/e2e/stopwatch.smoke.spec.t
 - [x] Parallel tasks truly independent
 - [x] Each task specifies exact file path
 - [x] No task modifies same file as another [P] task
+# Trigger workflow
