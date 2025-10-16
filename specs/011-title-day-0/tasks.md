@@ -97,14 +97,14 @@
 - [x] T042 Integrate smoke tests into CI pipeline
 
 ## Phase 3.7: Polish
-- [ ] T043 [P] Unit tests for coverage report models in tests/unit/test-coverage-models.js
-- [ ] T044 [P] Unit tests for state file models in tests/unit/test-state-models.js
-- [ ] T045 [P] Unit tests for review packet models in tests/unit/test-review-models.js
-- [ ] T046 Performance validation (CI pipeline <10 minutes)
-- [ ] T047 [P] Update documentation in docs/ci-pipeline.md
-- [ ] T048 Validate quickstart.md scenarios
-- [ ] T049 Remove any code duplication
-- [ ] T050 Final validation and cleanup
+- [x] T043 [P] Unit tests for coverage report models in tests/unit/test-coverage-models.js
+- [x] T044 [P] Unit tests for state file models in tests/unit/test-state-models.js
+- [x] T045 [P] Unit tests for review packet models in tests/unit/test-review-models.js
+- [x] T046 Performance validation (CI pipeline <10 minutes)
+- [x] T047 [P] Update documentation in docs/ci-pipeline.md
+- [x] T048 Validate quickstart.md scenarios
+- [x] T049 Remove any code duplication
+- [x] T050 Final validation and cleanup
 
 ## Dependencies
 - Tests (T005-T012) before implementation (T013-T023)
