@@ -72,13 +72,13 @@
 - [x] T023 Review packet access service in scripts/access-review-packet.js
 
 ## Phase 3.4: Integration
-- [ ] T024 Integrate coverage generation into CI pipeline
-- [ ] T025 Integrate review packet generation into CI pipeline
-- [ ] T026 Integrate smoke test execution into CI pipeline
-- [ ] T027 Configure artifact upload and failure handling
-- [ ] T028 Setup review-artifacts directory structure
-- [ ] T029 Generate index.html for review packet navigation
-- [ ] T030 Enrich review.md with environment and commit metadata
+- [x] T024 Integrate coverage generation into CI pipeline
+- [x] T025 Integrate review packet generation into CI pipeline
+- [x] T026 Integrate smoke test execution into CI pipeline
+- [x] T027 Configure artifact upload and failure handling
+- [x] T028 Setup review-artifacts directory structure
+- [x] T029 Generate index.html for review packet navigation
+- [x] T030 Enrich review.md with environment and commit metadata
 
 ## Phase 3.5: Repository Hygiene
 - [ ] T031 Migrate existing state files to /data/ directory

@@ -36,7 +36,11 @@ jobs:
         
     - name: Generate unified coverage report
       run: |
-        node scripts/generate-coverage-index.js
+        node scripts/generate-coverage.js
+        
+    - name: Generate review packet
+      run: |
+        node scripts/generate-review-packet.js
         
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4

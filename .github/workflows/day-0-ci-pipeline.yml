@@ -1,0 +1,177 @@
+name: Day 0 CI Pipeline
+
+on:
+  push:
+    branches: [ development, main ]
+  pull_request:
+    branches: [ development, main ]
+
+jobs:
+  # Phase 1: Repository Hygiene
+  repository-hygiene:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        cd frontend && npm ci
+        
+    - name: Migrate state files
+      run: |
+        node scripts/migrate-state-files.js migrate
+        
+    - name: Verify repository hygiene
+      run: |
+        node scripts/migrate-state-files.js verify
+        
+    - name: Upload hygiene report
+      uses: actions/upload-artifact@v4
+      with:
+        name: repository-hygiene-report
+        path: data/
+        retention-days: 30
+
+  # Phase 2: Coverage and Review Packet
+  coverage-and-review:
+    runs-on: ubuntu-latest
+    needs: repository-hygiene
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        cd frontend && npm ci
+        
+    - name: Run backend tests with coverage
+      run: |
+        npm run test:coverage
+        
+    - name: Run frontend tests with coverage
+      run: |
+        cd frontend
+        npm run test:coverage
+        
+    - name: Generate unified coverage report
+      run: |
+        node scripts/generate-coverage.js
+        
+    - name: Generate review packet
+      run: |
+        node scripts/generate-review-packet.js
+        
+    - name: Validate review packet
+      run: |
+        node scripts/access-review-packet.js validate
+        
+    - name: Upload review packet
+      uses: actions/upload-artifact@v4
+      with:
+        name: review-packet
+        path: review-artifacts/
+        retention-days: 30
+
+  # Phase 3: Smoke Tests
+  smoke-tests:
+    runs-on: ubuntu-latest
+    needs: coverage-and-review
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        cd frontend && npm ci
+        
+    - name: Install Playwright browsers
+      run: |
+        cd frontend
+        npx playwright install --with-deps
+        
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm run build
+        
+    - name: Start frontend server
+      run: |
+        cd frontend
+        npm run preview &
+        sleep 10
+        
+    - name: Execute smoke tests
+      run: |
+        node scripts/run-smoke-tests.js run
+        
+    - name: Upload smoke test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: smoke-test-results
+        path: test-results/
+        retention-days: 30
+
+  # Phase 4: Final Integration
+  integration-summary:
+    runs-on: ubuntu-latest
+    needs: [repository-hygiene, coverage-and-review, smoke-tests]
+    if: always()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      
+    - name: Generate integration summary
+      run: |
+        echo "# Day 0 CI Pipeline Summary" > integration-summary.md
+        echo "" >> integration-summary.md
+        echo "## Job Status" >> integration-summary.md
+        echo "- Repository Hygiene: ${{ needs.repository-hygiene.result }}" >> integration-summary.md
+        echo "- Coverage & Review: ${{ needs.coverage-and-review.result }}" >> integration-summary.md
+        echo "- Smoke Tests: ${{ needs.smoke-tests.result }}" >> integration-summary.md
+        echo "" >> integration-summary.md
+        echo "## Artifacts Generated" >> integration-summary.md
+        echo "- Repository Hygiene Report" >> integration-summary.md
+        echo "- Review Packet" >> integration-summary.md
+        echo "- Smoke Test Results" >> integration-summary.md
+        echo "" >> integration-summary.md
+        echo "Generated at: $(date)" >> integration-summary.md
+        
+    - name: Upload integration summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: integration-summary
+        path: integration-summary.md
+        retention-days: 30
