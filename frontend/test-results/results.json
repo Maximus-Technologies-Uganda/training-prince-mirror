@@ -10,7 +10,9 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {},
+    "metadata": {
+      "actualWorkers": 1
+    },
     "preserveOutput": "always",
     "reporter": [
       [
@@ -40,7 +42,9 @@
         "outputDir": "/Users/prnceb/Desktop/WORK/hello-world/frontend/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "",
         "name": "",
         "testDir": "/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e",
@@ -54,7 +58,7 @@
     "shard": null,
     "updateSnapshots": "missing",
     "updateSourceMethod": "patch",
-    "version": "1.56.0",
+    "version": "1.55.1",
     "workers": 4,
     "webServer": {
       "command": "npm run preview -- --port 5173 --strictPort",
@@ -63,29 +67,166 @@
       "timeout": 60000
     }
   },
-  "suites": [],
-  "errors": [
+  "suites": [
     {
-      "message": "Error: Playwright Test did not expect test.describe() to be called here.\nMost common reasons include:\n- You are calling test.describe() in a configuration file.\n- You are calling test.describe() in a file that is imported by the configuration file.\n- You have two different versions of @playwright/test. This usually happens\n  when one of the dependencies in your package.json depends on @playwright/test.",
-      "stack": "Error: Playwright Test did not expect test.describe() to be called here.\nMost common reasons include:\n- You are calling test.describe() in a configuration file.\n- You are calling test.describe() in a file that is imported by the configuration file.\n- You have two different versions of @playwright/test. This usually happens\n  when one of the dependencies in your package.json depends on @playwright/test.\n    at TestTypeImpl._currentSuite (/Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/playwright/lib/common/testType.js:74:13)\n    at TestTypeImpl._describe (/Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/playwright/lib/common/testType.js:114:24)\n    at Function.describe (/Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/playwright/lib/transform/transform.js:275:12)\n    at /Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/stopwatch.smoke.spec.ts:3:6",
-      "location": {
-        "file": "/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/stopwatch.smoke.spec.ts",
-        "column": 6,
-        "line": 3
-      },
-      "snippet": "   at stopwatch.smoke.spec.ts:3\n\n  1 | import { test, expect } from '@playwright/test';\n  2 |\n> 3 | test.describe('Stopwatch Application Smoke Test', () => {\n    |      ^\n  4 |   test('should start timer and verify time display', async ({ page }) => {\n  5 |     // Navigate to stopwatch application\n  6 |     await page.goto('/stopwatch');"
-    },
-    {
-      "message": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.",
-      "stack": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments."
+      "title": "quote.smoke.spec.ts",
+      "file": "quote.smoke.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Quote Application Smoke Test",
+          "file": "quote.smoke.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should display random quote and allow filtering",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 32109,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/quote.smoke.spec.ts",
+                            "column": 16,
+                            "line": 16
+                          },
+                          "message": "Error: page.waitForFunction: Test timeout of 30000ms exceeded.\n\n  14 |     \n  15 |     // Wait for actual quote to load (not just \"Loading...\")\n> 16 |     await page.waitForFunction(() => {\n     |                ^\n  17 |       const quoteText = document.querySelector('#quote-text');\n  18 |       return quoteText && quoteText.textContent !== 'Loading…';\n  19 |     }, { timeout: 10000 });\n    at /Users/prnceb/Desktop/WORK/hello-world/frontend/e2e/quote.smoke.spec.ts:16:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-17T08:08:58.803Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/prnceb/Desktop/WORK/hello-world/frontend/test-results/quote.smoke-Quote-Applicat-84f77-m-quote-and-allow-filtering/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/prnceb/Desktop/WORK/hello-world/frontend/test-results/quote.smoke-Quote-Applicat-84f77-m-quote-and-allow-filtering/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/prnceb/Desktop/WORK/hello-world/frontend/test-results/quote.smoke-Quote-Applicat-84f77-m-quote-and-allow-filtering/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "18420e625282ec8ed8e9-615bbe5bf28368ab681a",
+              "file": "quote.smoke.spec.ts",
+              "line": 4,
+              "column": 3
+            },
+            {
+              "title": "should handle empty filter gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 466,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-17T08:09:32.323Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "18420e625282ec8ed8e9-bb21441b629eb9ec4eb2",
+              "file": "quote.smoke.spec.ts",
+              "line": 50,
+              "column": 3
+            },
+            {
+              "title": "should handle invalid filter gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 711,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-17T08:09:33.092Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "18420e625282ec8ed8e9-202787f7020b01ad7fa8",
+              "file": "quote.smoke.spec.ts",
+              "line": 61,
+              "column": 3
+            }
+          ]
+        }
+      ]
     }
   ],
+  "errors": [],
   "stats": {
-    "startTime": "2025-10-16T18:56:29.381Z",
-    "duration": 392.856,
-    "expected": 0,
+    "startTime": "2025-10-17T08:08:57.234Z",
+    "duration": 36611.625,
+    "expected": 2,
     "skipped": 0,
-    "unexpected": 0,
+    "unexpected": 1,
     "flaky": 0
   }
 }

@@ -156,7 +156,7 @@ class CoverageGenerator {
     
     // Map backend app names to frontend UI names
     const uiAppMapping = {
-      'quote': 'quote', // No UI exists yet
+      'quote': 'main', // Quote UI is in main.js
       'expense': 'expense',
       'temp-converter': 'temp',
       'todo': 'todo',
@@ -201,6 +201,11 @@ class CoverageGenerator {
     
     if (!fs.existsSync(frontendDir)) {
       throw new Error(`Frontend directory not found: ${frontendDir}`);
+    }
+
+    // Special handling for quote UI which is in main.js
+    if (uiAppName === 'main') {
+      return await this.generateMainJSCoverage(appName, frontendDir);
     }
 
     // Check if UI components exist for this app
@@ -268,6 +273,70 @@ class CoverageGenerator {
             include: `src/ui-${uiAppName}/**/*.js`,
             threshold: 40
           }
+        });
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Generate coverage report for quote UI in main.js
+   */
+  async generateMainJSCoverage(appName, frontendDir) {
+    const coverageDir = path.join(ARTIFACTS_DIR, `ui-coverage-${appName}`);
+    
+    // Ensure coverage directory exists
+    if (!fs.existsSync(coverageDir)) {
+      fs.mkdirSync(coverageDir, { recursive: true });
+    }
+    
+    try {
+      // Run tests with coverage for main.js (quote UI)
+      const output = execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/main.js"`, {
+        cwd: frontendDir,
+        stdio: 'pipe',
+        encoding: 'utf8'
+      });
+      
+      // Parse coverage data from JSON output
+      const lines = output.trim().split('\n');
+      const jsonLine = lines.find(line => line.startsWith('{') && line.includes('coverageMap'));
+      if (!jsonLine) {
+        throw new Error('No coverage data found in test output');
+      }
+      
+      const testResult = JSON.parse(jsonLine);
+      const coverageData = this.parseCoverageFromTestResult(testResult);
+      
+      return new UICoverageReport({
+        application_name: appName,
+        coverage_percentage: coverageData.total.coverage_percentage,
+        statement_coverage: coverageData.total.statements,
+        branch_coverage: coverageData.total.branches,
+        function_coverage: coverageData.total.functions,
+        line_coverage: coverageData.total.lines,
+        report_path: path.join(coverageDir, 'lcov-report', 'index.html'),
+        test_count: testResult.numTotalTests || 0,
+        vitest_config: {
+          include: 'src/main.js',
+          threshold: 40
+        }
+      });
+      
+    } catch (error) {
+      // If tests fail, try to extract partial coverage
+      if (fs.existsSync(path.join(coverageDir, 'coverage-final.json'))) {
+        const coverageData = this.readCoverageData(coverageDir);
+        return new UICoverageReport({
+          application_name: appName,
+          coverage_percentage: coverageData.total.coverage_percentage,
+          statement_coverage: coverageData.total.statements,
+          branch_coverage: coverageData.total.branches,
+          function_coverage: coverageData.total.functions,
+          line_coverage: coverageData.total.lines,
+          report_path: path.join(coverageDir, 'lcov-report', 'index.html'),
+          test_count: 0,
+          error_message: 'Tests failed but coverage data available'
         });
       }
       throw error;
