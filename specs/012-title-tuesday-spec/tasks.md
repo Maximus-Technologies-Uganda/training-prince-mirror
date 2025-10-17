@@ -40,12 +40,12 @@
 - **Web app**: `backend/src/`, `frontend/src/`
 - Paths based on plan.md structure: separate backend logic and frontend UI
 
-## Phase 3.1: Setup
+### Phase 3.1: Setup
 - [ ] T001 Verify existing project structure and dependencies
 - [ ] T002 [P] Configure ESLint and Prettier for frontend UI modules
 - [ ] T003 [P] Update Vitest configuration for new test files
 
-## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
+### Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 - [ ] T004 [P] Contract test quote filtering in tests/contract/test_quote_filtering.js
 - [ ] T005 [P] Contract test temperature conversion in tests/contract/test_temperature_converter.js
@@ -56,7 +56,7 @@
 - [ ] T010 [P] E2E test quote UI filtering in frontend/tests/e2e/quote-ui.spec.js
 - [ ] T011 [P] E2E test temperature converter in frontend/tests/e2e/temp-ui.spec.js
 
-## Phase 3.3: Core Implementation (ONLY after tests are failing)
+### Phase 3.3: Core Implementation (ONLY after tests are failing)
 - [ ] T012 [P] Enhanced quote filtering logic in src/quote/quote.js
 - [ ] T013 [P] Enhanced temperature conversion logic in src/temp-converter/temp-converter.js
 - [ ] T014 [P] Quote UI debounced filter implementation in frontend/src/quote-ui/quote-ui.js
@@ -64,7 +64,7 @@
 - [ ] T016 [P] Error handling utilities in frontend/src/components/error-handler.js
 - [ ] T017 [P] Formatting utilities in frontend/src/components/formatter.js
 
-## Phase 3.4: Integration
+### Phase 3.4: Integration
 - [ ] T018 Connect quote UI to enhanced backend filtering logic
 - [ ] T019 Connect temperature UI to enhanced backend conversion logic
 - [ ] T020 Implement debounced input handling for quote filter
@@ -72,7 +72,7 @@
 - [ ] T022 Add error state display for both UIs
 - [ ] T023 Add loading states for filter operations
 
-## Phase 3.5: Polish
+### Phase 3.5: Polish
 - [ ] T024 [P] Performance optimization for debounced filtering
 - [ ] T025 [P] Accessibility improvements for error messages
 - [ ] T026 [P] Update documentation in quickstart.md
