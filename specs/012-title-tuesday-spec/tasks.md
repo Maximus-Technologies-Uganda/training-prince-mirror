@@ -65,12 +65,12 @@
 - [x] T017 [P] Formatting utilities in frontend/src/components/formatter.js
 
 ### Phase 3.4: Integration
-- [ ] T018 Connect quote UI to enhanced backend filtering logic
-- [ ] T019 Connect temperature UI to enhanced backend conversion logic
-- [ ] T020 Implement debounced input handling for quote filter
-- [ ] T021 Implement input validation for temperature converter
-- [ ] T022 Add error state display for both UIs
-- [ ] T023 Add loading states for filter operations
+- [x] T018 Connect quote UI to enhanced backend filtering logic
+- [x] T019 Connect temperature UI to enhanced backend conversion logic
+- [x] T020 Implement debounced input handling for quote filter
+- [x] T021 Implement input validation for temperature converter
+- [x] T022 Add error state display for both UIs
+- [x] T023 Add loading states for filter operations
 
 ### Phase 3.5: Polish
 - [ ] T024 [P] Performance optimization for debounced filtering

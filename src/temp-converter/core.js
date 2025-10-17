@@ -77,13 +77,18 @@ export function validateNumericInput(input) {
     return true; // Empty input is valid
   }
   
+  // Empty string is valid (no input)
+  if (input === '') {
+    return true;
+  }
+  
   const trimmed = input.trim();
   if (trimmed === '') {
-    return true; // Empty string is valid
+    return false; // Whitespace-only input is invalid
   }
   
   // Check if it's a valid number (including decimals and negatives)
-  const numberRegex = /^-?\d*\.?\d+$/;
+  const numberRegex = /^[+-]?\d*\.?\d+$/;
   return numberRegex.test(trimmed);
 }
 

@@ -1,4 +1,16 @@
 import { describe, it, expect } from 'vitest';
+import { 
+  convertTemperatureWithFormatting,
+  validateNumericInput,
+  formatTemperatureDisplay,
+  handleConversionError,
+  createConversionResult,
+  validateUnitSelection,
+} from '../../../src/temp-converter/core.js';
+import { 
+  createTemperatureState,
+  updateTemperatureValue,
+} from './temp-ui.js';
 
 // These tests will FAIL until we implement the enhanced temperature converter logic
 // Based on data-model.md and research.md
@@ -198,38 +210,3 @@ describe('Temperature Converter Logic Unit Tests', () => {
     });
   });
 });
-
-// These functions will be implemented in the next phase
-// For now, they will cause the tests to fail as expected in TDD
-
-function convertTemperatureWithFormatting(value, fromUnit, toUnit, precision = 1) {
-  throw new Error('convertTemperatureWithFormatting not implemented yet');
-}
-
-function validateNumericInput(input) {
-  throw new Error('validateNumericInput not implemented yet');
-}
-
-function formatTemperatureDisplay(value, unit, precision) {
-  throw new Error('formatTemperatureDisplay not implemented yet');
-}
-
-function handleConversionError(error) {
-  throw new Error('handleConversionError not implemented yet');
-}
-
-function createConversionResult(value, unit, precision) {
-  throw new Error('createConversionResult not implemented yet');
-}
-
-function validateUnitSelection(fromUnit, toUnit) {
-  throw new Error('validateUnitSelection not implemented yet');
-}
-
-function createTemperatureState() {
-  throw new Error('createTemperatureState not implemented yet');
-}
-
-function updateTemperatureValue(state, value) {
-  throw new Error('updateTemperatureValue not implemented yet');
-}

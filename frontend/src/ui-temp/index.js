@@ -1,4 +1,5 @@
 import { convert } from '../../../src/temp-converter/index.js';
+import { initEnhancedTempUI } from '../temp-ui/temp-ui.js';
 
 function formatResult(value) {
   if (value === null || value === undefined) return '';
@@ -67,6 +68,17 @@ function update(els) {
 }
 
 export function initTempUI() {
+  // Try to initialize enhanced temp UI first
+  try {
+    initEnhancedTempUI();
+  } catch (error) {
+    console.error('Failed to initialize enhanced temp UI:', error);
+    // Fallback to basic functionality
+    initBasicTempUI();
+  }
+}
+
+function initBasicTempUI() {
   const els = getElements();
   // Defaults C -> F set in HTML
   const handler = () => update(els);

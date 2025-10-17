@@ -1,4 +1,16 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { 
+  filterQuotesByAuthor, 
+  validateFilterQuery, 
+  selectRandomQuoteWithSeed 
+} from '../../../src/quote/core.js';
+import { 
+  createDebouncedFilter,
+  createFilterState,
+  updateFilterState,
+  setFilterLoading,
+  setFilterError,
+} from './quote-ui.js';
 
 // These tests will FAIL until we implement the enhanced quote filter logic
 // Based on data-model.md and research.md
@@ -8,7 +20,7 @@ describe('Quote Filter Logic Unit Tests', () => {
     { id: '1', text: 'Hello world', author: 'John Doe' },
     { id: '2', text: 'Good morning', author: 'Jane Smith' },
     { id: '3', text: 'Another quote', author: 'John Smith' },
-    { id: '4', text: 'Test quote', author: 'Alice Johnson' },
+    { id: '4', text: 'Test quote', author: 'Alice Wilson' },
   ];
 
   describe('filterQuotesByAuthor', () => {
@@ -188,38 +200,3 @@ describe('Quote Filter Logic Unit Tests', () => {
     });
   });
 });
-
-// These functions will be implemented in the next phase
-// For now, they will cause the tests to fail as expected in TDD
-
-function filterQuotesByAuthor(quotes, query) {
-  throw new Error('filterQuotesByAuthor not implemented yet');
-}
-
-function createDebouncedFilter(callback, delay) {
-  throw new Error('createDebouncedFilter not implemented yet');
-}
-
-function selectRandomQuoteWithSeed(quotes, rng) {
-  throw new Error('selectRandomQuoteWithSeed not implemented yet');
-}
-
-function validateFilterQuery(query) {
-  throw new Error('validateFilterQuery not implemented yet');
-}
-
-function createFilterState(quotes) {
-  throw new Error('createFilterState not implemented yet');
-}
-
-function updateFilterState(state, query) {
-  throw new Error('updateFilterState not implemented yet');
-}
-
-function setFilterLoading(state, isLoading) {
-  throw new Error('setFilterLoading not implemented yet');
-}
-
-function setFilterError(state, error) {
-  throw new Error('setFilterError not implemented yet');
-}

@@ -1,5 +1,6 @@
 import './style.css';
 import { defaultQuotes, pickRandom, filterByAuthor } from '../../src/quote/core.js';
+import { initEnhancedQuoteUI } from './quote-ui/quote-ui.js';
 import { createExpenseUi } from './ui-expense/index.js';
 import { initTodoUI } from './ui-todo/index.js';
 import { initTempUI } from './ui-temp/index.js';
@@ -61,6 +62,21 @@ function applyFilter(elements, value) {
 }
 
 function initQuoteUI() {
+  const app = document.getElementById('app');
+  if (!app) return;
+  
+  // Initialize enhanced quote UI with debounced filtering and error handling
+  try {
+    initEnhancedQuoteUI(defaultQuotes);
+  } catch (error) {
+    console.error('Failed to initialize enhanced quote UI:', error);
+    // Fallback to basic functionality if enhanced UI fails
+    initBasicQuoteUI();
+  }
+}
+
+function initBasicQuoteUI() {
+  // Fallback implementation for basic functionality
   const elements = getElements();
   if (!elements.app) return;
 
