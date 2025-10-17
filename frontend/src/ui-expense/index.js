@@ -144,7 +144,10 @@ function render(state, els) {
       .filter((option) => option.value !== 'all')
       .map((option) => option.value);
 
-    if (existingOptions.length !== categories.length || !categories.every((cat) => existingOptions.includes(cat))) {
+    if (
+      existingOptions.length !== categories.length ||
+      !categories.every((cat) => existingOptions.includes(cat))
+    ) {
       // Rebuild options when categories change
       els.filter.innerHTML = '';
       const defaultOption = document.createElement('option');
@@ -217,4 +220,3 @@ export function initExpenseUI() {
   if (!root) return;
   createExpenseUi(root);
 }
-

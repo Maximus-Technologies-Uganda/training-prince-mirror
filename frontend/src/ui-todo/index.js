@@ -112,7 +112,10 @@ function renderList(state, elements, clock, setError) {
     textContainer.textContent = t.text;
     const toggle = document.createElement('button');
     toggle.textContent = t.completed ? 'Untoggle' : 'Toggle';
-    toggle.setAttribute('aria-label', `${t.completed ? 'Mark incomplete' : 'Mark complete'}: ${t.text}`);
+    toggle.setAttribute(
+      'aria-label',
+      `${t.completed ? 'Mark incomplete' : 'Mark complete'}: ${t.text}`,
+    );
     toggle.addEventListener('click', () => {
       const r = toggleItem(state, index);
       if (r.error) {

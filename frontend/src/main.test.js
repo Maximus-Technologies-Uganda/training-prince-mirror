@@ -60,7 +60,9 @@ describe('Quote UI interactions', () => {
     const quoteText = document.getElementById('quote-text');
 
     expect(quoteAuthor.textContent).toBe('Franklin D. Roosevelt');
-    expect(quoteText.textContent).toBe('The only limit to our realization of tomorrow is our doubts of today.');
+    expect(quoteText.textContent).toBe(
+      'The only limit to our realization of tomorrow is our doubts of today.',
+    );
   });
 
   it('displays a quote by the filtered author', async () => {

@@ -4,7 +4,11 @@ function formatResult(value) {
   if (value === null || value === undefined) return '';
   const rounded = Math.round(value * 100) / 100;
   // Trim trailing zeros for display
-  return Number.isInteger(rounded) ? String(rounded) : String(rounded).replace(/\.0+$/, '').replace(/(\.[0-9]*?)0+$/, '$1');
+  return Number.isInteger(rounded)
+    ? String(rounded)
+    : String(rounded)
+        .replace(/\.0+$/, '')
+        .replace(/(\.[0-9]*?)0+$/, '$1');
 }
 
 function getElements() {
@@ -70,4 +74,3 @@ export function initTempUI() {
   els.from?.addEventListener('change', handler);
   els.to?.addEventListener('change', handler);
 }
-

@@ -134,4 +134,3 @@ describe('ui-expense DOM behaviour', () => {
     expect(document.getElementById('exp-empty').textContent).toMatch(/No expenses found/i);
   });
 });
-

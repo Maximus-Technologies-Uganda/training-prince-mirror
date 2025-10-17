@@ -13,10 +13,7 @@
     "metadata": {},
     "preserveOutput": "always",
     "reporter": [
-      [
-        "html",
-        null
-      ],
+      ["html", null],
       [
         "json",
         {
@@ -45,9 +42,7 @@
         "name": "",
         "testDir": "/Users/prnceb/Desktop/WORK/hello-world/frontend/e2e",
         "testIgnore": [],
-        "testMatch": [
-          "/.*\\.spec\\.(js|ts)$/"
-        ],
+        "testMatch": ["/.*\\.spec\\.(js|ts)$/"],
         "timeout": 30000
       }
     ],

@@ -64,4 +64,3 @@ describe('UI Temp', () => {
     expect(document.getElementById('temp-result').textContent).toBe('');
   });
 });
-

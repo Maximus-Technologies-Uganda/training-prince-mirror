@@ -41,9 +41,9 @@
 - Paths based on plan.md structure: separate backend logic and frontend UI
 
 ### Phase 3.1: Setup
-- [ ] T001 Verify existing project structure and dependencies
-- [ ] T002 [P] Configure ESLint and Prettier for frontend UI modules
-- [ ] T003 [P] Update Vitest configuration for new test files
+- [x] T001 Verify existing project structure and dependencies
+- [x] T002 [P] Configure ESLint and Prettier for frontend UI modules
+- [x] T003 [P] Update Vitest configuration for new test files
 
 ### Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**

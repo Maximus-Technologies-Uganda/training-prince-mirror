@@ -6,11 +6,32 @@ export default [
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
+        // Browser globals
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
-        process: 'readonly',
         Event: 'readonly',
+        CustomEvent: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
+        alert: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        // Node globals
+        process: 'readonly',
+        global: 'readonly',
+        // Test globals
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        vi: 'readonly',
       },
     },
     rules: {
