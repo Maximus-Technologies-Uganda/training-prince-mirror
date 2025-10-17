@@ -2,12 +2,16 @@ import { describe, it, expect } from 'vitest';
 import { CoverageGenerator } from '../../scripts/generate-coverage.js';
 import { ReviewPacketGenerationService } from '../../scripts/generate-review-packet.js';
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 
 describe('Unified Coverage Reporting Integration', () => {
   it('should generate unified coverage reports for all applications', async () => {
     // This integration test will verify the complete coverage reporting flow
     const applications = ["quote", "expense", "temp", "todo", "stopwatch"];
+    
+    // Ensure the output directory exists before running the script
+    fsSync.mkdirSync('review-artifacts', { recursive: true });
     
     // Test that all applications have coverage reports
     for (const app of applications) {
