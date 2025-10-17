@@ -47,14 +47,14 @@
 
 ### Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
-- [ ] T004 [P] Contract test quote filtering in tests/contract/test_quote_filtering.js
-- [ ] T005 [P] Contract test temperature conversion in tests/contract/test_temperature_converter.js
-- [ ] T006 [P] Integration test quote UI filter functionality in tests/integration/test_quote_ui.js
-- [ ] T007 [P] Integration test temperature converter UI in tests/integration/test_temp_ui.js
-- [ ] T008 [P] Unit test quote filter logic in frontend/src/quote-ui/quote-ui.test.js
-- [ ] T009 [P] Unit test temperature converter logic in frontend/src/temp-ui/temp-ui.test.js
-- [ ] T010 [P] E2E test quote UI filtering in frontend/tests/e2e/quote-ui.spec.js
-- [ ] T011 [P] E2E test temperature converter in frontend/tests/e2e/temp-ui.spec.js
+- [x] T004 [P] Contract test quote filtering in tests/contract/test_quote_filtering.js
+- [x] T005 [P] Contract test temperature conversion in tests/contract/test_temperature_converter.js
+- [x] T006 [P] Integration test quote UI filter functionality in tests/integration/test_quote_ui.js
+- [x] T007 [P] Integration test temperature converter UI in tests/integration/test_temp_ui.js
+- [x] T008 [P] Unit test quote filter logic in frontend/src/quote-ui/quote-ui.test.js
+- [x] T009 [P] Unit test temperature converter logic in frontend/src/temp-ui/temp-ui.test.js
+- [x] T010 [P] E2E test quote UI filtering in frontend/tests/e2e/quote-ui.spec.js
+- [x] T011 [P] E2E test temperature converter in frontend/tests/e2e/temp-ui.spec.js
 
 ### Phase 3.3: Core Implementation (ONLY after tests are failing)
 - [ ] T012 [P] Enhanced quote filtering logic in src/quote/quote.js
