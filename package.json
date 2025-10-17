@@ -16,6 +16,7 @@
   },
   "scripts": {
     "test": "vitest",
+    "test:coverage": "vitest run --coverage",
     "start": "node src/hello/index.js",
     "dev": "node src/hello/index.js",
     "lint": "echo \"Linter not set up yet.\"",

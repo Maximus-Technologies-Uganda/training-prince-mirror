@@ -5,7 +5,7 @@
 
 import { ReviewPacket } from '../src/models/review-packet.js';
 import { ReviewMetadata } from '../src/models/review-metadata.js';
-import { CoverageGenerationService } from './generate-coverage.js';
+import { CoverageGenerator } from './generate-coverage.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { execSync } from 'child_process';
@@ -27,8 +27,8 @@ export class ReviewPacketGenerationService {
     await fs.mkdir(this.outputDir, { recursive: true });
 
     // Generate coverage reports
-    const coverageService = new CoverageGenerationService({ outputDir: this.outputDir });
-    const coverageResults = await coverageService.generateUnifiedCoverage();
+    const coverageService = new CoverageGenerator();
+    const coverageResults = await coverageService.generateAll();
 
     // Generate review metadata
     const reviewMetadata = await this.generateReviewMetadata();
