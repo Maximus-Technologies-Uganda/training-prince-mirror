@@ -57,12 +57,12 @@
 - [x] T011 [P] E2E test temperature converter in frontend/tests/e2e/temp-ui.spec.js
 
 ### Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T012 [P] Enhanced quote filtering logic in src/quote/quote.js
-- [ ] T013 [P] Enhanced temperature conversion logic in src/temp-converter/temp-converter.js
-- [ ] T014 [P] Quote UI debounced filter implementation in frontend/src/quote-ui/quote-ui.js
-- [ ] T015 [P] Temperature UI input validation in frontend/src/temp-ui/temp-ui.js
-- [ ] T016 [P] Error handling utilities in frontend/src/components/error-handler.js
-- [ ] T017 [P] Formatting utilities in frontend/src/components/formatter.js
+- [x] T012 [P] Enhanced quote filtering logic in src/quote/quote.js
+- [x] T013 [P] Enhanced temperature conversion logic in src/temp-converter/temp-converter.js
+- [x] T014 [P] Quote UI debounced filter implementation in frontend/src/quote-ui/quote-ui.js
+- [x] T015 [P] Temperature UI input validation in frontend/src/temp-ui/temp-ui.js
+- [x] T016 [P] Error handling utilities in frontend/src/components/error-handler.js
+- [x] T017 [P] Formatting utilities in frontend/src/components/formatter.js
 
 ### Phase 3.4: Integration
 - [ ] T018 Connect quote UI to enhanced backend filtering logic
