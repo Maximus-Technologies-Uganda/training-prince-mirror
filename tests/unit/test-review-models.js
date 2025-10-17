@@ -321,7 +321,7 @@ describe('Review Packet Models', () => {
           os: 'Linux',
           ci_platform: 'GitHub Actions'
         },
-        commit_log: [], // Empty - should be 20
+        commit_log: [], // Empty - should have at least 1
         repository_map: {
           two_level_structure: { 'src/': ['expense/', 'quote/'] },
           file_count: 100,
@@ -336,7 +336,7 @@ describe('Review Packet Models', () => {
 
       const validation = metadata.validate();
       expect(validation.isValid).toBe(false);
-      expect(validation.errors).toContain('commit_log must contain exactly 20 commits');
+      expect(validation.errors).toContain('commit_log must contain at least 1 commit');
     });
 
     it('should add commits to log', () => {

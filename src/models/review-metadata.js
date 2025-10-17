@@ -33,8 +33,8 @@ export class ReviewMetadata {
     // Validate commit log
     if (!Array.isArray(this.commit_log)) {
       errors.push('commit_log must be an array');
-    } else if (this.commit_log.length !== 20) {
-      errors.push('commit_log must contain exactly 20 commits');
+    } else if (this.commit_log.length < 1) {
+      errors.push('commit_log must contain at least 1 commit');
     } else {
       this.commit_log.forEach((commit, index) => {
         if (!commit.hash || !commit.message || !commit.author || !commit.date) {
