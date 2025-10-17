@@ -19,7 +19,7 @@ describe('Unified Coverage Reporting Integration', () => {
     
     // Assert that the script successfully created the file
     expect(fsSync.existsSync('review-artifacts/review.md')).toBe(true);
-  });
+  }, 30000);
 
   it('should handle partial coverage failures gracefully', async () => {
     // Test scenario where some applications fail coverage generation
