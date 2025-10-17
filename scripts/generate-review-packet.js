@@ -317,9 +317,31 @@ ${Object.entries(metadata.repository_map.two_level_structure).map(([dir, subdirs
    */
   getCurrentBranch() {
     try {
-      return execSync('git branch --show-current', { encoding: 'utf8' }).trim();
+      // In GitHub Actions, use GITHUB_REF_NAME environment variable
+      if (process.env.GITHUB_REF_NAME) {
+        console.log('✅ Using GITHUB_REF_NAME:', process.env.GITHUB_REF_NAME);
+        return process.env.GITHUB_REF_NAME;
+      }
+      // Fallback to git command for local/non-GitHub environments
+      const branch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
+      if (!branch) {
+        throw new Error('git branch returned empty string');
+      }
+      console.log('✅ Using git branch:', branch);
+      return branch;
     } catch (error) {
-      return 'unknown';
+      console.error('❌ Failed to get branch:', error.message);
+      // Try alternative git command
+      try {
+        const ref = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim();
+        if (ref && ref !== 'HEAD') {
+          console.log('✅ Using git rev-parse:', ref);
+          return ref;
+        }
+      } catch (altError) {
+        console.error('❌ Alternative git command also failed');
+      }
+      throw new Error('Could not determine current branch');
     }
   }
 
