@@ -20,18 +20,45 @@ export function createDebouncedFilter(callback, delay = 250) {
   };
 }
 
+// Performance optimization: memoized filter results
+const filterCache = new Map();
+
 export function createFilterState(quotes) {
   return {
     query: '',
     results: quotes || [],
     isLoading: false,
     error: null,
+    cacheKey: null,
   };
 }
 
 export function updateFilterState(state, query) {
   const normalizedQuery = validateFilterQuery(query);
+  
+  // Check cache first for performance
+  const cacheKey = `${normalizedQuery}-${state.results.length}`;
+  if (filterCache.has(cacheKey)) {
+    return {
+      ...state,
+      query: normalizedQuery,
+      results: filterCache.get(cacheKey),
+      isLoading: false,
+      error: null,
+      cacheKey: cacheKey,
+    };
+  }
+  
   const results = filterQuotesByAuthor(state.results, normalizedQuery);
+  
+  // Cache the results for performance
+  filterCache.set(cacheKey, results);
+  
+  // Limit cache size to prevent memory leaks
+  if (filterCache.size > 100) {
+    const firstKey = filterCache.keys().next().value;
+    filterCache.delete(firstKey);
+  }
   
   return {
     ...state,
@@ -39,6 +66,7 @@ export function updateFilterState(state, query) {
     results: results,
     isLoading: false,
     error: results.length === 0 && normalizedQuery ? 'No quotes found for the specified author.' : null,
+    cacheKey: cacheKey,
   };
 }
 
@@ -140,6 +168,12 @@ function showError(errorDiv, message) {
     errorDiv.style.display = 'block';
     errorDiv.setAttribute('role', 'alert');
     errorDiv.setAttribute('aria-live', 'polite');
+    errorDiv.setAttribute('aria-atomic', 'true');
+    
+    // Add focus management for screen readers
+    if (errorDiv.focus) {
+      errorDiv.focus();
+    }
   }
 }
 
@@ -147,5 +181,8 @@ function hideError(errorDiv) {
   if (errorDiv) {
     errorDiv.style.display = 'none';
     errorDiv.textContent = '';
+    errorDiv.removeAttribute('role');
+    errorDiv.removeAttribute('aria-live');
+    errorDiv.removeAttribute('aria-atomic');
   }
 }

@@ -163,6 +163,12 @@ function showError(errorDiv, message) {
     errorDiv.style.display = 'block';
     errorDiv.setAttribute('role', 'alert');
     errorDiv.setAttribute('aria-live', 'polite');
+    errorDiv.setAttribute('aria-atomic', 'true');
+    
+    // Add focus management for screen readers
+    if (errorDiv.focus) {
+      errorDiv.focus();
+    }
   }
 }
 
@@ -170,5 +176,8 @@ function hideError(errorDiv) {
   if (errorDiv) {
     errorDiv.style.display = 'none';
     errorDiv.textContent = '';
+    errorDiv.removeAttribute('role');
+    errorDiv.removeAttribute('aria-live');
+    errorDiv.removeAttribute('aria-atomic');
   }
 }
