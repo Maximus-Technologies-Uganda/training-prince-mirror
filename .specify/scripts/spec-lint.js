@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
 function getActiveFeatureSpecPath(rootDir) {
   // Prefer CI-provided branch names first (pull_request uses GITHUB_HEAD_REF)
@@ -11,7 +12,7 @@ function getActiveFeatureSpecPath(rootDir) {
   }
   try {
     // Prefer current git branch name mapping
-    const head = require('child_process').execSync('git rev-parse --abbrev-ref HEAD', { cwd: rootDir }).toString().trim();
+    const head = execSync('git rev-parse --abbrev-ref HEAD', { cwd: rootDir }).toString().trim();
     if (head && head !== 'HEAD') {
       const candidate = path.join(rootDir, 'specs', head, 'spec.md');
       if (fs.existsSync(candidate)) return candidate;

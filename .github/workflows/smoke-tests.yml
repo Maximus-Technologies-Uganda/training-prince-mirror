@@ -39,7 +39,9 @@ jobs:
       run: |
         cd frontend
         npm run preview &
-        sleep 10
+        sleep 15
+        # Verify server is running
+        curl -f http://localhost:5173 || exit 1
         
     - name: Verify test environment
       run: |
