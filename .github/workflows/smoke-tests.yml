@@ -1,0 +1,71 @@
+name: Smoke Test Execution
+
+on:
+  push:
+    branches: [ development, main ]
+  pull_request:
+    branches: [ development, main ]
+
+jobs:
+  smoke-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        cd frontend && npm ci
+        
+    - name: Install Playwright browsers
+      run: |
+        cd frontend
+        npx playwright install --with-deps
+        
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm run build
+        
+    - name: Start frontend server
+      run: |
+        cd frontend
+        npm run preview &
+        sleep 15
+        # Verify server is running
+        curl -f http://localhost:5173 || exit 1
+        
+    - name: Verify test environment
+      run: |
+        node scripts/run-smoke-tests.js verify
+        
+    - name: Execute smoke tests
+      run: |
+        node scripts/run-smoke-tests.js run
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: smoke-test-results
+        path: test-results/
+        retention-days: 30
+        
+    - name: Upload test artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: smoke-test-artifacts
+        path: |
+          test-results/
+          frontend/test-results/
+        retention-days: 30

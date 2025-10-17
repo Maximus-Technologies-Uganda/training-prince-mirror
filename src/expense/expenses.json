@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "description": "Coffee",
+    "amount": 3.50,
+    "category": "Food",
+    "date": "2024-01-15",
+    "timestamp": "2024-01-15T08:30:00.000Z"
+  },
+  {
+    "id": 2,
+    "description": "Bus fare",
+    "amount": 2.00,
+    "category": "Transport",
+    "date": "2024-01-15",
+    "timestamp": "2024-01-15T09:15:00.000Z"
+  },
+  {
+    "id": 3,
+    "description": "Lunch",
+    "amount": 12.50,
+    "category": "Food",
+    "date": "2024-01-15",
+    "timestamp": "2024-01-15T12:30:00.000Z"
+  }
+]

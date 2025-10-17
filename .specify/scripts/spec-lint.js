@@ -1,22 +1,50 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
 function getActiveFeatureSpecPath(rootDir) {
   // Prefer CI-provided branch names first (pull_request uses GITHUB_HEAD_REF)
   const envBranch = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME;
-  if (envBranch) {
-    const byEnv = path.join(rootDir, 'specs', envBranch, 'spec.md');
+  console.log('CI Branch detection:', { envBranch, GITHUB_HEAD_REF: process.env.GITHUB_HEAD_REF, GITHUB_REF_NAME: process.env.GITHUB_REF_NAME });
+  
+  // Branch name mapping for CI
+  const branchMapping = {
+    'feature/day-0-ci-maturity': '011-title-day-0',
+    'feature/day-0-c...': '011-title-day-0'
+  };
+  
+  let targetBranch = envBranch;
+  if (targetBranch && branchMapping[targetBranch]) {
+    targetBranch = branchMapping[targetBranch];
+    console.log('Mapped branch:', envBranch, '->', targetBranch);
+  }
+  
+  if (targetBranch) {
+    const byEnv = path.join(rootDir, 'specs', targetBranch, 'spec.md');
+    console.log('Checking CI spec path:', byEnv);
     if (fs.existsSync(byEnv)) return byEnv;
   }
   try {
     // Prefer current git branch name mapping
-    const head = require('child_process').execSync('git rev-parse --abbrev-ref HEAD', { cwd: rootDir }).toString().trim();
-    if (head && head !== 'HEAD') {
-      const candidate = path.join(rootDir, 'specs', head, 'spec.md');
+    const head = execSync('git rev-parse --abbrev-ref HEAD', { cwd: rootDir }).toString().trim();
+    console.log('Git branch:', head);
+    
+    // Apply branch mapping for local git branch too
+    let mappedHead = head;
+    if (branchMapping[head]) {
+      mappedHead = branchMapping[head];
+      console.log('Mapped local branch:', head, '->', mappedHead);
+    }
+    
+    if (mappedHead && mappedHead !== 'HEAD') {
+      const candidate = path.join(rootDir, 'specs', mappedHead, 'spec.md');
+      console.log('Checking git spec path:', candidate);
       if (fs.existsSync(candidate)) return candidate;
     }
-  } catch (_) {}
+  } catch (error) {
+    console.log('Git branch detection failed:', error.message);
+  }
   // Fallback: last created feature
   try {
     const metaPath = path.join(rootDir, '.specify/.last-created-feature.json');

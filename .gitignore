@@ -14,8 +14,7 @@ pids
 *.pid.lock
 
 # App runtime state (generated at runtime; do not track)
-# This one line ignores the entire /data directory as required by the workbook
-/data
+# This ignores the entire /data directory as required by the workbook
 
 # Dependency directories
 node_modules/
@@ -38,3 +37,5 @@ coverage-summary.json
 # OS generated files
 .DS_Store
 Thumbs.db
+# Runtime state files
+/data/

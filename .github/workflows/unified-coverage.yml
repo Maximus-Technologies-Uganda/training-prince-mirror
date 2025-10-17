@@ -1,0 +1,62 @@
+name: Unified Coverage Reporting
+
+on:
+  push:
+    branches: [ development, main ]
+  pull_request:
+    branches: [ development, main ]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        cd frontend && npm ci
+        
+    - name: Run backend tests with coverage
+      run: |
+        npm run test:coverage
+        
+    - name: Run frontend tests with coverage
+      run: |
+        cd frontend
+        npm run test:coverage
+        
+    - name: Generate unified coverage report
+      run: |
+        node scripts/generate-coverage.js
+        
+    - name: Generate review packet
+      run: |
+        node scripts/generate-review-packet.js
+        
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-reports
+        path: |
+          coverage/
+          frontend/coverage/
+          review-artifacts/
+        retention-days: 30
+        
+    - name: Upload review packet
+      uses: actions/upload-artifact@v4
+      with:
+        name: review-packet
+        path: review-artifacts/
+        retention-days: 30
