@@ -67,9 +67,16 @@ export class ReviewPacketGenerationService {
     console.log('📋 Generating review metadata...');
 
     const environmentDetails = await this.getEnvironmentDetails();
+    console.log('✅ Environment details:', environmentDetails);
+    
     const commitLog = await this.getCommitLog();
+    console.log('✅ Commit log count:', commitLog.length);
+    
     const repositoryMap = await this.getRepositoryMap();
+    console.log('✅ Repository map:', { files: repositoryMap.file_count, sizeMB: repositoryMap.total_size_mb });
+    
     const coverageSummary = await this.getCoverageSummary();
+    console.log('✅ Coverage summary generated');
 
     const metadata = new ReviewMetadata({
       environment_details: environmentDetails,
@@ -81,9 +88,12 @@ export class ReviewPacketGenerationService {
     // Validate metadata
     const validation = metadata.validate();
     if (!validation.isValid) {
+      console.error('❌ Validation errors:');
+      validation.errors.forEach(error => console.error('  - ' + error));
       throw new Error(`Invalid review metadata: ${validation.errors.join(', ')}`);
     }
 
+    console.log('✅ Review metadata validated successfully');
     return metadata;
   }
 
