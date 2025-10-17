@@ -111,7 +111,7 @@ class CoverageGenerator {
       // Run tests with coverage
       execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/${appName}/**/*.js" ${testPattern}`, {
         cwd: ROOT_DIR,
-        stdio: 'pipe'
+        stdio: 'inherit'
       });
       
       // Read coverage data
@@ -129,6 +129,8 @@ class CoverageGenerator {
       });
       
     } catch (error) {
+      console.error(`❌ Backend coverage generation failed for ${appName}:`, error.message);
+      
       // If tests fail, try to extract partial coverage
       if (fs.existsSync(path.join(coverageDir, 'coverage-final.json'))) {
         const coverageData = this.readCoverageData(coverageDir);
@@ -144,6 +146,18 @@ class CoverageGenerator {
           error_message: 'Tests failed but coverage data available'
         });
       }
+      
+      // Run the command again with stdio: 'inherit' to show the actual error
+      console.log(`🔍 Running coverage command with visible output for debugging:`);
+      try {
+        execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/${appName}/**/*.js" ${testPattern}`, {
+          cwd: ROOT_DIR,
+          stdio: 'inherit'
+        });
+      } catch (debugError) {
+        console.error(`❌ Debug run also failed:`, debugError.message);
+      }
+      
       throw error;
     }
   }
@@ -256,6 +270,8 @@ class CoverageGenerator {
       });
       
     } catch (error) {
+      console.error(`❌ UI coverage generation failed for ${appName}:`, error.message);
+      
       // If tests fail, try to extract partial coverage
       if (fs.existsSync(path.join(coverageDir, 'lcov.info'))) {
         const coverageData = this.readCoverageFromLcov(coverageDir);
@@ -275,6 +291,18 @@ class CoverageGenerator {
           }
         });
       }
+      
+      // Run the command again with stdio: 'inherit' to show the actual error
+      console.log(`🔍 Running UI coverage command with visible output for debugging:`);
+      try {
+        execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/ui-${uiAppName}/**/*.js"`, {
+          cwd: frontendDir,
+          stdio: 'inherit'
+        });
+      } catch (debugError) {
+        console.error(`❌ Debug run also failed:`, debugError.message);
+      }
+      
       throw error;
     }
   }
@@ -324,6 +352,8 @@ class CoverageGenerator {
       });
       
     } catch (error) {
+      console.error(`❌ Main.js coverage generation failed for ${appName}:`, error.message);
+      
       // If tests fail, try to extract partial coverage
       if (fs.existsSync(path.join(coverageDir, 'coverage-final.json'))) {
         const coverageData = this.readCoverageData(coverageDir);
@@ -339,6 +369,18 @@ class CoverageGenerator {
           error_message: 'Tests failed but coverage data available'
         });
       }
+      
+      // Run the command again with stdio: 'inherit' to show the actual error
+      console.log(`🔍 Running main.js coverage command with visible output for debugging:`);
+      try {
+        execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/main.js"`, {
+          cwd: frontendDir,
+          stdio: 'inherit'
+        });
+      } catch (debugError) {
+        console.error(`❌ Debug run also failed:`, debugError.message);
+      }
+      
       throw error;
     }
   }

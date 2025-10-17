@@ -40,8 +40,12 @@ describe('Unified Coverage Reporting Integration', () => {
       await fs.access(indexPath);
       expect(true).toBe(true);
     } catch (error) {
-      // Index file should exist
-      expect(false).toBe(true);
+      // Log the actual error from the try block for debugging.
+      console.error('ERROR during unified coverage generation test:', error);
+
+      // Fail the test with a descriptive message.
+      // This is much better than expect(false).toBe(true).
+      expect(true).toBe(false, 'The coverage generation process threw an unexpected error. See the log above for details.');
     }
     
     // Test review.md enrichment
@@ -50,8 +54,12 @@ describe('Unified Coverage Reporting Integration', () => {
       await fs.access(reviewPath);
       expect(true).toBe(true);
     } catch (error) {
-      // Review file should exist
-      expect(false).toBe(true);
+      // Log the actual error from the try block for debugging.
+      console.error('ERROR during unified coverage generation test:', error);
+
+      // Fail the test with a descriptive message.
+      // This is much better than expect(false).toBe(true).
+      expect(true).toBe(false, 'The coverage generation process threw an unexpected error. See the log above for details.');
     }
   });
 
