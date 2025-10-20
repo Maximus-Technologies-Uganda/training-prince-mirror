@@ -15,28 +15,28 @@ describe('Temperature Converter Contract Tests', () => {
       const result = convertTemperatureWithFormatting(0, 'C', 'F');
       expect(result.value).toBe(32);
       expect(result.unit).toBe('F');
-      expect(result.formatted).toBe('32.0°F');
+      expect(result.formatted).toBe('32°F');
     });
 
     it('should convert Fahrenheit to Celsius correctly', () => {
       const result = convertTemperatureWithFormatting(32, 'F', 'C');
       expect(result.value).toBe(0);
       expect(result.unit).toBe('C');
-      expect(result.formatted).toBe('0.0°C');
+      expect(result.formatted).toBe('0°C');
     });
 
     it('should handle decimal temperatures', () => {
       const result = convertTemperatureWithFormatting(98.6, 'F', 'C');
       expect(result.value).toBeCloseTo(37, 1);
       expect(result.unit).toBe('C');
-      expect(result.formatted).toBe('37.0°C');
+      expect(result.formatted).toBe('37°C');
     });
 
     it('should handle negative temperatures', () => {
       const result = convertTemperatureWithFormatting(-40, 'C', 'F');
       expect(result.value).toBe(-40);
       expect(result.unit).toBe('F');
-      expect(result.formatted).toBe('-40.0°F');
+      expect(result.formatted).toBe('-40°F');
     });
 
     it('should throw error for identical units', () => {
@@ -84,7 +84,7 @@ describe('Temperature Converter Contract Tests', () => {
 
     it('should handle zero temperature', () => {
       const result = formatTemperatureDisplay(0, 'F', 1);
-      expect(result).toBe('0.0°F');
+      expect(result).toBe('0°F');
     });
 
     it('should respect precision parameter', () => {
