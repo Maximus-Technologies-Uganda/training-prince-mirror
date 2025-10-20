@@ -9,6 +9,9 @@ npm test -- --coverage
 ### Review Packet & Coverage
 - Artifact: [Actions run → review-packet](PASTE_ACTIONS_RUN_URL_HERE)
 
+### Design (Figma)
+- **Dev Mode Link:** [INSERT_YOUR_FIGMA_DEV_MODE_LINK_HERE]
+
 ### Spec
 - Spec: <paste link to Linear doc or external spec>
 
