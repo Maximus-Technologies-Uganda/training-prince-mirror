@@ -73,13 +73,13 @@
 - [x] T023 Add loading states for filter operations
 
 ### Phase 3.5: Polish
-- [ ] T024 [P] Performance optimization for debounced filtering
-- [ ] T025 [P] Accessibility improvements for error messages
-- [ ] T026 [P] Update documentation in quickstart.md
-- [ ] T027 [P] Remove code duplication between UIs
-- [ ] T028 [P] Run manual testing scenarios from quickstart.md
-- [ ] T029 [P] Verify ≥40% test coverage for both UI modules
-- [ ] T030 [P] Update CI configuration for new test files
+- [x] T024 [P] Performance optimization for debounced filtering
+- [x] T025 [P] Accessibility improvements for error messages
+- [x] T026 [P] Update documentation in quickstart.md
+- [x] T027 [P] Remove code duplication between UIs
+- [x] T028 [P] Run manual testing scenarios from quickstart.md
+- [x] T029 [P] Verify ≥40% test coverage for both UI modules
+- [x] T030 [P] Update CI configuration for new test files
 
 ## Dependencies
 - Tests (T004-T011) before implementation (T012-T017)
