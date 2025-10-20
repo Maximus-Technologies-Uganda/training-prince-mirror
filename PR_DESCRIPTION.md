@@ -20,7 +20,8 @@ npm test -- --coverage
 - **Artifact:** [Actions run → review-packet](https://github.com/maximus-technologies-uganda/training-prince/actions/runs/[RUN_ID])
 
 ## Design (Figma)
-- **Dev Mode Link:** `[PLACEHOLDER] - Figma design needs to be created for Quote and Temp UIs`
+- **Dev Mode Link:** https://www.figma.com/design/hqt6yppkepI1dFcNNZUH5O/Prince-Week-4-UI?node-id=2-2&m=dev&t=ESeEPTpP3JA2CEnV-1
+
   - **Quote UI**: Enhanced filtering with case-insensitive search and debouncing
   - **Temperature Converter**: Input validation and error state handling
   - **Both UIs**: Improved accessibility with ARIA attributes and focus management
