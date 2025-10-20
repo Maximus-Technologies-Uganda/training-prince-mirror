@@ -36,6 +36,7 @@ describe('Quote UI interactions', () => {
   beforeEach(() => {
     vi.resetModules();
     vi.doMock('./style.css', () => ({}));
+    vi.useFakeTimers();
     setupDom();
 
     Object.defineProperty(document, 'readyState', {
@@ -49,6 +50,7 @@ describe('Quote UI interactions', () => {
       Object.defineProperty(document, 'readyState', originalReadyState);
     }
     document.body.innerHTML = '';
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
@@ -75,6 +77,9 @@ describe('Quote UI interactions', () => {
 
     filterInput.value = 'jobs';
     filterInput.dispatchEvent(new Event('input', { bubbles: true }));
+    
+    // Advance timers to allow debounced filter to execute (250ms debounce)
+    vi.advanceTimersByTime(300);
 
     expect(quoteAuthor.textContent).toBe('Steve Jobs');
     expect(quoteText.textContent).toBe('Stay hungry, stay foolish.');
@@ -91,6 +96,9 @@ describe('Quote UI interactions', () => {
 
     filterInput.value = 'unknown person';
     filterInput.dispatchEvent(new Event('input', { bubbles: true }));
+    
+    // Advance timers to allow debounced filter to execute (250ms debounce)
+    vi.advanceTimersByTime(300);
 
     expect(quoteText.textContent).toBe('No quotes found');
     expect(quoteAuthor.textContent).toBe('');

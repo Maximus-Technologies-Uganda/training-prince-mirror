@@ -94,7 +94,9 @@ export function validateNumericInput(input) {
 
 export function formatTemperatureDisplay(value, unit, precision) {
   const rounded = value.toFixed(precision);
-  return `${rounded}°${unit}`;
+  // Trim trailing zeros and decimal point if not needed
+  const trimmed = rounded.replace(/\.?0+$/, '');
+  return `${trimmed}°${unit}`;
 }
 
 export function handleConversionError(error) {

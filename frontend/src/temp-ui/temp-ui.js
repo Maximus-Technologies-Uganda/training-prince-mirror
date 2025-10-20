@@ -62,7 +62,7 @@ export function performTemperatureConversion(state) {
       numericValue,
       state.fromUnit,
       state.toUnit,
-      1,
+      2,
     );
     
     return {
@@ -100,6 +100,13 @@ export function initEnhancedTempUI() {
     // Restrict input to numeric characters only
     if (!validateNumericInput(value)) {
       event.target.value = '';
+      // Show error for non-numeric input
+      const newState = {
+        ...state,
+        error: 'Please enter a valid number',
+      };
+      Object.assign(state, newState);
+      renderTemperatureUI(state, resultDiv, errorDiv);
       return;
     }
     
