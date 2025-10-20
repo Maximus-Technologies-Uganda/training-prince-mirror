@@ -1,7 +1,7 @@
-import { 
-  filterQuotesByAuthor, 
-  validateFilterQuery, 
-  selectRandomQuoteWithSeed 
+import {
+  filterQuotesByAuthor,
+  validateFilterQuery,
+  selectRandomQuoteWithSeed,
 } from '../../../src/quote/core.js';
 
 // Enhanced quote UI with debounced filtering and error handling

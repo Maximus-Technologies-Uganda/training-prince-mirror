@@ -1,9 +1,7 @@
-import { 
+import {
   convertTemperatureWithFormatting,
   validateNumericInput,
-  formatTemperatureDisplay,
   handleConversionError,
-  createConversionResult,
   validateUnitSelection,
 } from '../../../src/temp-converter/core.js';
 
@@ -64,7 +62,7 @@ export function performTemperatureConversion(state) {
       numericValue,
       state.fromUnit,
       state.toUnit,
-      1
+      1,
     );
     
     return {
