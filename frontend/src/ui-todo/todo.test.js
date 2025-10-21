@@ -137,6 +137,7 @@ describe('DOM wiring', () => {
 
   afterEach(() => {
     document.body.innerHTML = '';
+    localStorage.clear();
   });
 
   it('surfaces error when adding empty task and focuses message', () => {

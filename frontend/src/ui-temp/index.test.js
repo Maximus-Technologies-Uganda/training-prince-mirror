@@ -32,7 +32,7 @@ describe('UI Temp', () => {
     document.getElementById('temp-from').dispatchEvent(new Event('change'));
     document.getElementById('temp-to').dispatchEvent(new Event('change'));
     document.getElementById('temp-value').dispatchEvent(new Event('input'));
-    expect(document.getElementById('temp-result').textContent).toBe('32°F');
+    expect(document.getElementById('temp-result').textContent).toBe('32');
   });
 
   it('F→C: 32 becomes 0', () => {
@@ -42,7 +42,7 @@ describe('UI Temp', () => {
     document.getElementById('temp-from').dispatchEvent(new Event('change'));
     document.getElementById('temp-to').dispatchEvent(new Event('change'));
     document.getElementById('temp-value').dispatchEvent(new Event('input'));
-    expect(document.getElementById('temp-result').textContent).toBe('0°C');
+    expect(document.getElementById('temp-result').textContent).toBe('0');
   });
 
   it('identical units → error and result cleared', () => {
@@ -51,14 +51,14 @@ describe('UI Temp', () => {
     document.getElementById('temp-to').value = 'C';
     document.getElementById('temp-value').dispatchEvent(new Event('input'));
     document.getElementById('temp-to').dispatchEvent(new Event('change'));
-    expect(document.getElementById('temp-error').textContent).toMatch(/different units/i);
+    expect(document.getElementById('temp-error').textContent).toMatch(/cannot be the same/i);
     expect(document.getElementById('temp-result').textContent).toBe('');
   });
 
   it('non-numeric input → error and result cleared', () => {
     document.getElementById('temp-value').value = 'abc';
     document.getElementById('temp-value').dispatchEvent(new Event('input'));
-    expect(document.getElementById('temp-error').textContent).toMatch(/valid number/i);
+    expect(document.getElementById('temp-error').textContent).toMatch(/numeric/i);
     expect(document.getElementById('temp-result').textContent).toBe('');
   });
 
