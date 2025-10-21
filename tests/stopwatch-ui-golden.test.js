@@ -25,21 +25,22 @@ describe('CSV Golden Output Validation Tests', () => {
   let mockElements;
 
   beforeEach(async () => {
-    // Mock DOM elements
-    mockElements = {
-      '.timer-display': { textContent: '00:00.00' },
-      '.start-btn': { disabled: false, addEventListener: vi.fn() },
-      '.stop-btn': { disabled: true, addEventListener: vi.fn() },
-      '.reset-btn': { disabled: false, addEventListener: vi.fn() },
-      '.export-btn': { disabled: false, addEventListener: vi.fn() },
-      '.laps-display': { innerHTML: '' }
-    };
-
-    mockContainer = {
-      querySelector: vi.fn((selector) => mockElements[selector] || null),
-      querySelectorAll: vi.fn(() => []),
-      dispatchEvent: vi.fn()
-    };
+    // Create actual DOM elements for testing
+    document.body.innerHTML = `
+      <div class="stopwatch-container">
+        <div class="timer-display">00:00.00</div>
+        <div class="controls">
+          <button class="start-btn">Start</button>
+          <button class="pause-btn" disabled>Pause</button>
+          <button class="resume-btn" disabled>Resume</button>
+          <button class="stop-btn">Reset</button>
+          <button class="lap-btn">Lap</button>
+          <button class="clear-laps-btn">Clear Laps</button>
+          <button class="export-btn">Export CSV</button>
+        </div>
+        <div class="laps-display"></div>
+      </div>
+    `;
 
     // Mock localStorage
     const mockLocalStorage = {
@@ -48,38 +49,13 @@ describe('CSV Golden Output Validation Tests', () => {
     };
     global.localStorage = mockLocalStorage;
 
-    // Mock DOM APIs for download
-    global.Blob = vi.fn();
-    global.URL = {
-      createObjectURL: vi.fn(() => 'blob:mock-url'),
-      revokeObjectURL: vi.fn()
-    };
-
-    const mockAnchor = {
-      href: '',
-      download: '',
-      click: vi.fn()
-    };
-
-    global.document.createElement = vi.fn((tag) => {
-      if (tag === 'a') return mockAnchor;
-      return mockContainer;
-    });
-
-    // Mock document.body properly
-    Object.defineProperty(global.document, 'body', {
-      value: {
-        appendChild: vi.fn(),
-        removeChild: vi.fn()
-      },
-      writable: true
-    });
-
+    mockContainer = document.querySelector('.stopwatch-container');
     stopwatchUI = new StopwatchUI(mockContainer);
   });
 
   afterEach(() => {
     vi.clearAllMocks();
+    document.body.innerHTML = '';
   });
 
   describe('CSV Format Validation', () => {
