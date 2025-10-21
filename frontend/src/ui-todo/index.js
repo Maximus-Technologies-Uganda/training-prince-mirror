@@ -15,6 +15,27 @@ export function createUiState() {
   };
 }
 
+function saveStateToLocalStorage(state) {
+  try {
+    localStorage.setItem('todo-ui-state', JSON.stringify(state));
+  } catch (error) {
+    console.warn('Failed to save todo state to localStorage:', error);
+  }
+}
+
+function loadStateFromLocalStorage() {
+  try {
+    const saved = localStorage.getItem('todo-ui-state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return { items: parsed.items || [] };
+    }
+  } catch (error) {
+    console.warn('Failed to load todo state from localStorage:', error);
+  }
+  return createUiState();
+}
+
 export function addItem(state, text, opts = {}, clock) {
   const normalized = normalizeText(text);
   const dueDate = opts?.dueDate || null;
@@ -92,66 +113,88 @@ function getElements() {
     addBtn: document.getElementById('todo-add'),
     error: document.getElementById('todo-error'),
     list: document.getElementById('todo-list'),
-    filterToday: document.getElementById('filter-today'),
-    filterHigh: document.getElementById('filter-high'),
+    filterAll: document.getElementById('filter-all'),
+    filterActive: document.getElementById('filter-active'),
+    filterCompleted: document.getElementById('filter-completed'),
+    taskCount: document.getElementById('task-count'),
   };
 }
 
-function renderList(state, elements, clock, setError) {
-  const filters = {
-    today: elements.filterToday?.checked,
-    high: elements.filterHigh?.checked,
-  };
-  const visible = getVisibleItems(state, filters, clock);
+function renderList(state, elements, clock, setError, filter = 'all') {
+  let visible = state.items;
+  
+  // Apply filter
+  if (filter === 'active') {
+    visible = visible.filter((t) => !t.completed);
+  } else if (filter === 'completed') {
+    visible = visible.filter((t) => t.completed);
+  }
+  
   elements.list.innerHTML = '';
   visible.forEach((t, index) => {
     const li = document.createElement('li');
     li.className = 'todo-item';
+    li.setAttribute('data-testid', 'task-item');
+    if (t.completed) {
+      li.classList.add('completed');
+    }
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = t.completed;
+    checkbox.setAttribute('data-testid', 'task-checkbox');
+    checkbox.setAttribute('aria-label', `${t.completed ? 'Mark incomplete' : 'Mark complete'}: ${t.text}`);
+    checkbox.addEventListener('change', () => {
+      // Find the real index in the full list
+      const realIndex = state.items.indexOf(t);
+      const r = toggleItem(state, realIndex);
+      if (r.error) {
+        setError(r.error);
+        return;
+      }
+      Object.assign(state, r.state);
+      saveStateToLocalStorage(state);
+      setError('');
+      renderList(state, elements, clock, setError, filter);
+    });
     const textContainer = document.createElement('span');
     textContainer.className = 'todo-item__text';
     textContainer.textContent = t.text;
-    const toggle = document.createElement('button');
-    toggle.textContent = t.completed ? 'Untoggle' : 'Toggle';
-    toggle.setAttribute(
-      'aria-label',
-      `${t.completed ? 'Mark incomplete' : 'Mark complete'}: ${t.text}`,
-    );
-    toggle.addEventListener('click', () => {
-      const r = toggleItem(state, index);
-      if (r.error) {
-        setError(r.error);
-        return;
-      }
-      Object.assign(state, r.state);
-      setError('');
-      renderList(state, elements, clock, setError);
-    });
     const remove = document.createElement('button');
     remove.textContent = 'Remove';
+    remove.setAttribute('data-testid', 'delete-task');
     remove.setAttribute('aria-label', `Remove task: ${t.text}`);
     remove.addEventListener('click', () => {
-      const r = removeItem(state, index);
+      // Find the real index in the full list
+      const realIndex = state.items.indexOf(t);
+      const r = removeItem(state, realIndex);
       if (r.error) {
         setError(r.error);
         return;
       }
       Object.assign(state, r.state);
+      saveStateToLocalStorage(state);
       setError('');
-      renderList(state, elements, clock, setError);
+      renderList(state, elements, clock, setError, filter);
     });
     const actions = document.createElement('span');
     actions.className = 'todo-item__actions';
-    actions.append(toggle, remove);
-    li.append(textContainer, actions);
+    actions.append(remove);
+    li.append(checkbox, textContainer, actions);
     elements.list.appendChild(li);
   });
+  
+  // Update task count
+  if (elements.taskCount) {
+    elements.taskCount.textContent = visible.length;
+  }
 }
 
 export function initTodoUI() {
   const elements = getElements();
   if (!elements.input || !elements.list) return;
   const clock = createClock('Africa/Kampala');
-  const state = createUiState();
+  const state = loadStateFromLocalStorage();
+  let currentFilter = 'all';
 
   const setError = (message) => {
     if (!elements.error) return;
@@ -161,7 +204,7 @@ export function initTodoUI() {
     }
   };
 
-  renderList(state, elements, clock, setError);
+  renderList(state, elements, clock, setError, currentFilter);
 
   elements.addBtn?.addEventListener('click', () => {
     setError('');
@@ -178,15 +221,24 @@ export function initTodoUI() {
       return;
     }
     Object.assign(state, r.state);
+    saveStateToLocalStorage(state);
     elements.input.value = '';
-    renderList(state, elements, clock, setError);
+    renderList(state, elements, clock, setError, currentFilter);
     elements.input.focus();
   });
 
-  elements.filterToday?.addEventListener('change', () => {
-    renderList(state, elements, clock, setError);
+  elements.filterAll?.addEventListener('click', () => {
+    currentFilter = 'all';
+    renderList(state, elements, clock, setError, currentFilter);
   });
-  elements.filterHigh?.addEventListener('change', () => {
-    renderList(state, elements, clock, setError);
+  
+  elements.filterActive?.addEventListener('click', () => {
+    currentFilter = 'active';
+    renderList(state, elements, clock, setError, currentFilter);
+  });
+  
+  elements.filterCompleted?.addEventListener('click', () => {
+    currentFilter = 'completed';
+    renderList(state, elements, clock, setError, currentFilter);
   });
 }

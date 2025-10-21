@@ -27,7 +27,7 @@ test.describe('Expense Application Smoke Test', () => {
     // Fill in expense details
     await descriptionInput.fill('Test Coffee');
     await amountInput.fill('3.50');
-    await categorySelect.selectOption('Food');
+    await categorySelect.fill('Food');
 
     // Add the expense
     await addButton.click();
@@ -56,7 +56,7 @@ test.describe('Expense Application Smoke Test', () => {
     // Add an expense first
     await page.locator('[data-testid="expense-description"]').fill('Test Expense');
     await page.locator('[data-testid="expense-amount"]').fill('10.00');
-    await page.locator('[data-testid="expense-category"]').selectOption('Other');
+    await page.locator('[data-testid="expense-category"]').fill('Other');
     await page.locator('[data-testid="add-expense"]').click();
 
     // Verify expense was added
@@ -76,15 +76,15 @@ test.describe('Expense Application Smoke Test', () => {
 
     // Try to add expense with empty description
     await page.locator('[data-testid="expense-amount"]').fill('5.00');
-    await page.locator('[data-testid="expense-category"]').selectOption('Food');
+    await page.locator('[data-testid="expense-category"]').fill('Food');
     await page.locator('[data-testid="add-expense"]').click();
 
     // Should show validation error
     await expect(page.locator('[data-testid="validation-error"]')).toBeVisible();
 
-    // Try to add expense with invalid amount
+    // Try to add expense with empty amount (don't try to fill "invalid" text into number input)
     await page.locator('[data-testid="expense-description"]').fill('Test');
-    await page.locator('[data-testid="expense-amount"]').fill('invalid');
+    await page.locator('[data-testid="expense-amount"]').fill('');
     await page.locator('[data-testid="add-expense"]').click();
 
     // Should show validation error

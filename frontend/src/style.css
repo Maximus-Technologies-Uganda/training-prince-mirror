@@ -201,6 +201,11 @@ textarea:focus-visible {
   border: 0;
 }
 
+#temp-error {
+  min-height: 1.5rem;
+  display: block !important;
+}
+
 @media (max-width: 540px) {
   body {
     padding: 1rem;

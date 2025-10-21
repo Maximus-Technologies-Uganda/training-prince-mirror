@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stopwatch - Hello World Apps</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app" class="app-grid" role="main">
+      <section
+        id="stopwatch-app"
+        class="section-card stopwatch-app"
+        aria-labelledby="stopwatch-heading"
+      >
+        <h1 id="stopwatch-heading">Stopwatch</h1>
+        <div class="stopwatch-container">
+          <div class="timer-display" data-testid="time-display" role="timer" aria-live="polite" aria-label="Elapsed time">
+            00:00:00
+          </div>
+          <div class="controls" role="group" aria-label="Stopwatch controls">
+            <button class="start-btn" data-testid="start-button" aria-label="Start stopwatch">Start</button>
+            <button class="pause-btn" data-testid="pause-button" disabled aria-label="Pause stopwatch">Pause</button>
+            <button class="resume-btn" data-testid="resume-button" disabled aria-label="Resume stopwatch">Resume</button>
+            <button class="stop-btn" data-testid="reset-button" aria-label="Reset stopwatch">Reset</button>
+            <button class="lap-btn" data-testid="lap-button" aria-label="Record lap">Lap</button>
+            <button class="clear-laps-btn" data-testid="clear-laps" aria-label="Clear all laps">Clear Laps</button>
+            <button class="export-btn" aria-label="Export lap times as CSV file">Export CSV</button>
+          </div>
+          <div
+            class="laps-display"
+            data-testid="lap-list"
+            role="region"
+            aria-label="Recorded lap times"
+            aria-live="polite"
+          >
+            <!-- Dynamic lap list will be populated here -->
+          </div>
+        </div>
+      </section>
+    </div>
+    <script type="module" src="/src/stopwatch-page.js"></script>
+  </body>
+</html>

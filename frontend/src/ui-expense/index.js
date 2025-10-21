@@ -20,7 +20,7 @@ export function normalizeMonth(monthRaw) {
   return monthNumber;
 }
 
-export function addEntry(state, { amount, category, month }) {
+export function addEntry(state, { amount, category, month, description }) {
   const nextState = state ?? createExpenseState();
   const parsedAmount = Number(amount);
   if (!Number.isFinite(parsedAmount)) {
@@ -33,12 +33,17 @@ export function addEntry(state, { amount, category, month }) {
   if (!normalizedCategory) {
     return { state: nextState, error: 'Category is required.' };
   }
+  const normalizedDescription = (description || '').trim();
+  if (!normalizedDescription) {
+    return { state: nextState, error: 'Description is required.' };
+  }
   const normalizedMonth = normalizeMonth(month);
   if (normalizedMonth === 'INVALID') {
     return { state: nextState, error: 'Month must be an integer between 1 and 12.' };
   }
 
   const entry = {
+    description: normalizedDescription,
     amount: parsedAmount,
     category: normalizedCategory,
     month: normalizedMonth,
@@ -97,6 +102,7 @@ export function calculateTotalForFilter(entries, filter) {
 function getElements(root) {
   return {
     form: root.querySelector('#expense-form'),
+    description: root.querySelector('#exp-description'),
     amount: root.querySelector('#exp-amount'),
     category: root.querySelector('#exp-category'),
     month: root.querySelector('#exp-month'),
@@ -113,8 +119,12 @@ function render(state, els) {
   els.rows.innerHTML = '';
   const visible = getVisibleEntries(state);
 
-  visible.forEach((entry) => {
+  visible.forEach((entry, idx) => {
     const row = document.createElement('tr');
+    row.setAttribute('data-testid', 'expense-item');
+    const descriptionCell = document.createElement('td');
+    descriptionCell.textContent = entry.description || '';
+    descriptionCell.setAttribute('data-label', 'Description');
     const amountCell = document.createElement('td');
     amountCell.textContent = formatAmount(entry.amount);
     amountCell.setAttribute('data-label', 'Amount');
@@ -124,7 +134,21 @@ function render(state, els) {
     const monthCell = document.createElement('td');
     monthCell.textContent = formatMonth(entry.month);
     monthCell.setAttribute('data-label', 'Month');
-    row.append(amountCell, categoryCell, monthCell);
+    const deleteCell = document.createElement('td');
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.setAttribute('data-testid', 'delete-expense');
+    deleteBtn.addEventListener('click', () => {
+      // Remove this entry from visible entries
+      const visibleIndex = visible.indexOf(entry);
+      const realIndex = state.entries.indexOf(entry);
+      if (realIndex >= 0) {
+        state.entries.splice(realIndex, 1);
+        render(state, els);
+      }
+    });
+    deleteCell.appendChild(deleteBtn);
+    row.append(descriptionCell, amountCell, categoryCell, monthCell, deleteCell);
     els.rows.appendChild(row);
   });
 
@@ -190,6 +214,7 @@ export function createExpenseUi(root) {
       amount: els.amount.value,
       category: els.category.value,
       month: els.month.value,
+      description: els.description.value, // Use the description field
     });
 
     if (result.error) {
@@ -199,10 +224,11 @@ export function createExpenseUi(root) {
 
     state = result.state;
     render(state, els);
+    els.description.value = '';
     els.amount.value = '';
     els.category.value = '';
     els.month.value = '';
-    els.amount.focus();
+    els.description.focus();
   };
 
   els.form.addEventListener('submit', handleFormSubmit);

@@ -23,6 +23,15 @@ test.describe('Quote Application Smoke Test', () => {
     // Test that we can interact with the filter
     await authorFilter.fill('test');
 
+    // Clear the filter to get back to all quotes before clicking shuffle
+    await authorFilter.fill('');
+    
+    // Wait for debounce to process the filter change
+    await page.waitForTimeout(300);
+    
+    // Verify shuffle button is enabled before clicking
+    await expect(shuffleButton).toBeEnabled();
+
     // Test that we can click the shuffle button
     await shuffleButton.click();
 
