@@ -45,7 +45,7 @@ function parseTasksMarkdown(markdown) {
   return tasks;
 }
 
-async function graphqlRequest(query, variables) {
+async function graphqlRequest(query, variables = {}) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({ query, variables });
     const req = https.request(
@@ -66,10 +66,14 @@ async function graphqlRequest(query, variables) {
           try {
             const json = JSON.parse(data);
             if (json.errors) {
-              const msg = json.errors.map(e => e.message).join('; ');
-              return reject(new Error(msg));
+              const errorMsg = json.errors.map(e => {
+                if (e.message) return e.message;
+                return JSON.stringify(e);
+              }).join('; ');
+              reject(new Error(errorMsg));
+            } else {
+              resolve(json.data);
             }
-            resolve(json.data);
           } catch (err) {
             reject(err);
           }
@@ -82,23 +86,9 @@ async function graphqlRequest(query, variables) {
   });
 }
 
-async function getTeamStates(teamId) {
-  const query = `
-    query($teamId: String!) {
-      team(id: $teamId) {
-        states(first: 100) {
-          nodes { id name type }
-        }
-      }
-    }
-  `;
-  const data = await graphqlRequest(query, { teamId });
-  return data?.team?.states?.nodes ?? [];
-}
-
 async function getIssue(issueId) {
   const query = `
-    query($id: String!) {
+    query GetIssue($id: String!) {
       issue(id: $id) {
         id
         identifier
@@ -112,6 +102,20 @@ async function getIssue(issueId) {
   return data?.issue;
 }
 
+async function getTeamStates(teamId) {
+  const query = `
+    query GetTeamStates($teamId: String!) {
+      team(id: $teamId) {
+        states(first: 100) {
+          nodes { id name }
+        }
+      }
+    }
+  `;
+  const data = await graphqlRequest(query, { teamId });
+  return data?.team?.states?.nodes ?? [];
+}
+
 function findStateId(states, preferredName) {
   const lowerPreferred = String(preferredName).toLowerCase();
   const state = states.find(s => String(s.name).toLowerCase() === lowerPreferred);
@@ -120,18 +124,19 @@ function findStateId(states, preferredName) {
 
 async function updateIssueState(issueId, stateId) {
   const query = `
-    mutation($input: IssueUpdateInput!) {
-      issueUpdate(id: $input) {
+    mutation UpdateIssue($id: String!, $stateId: String!) {
+      issueUpdate(id: $id, stateId: $stateId) {
         success
+        issue {
+          id
+          identifier
+          state { id name }
+        }
       }
     }
   `;
-  await graphqlRequest(query, {
-    input: {
-      id: issueId,
-      stateId
-    }
-  });
+  const data = await graphqlRequest(query, { id: issueId, stateId });
+  return data?.issueUpdate?.success;
 }
 
 async function main() {
@@ -191,9 +196,13 @@ async function main() {
         }
         
         // Update to "Done"
-        await updateIssueState(entry.id, doneStateId);
-        console.log(`  ✅ Synced to Done: ${linearId} - ${task.title}`);
-        synced++;
+        const success = await updateIssueState(entry.id, doneStateId);
+        if (success) {
+          console.log(`  ✅ Synced to Done: ${linearId} - ${task.title}`);
+          synced++;
+        } else {
+          console.error(`  ❌ Update failed for ${linearId}`);
+        }
         
       } catch (err) {
         console.error(`  ❌ Failed to sync ${linearId}: ${err.message}`);
