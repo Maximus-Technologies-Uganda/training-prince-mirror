@@ -19,13 +19,13 @@
 
 ### Phase 2: Implement Filter Logic (Make Tests Pass)
 
-- [ ] Implement filterExpensesByCategory() to make tests pass
-- [ ] Implement filterExpensesByMonth() to make tests pass
-- [ ] Implement filterExpensesByBoth() with AND logic
-- [ ] Implement filterTodosByStatus() to make tests pass
-- [ ] Implement filterTodosByPriority() to make tests pass
-- [ ] Implement filterTodosByBoth() with AND logic
-- [ ] Implement detectEmptyState() helper function
+- [x] Implement filterExpensesByCategory() to make tests pass
+- [x] Implement filterExpensesByMonth() to make tests pass
+- [x] Implement filterExpensesByBoth() with AND logic
+- [x] Implement filterTodosByStatus() to make tests pass
+- [x] Implement filterTodosByPriority() to make tests pass
+- [x] Implement filterTodosByBoth() with AND logic
+- [x] Implement detectEmptyState() helper function
 
 ### Phase 3: Create Filter Components
 

@@ -9,6 +9,8 @@ import {
 describe('To-Do Filtering', () => {
   
   // Sample test data
+  // Pending: 1,3,4,7 (4 items)
+  // Completed: 2,5,6 (3 items)
   const sampleTodos = [
     { id: 1, title: 'Buy groceries', completed: false, priority: 'High' },
     { id: 2, title: 'Write report', completed: true, priority: 'High' },
@@ -24,14 +26,14 @@ describe('To-Do Filtering', () => {
     it('returns pending tasks when status is pending', () => {
       const result = filterTodosByStatus(sampleTodos, 'pending');
       
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(4);
       expect(result.every(t => !t.completed)).toBe(true);
     });
 
     it('returns completed tasks when status is completed', () => {
       const result = filterTodosByStatus(sampleTodos, 'completed');
       
-      expect(result).toHaveLength(4);
+      expect(result).toHaveLength(3);
       expect(result.every(t => t.completed)).toBe(true);
     });
 
@@ -107,7 +109,7 @@ describe('To-Do Filtering', () => {
       const filters = { status: 'completed', priority: null };
       const result = filterTodosByBoth(sampleTodos, filters);
       
-      expect(result).toHaveLength(4);
+      expect(result).toHaveLength(3);
       expect(result.every(t => t.completed)).toBe(true);
     });
 
