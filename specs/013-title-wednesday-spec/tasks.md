@@ -29,10 +29,10 @@
 
 ### Phase 3: Create Filter Components
 
-- [ ] Create ExpenseFilter React component with category & month dropdowns
-- [ ] Create ExpenseEmptyState component with icon & CTA button
-- [ ] Create TodoFilter component with status tabs & priority dropdown
-- [ ] Create TodoEmptyState component with icon & CTA button
+- [x] Create ExpenseFilter React component with category & month dropdowns
+- [x] Create ExpenseEmptyState component with icon & CTA button
+- [x] Create TodoFilter component with status tabs & priority dropdown
+- [x] Create TodoEmptyState component with icon & CTA button
 
 ### Phase 4: Integrate Components into Pages
 
