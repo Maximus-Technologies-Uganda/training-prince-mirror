@@ -1,2 +1,58 @@
-<testsuites id="" name="" tests="0" failures="0" skipped="0" errors="0" time="0.5684490000000001">
+<testsuites id="" name="" tests="22" failures="0" skipped="0" errors="0" time="21.434076">
+<testsuite name="expense.smoke.spec.ts" timestamp="2025-10-21T12:29:18.645Z" hostname="" tests="3" failures="0" skipped="0" time="7.852" errors="0">
+<testcase name="Expense Application Smoke Test › should add expense and verify calculation" classname="expense.smoke.spec.ts" time="4.855">
+</testcase>
+<testcase name="Expense Application Smoke Test › should handle expense deletion" classname="expense.smoke.spec.ts" time="1.525">
+</testcase>
+<testcase name="Expense Application Smoke Test › should validate expense input" classname="expense.smoke.spec.ts" time="1.472">
+</testcase>
+</testsuite>
+<testsuite name="quote.smoke.spec.ts" timestamp="2025-10-21T12:29:18.645Z" hostname="" tests="3" failures="0" skipped="0" time="6.584" errors="0">
+<testcase name="Quote Application Smoke Test › should display quote interface and allow interaction" classname="quote.smoke.spec.ts" time="4.866">
+</testcase>
+<testcase name="Quote Application Smoke Test › should handle empty filter gracefully" classname="quote.smoke.spec.ts" time="0.901">
+</testcase>
+<testcase name="Quote Application Smoke Test › should handle invalid filter gracefully" classname="quote.smoke.spec.ts" time="0.817">
+</testcase>
+</testsuite>
+<testsuite name="quote.spec.js" timestamp="2025-10-21T12:29:18.645Z" hostname="" tests="1" failures="0" skipped="0" time="4.301" errors="0">
+<testcase name="filters quotes by author name" classname="quote.spec.js" time="4.301">
+</testcase>
+</testsuite>
+<testsuite name="stopwatch.smoke.spec.ts" timestamp="2025-10-21T12:29:18.645Z" hostname="" tests="6" failures="0" skipped="0" time="15.412" errors="0">
+<testcase name="Stopwatch Application Smoke Test › should start timer and verify time display" classname="stopwatch.smoke.spec.ts" time="5.109">
+</testcase>
+<testcase name="Stopwatch Application Smoke Test › should pause and resume timer" classname="stopwatch.smoke.spec.ts" time="2.942">
+</testcase>
+<testcase name="Stopwatch Application Smoke Test › should reset timer" classname="stopwatch.smoke.spec.ts" time="1.736">
+</testcase>
+<testcase name="Stopwatch Application Smoke Test › should add and display laps" classname="stopwatch.smoke.spec.ts" time="2.537">
+</testcase>
+<testcase name="Stopwatch Application Smoke Test › should clear laps" classname="stopwatch.smoke.spec.ts" time="1.67">
+</testcase>
+<testcase name="Stopwatch Application Smoke Test › should persist state in localStorage" classname="stopwatch.smoke.spec.ts" time="1.418">
+</testcase>
+</testsuite>
+<testsuite name="temp.smoke.spec.ts" timestamp="2025-10-21T12:29:18.645Z" hostname="" tests="4" failures="0" skipped="0" time="5.627" errors="0">
+<testcase name="Temperature Converter Smoke Test › should convert temperature between Celsius and Fahrenheit" classname="temp.smoke.spec.ts" time="1.785">
+</testcase>
+<testcase name="Temperature Converter Smoke Test › should handle invalid input gracefully" classname="temp.smoke.spec.ts" time="1.471">
+</testcase>
+<testcase name="Temperature Converter Smoke Test › should clear inputs" classname="temp.smoke.spec.ts" time="0.76">
+</testcase>
+<testcase name="Temperature Converter Smoke Test › should show conversion history" classname="temp.smoke.spec.ts" time="1.611">
+</testcase>
+</testsuite>
+<testsuite name="todo.smoke.spec.ts" timestamp="2025-10-21T12:29:18.645Z" hostname="" tests="5" failures="0" skipped="0" time="5.714" errors="0">
+<testcase name="Todo Application Smoke Test › should add task and mark as complete" classname="todo.smoke.spec.ts" time="1.566">
+</testcase>
+<testcase name="Todo Application Smoke Test › should delete completed tasks" classname="todo.smoke.spec.ts" time="0.922">
+</testcase>
+<testcase name="Todo Application Smoke Test › should filter tasks by status" classname="todo.smoke.spec.ts" time="1.353">
+</testcase>
+<testcase name="Todo Application Smoke Test › should handle empty task input" classname="todo.smoke.spec.ts" time="0.906">
+</testcase>
+<testcase name="Todo Application Smoke Test › should persist tasks in localStorage" classname="todo.smoke.spec.ts" time="0.967">
+</testcase>
+</testsuite>
 </testsuites>

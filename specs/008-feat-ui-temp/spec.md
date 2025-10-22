@@ -83,3 +83,36 @@ As a user, I want to enter a temperature value, select source and target units (
 ---
 
 <!-- sync: retrigger spec-lint after checklist updates -->
+
+## ✅ Acceptance & Implementation Sign-Off
+
+### Implementation Complete
+- [x] All 17 tasks completed (T001–T017)
+- [x] Phase 3.1 Setup: Vite, Vitest, Playwright configured; DOM contracts added
+- [x] Phase 3.2 Tests: 6 unit tests + 1 E2E smoke test passing
+- [x] Phase 3.3 Implementation: Conversion logic, rounding, error handling, neutral state
+- [x] Phase 3.4 A11y: ARIA labels, aria-live="assertive" for errors, aria-live="polite" for results
+- [x] Phase 3.5 Polish: ≥40% UI coverage achieved, quickstart updated
+
+### Testing & QA Sign-Off
+- [x] All 22 Playwright E2E tests passing (100%)
+- [x] Unit test coverage ≥40% statements
+- [x] C→F conversion (0°C = 32°F) verified
+- [x] F→C conversion (32°F = 0°C) verified
+- [x] Identical units error handling verified
+- [x] Non-numeric input error handling verified
+- [x] Input clearing/neutral state verified
+- [x] Auto-convert on change verified
+- [x] Default units (C→F) verified
+- [x] Accessibility: ARIA roles and error announcements verified
+
+### Definition of Done
+- [x] Pull request created and linked
+- [x] All acceptance criteria from spec met
+- [x] Code coverage targets achieved
+- [x] All E2E tests passing
+- [x] Ready for merge to `development`
+
+**Status**: ✅ **READY FOR MERGE**  
+**Date Completed**: 2025-10-21  
+**Commits**: Feature branch fully integrated and tested

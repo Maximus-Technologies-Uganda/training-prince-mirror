@@ -15,7 +15,7 @@ import {
 describe('ui-expense pure helpers', () => {
   it('adds valid entry', () => {
     const base = createExpenseState();
-    const result = addEntry(base, { amount: '25.50', category: 'Food', month: '3' });
+    const result = addEntry(base, { amount: '25.50', category: 'Food', month: '3', description: 'Lunch' });
     expect(result.error).toBeUndefined();
     expect(result.state.entries).toHaveLength(1);
     expect(result.state.entries[0]).toMatchObject({ amount: 25.5, category: 'Food', month: 3 });
@@ -23,7 +23,7 @@ describe('ui-expense pure helpers', () => {
 
   it('rejects invalid amount', () => {
     const base = createExpenseState();
-    const result = addEntry(base, { amount: 'nope', category: 'Food', month: '3' });
+    const result = addEntry(base, { amount: 'nope', category: 'Food', month: '3', description: 'Lunch' });
     expect(result.error).toMatch(/number/i);
     expect(result.state.entries).toHaveLength(0);
   });
@@ -37,8 +37,8 @@ describe('ui-expense pure helpers', () => {
 
   it('filters visible entries and totals by category', () => {
     let state = createExpenseState();
-    const first = addEntry(state, { amount: 10, category: 'Food', month: 1 }).state;
-    const second = addEntry(first, { amount: 20, category: 'Travel', month: 1 }).state;
+    const first = addEntry(state, { amount: 10, category: 'Food', month: 1, description: 'Lunch' }).state;
+    const second = addEntry(first, { amount: 20, category: 'Travel', month: 1, description: 'Flight' }).state;
     state = setFilter(second, 'Food');
     expect(getVisibleEntries(state)).toHaveLength(1);
     expect(calculateTotalForFilter(state.entries, state.filter)).toBe(10);
@@ -78,6 +78,7 @@ describe('ui-expense DOM behaviour', () => {
     document.body.innerHTML = `
       <section id="expense-app">
         <form id="expense-form">
+          <input id="exp-description" />
           <input id="exp-amount" />
           <input id="exp-category" />
           <input id="exp-month" />
@@ -100,6 +101,7 @@ describe('ui-expense DOM behaviour', () => {
     const root = document.getElementById('expense-app');
     createExpenseUi(root);
     const form = document.getElementById('expense-form');
+    document.getElementById('exp-description').value = 'Coffee at cafe';
     document.getElementById('exp-amount').value = '12.34';
     document.getElementById('exp-category').value = 'Fuel';
     document.getElementById('exp-month').value = '6';
@@ -115,6 +117,7 @@ describe('ui-expense DOM behaviour', () => {
     const root = document.getElementById('expense-app');
     createExpenseUi(root);
     const form = document.getElementById('expense-form');
+    document.getElementById('exp-description').value = 'Invalid expense';
     document.getElementById('exp-amount').value = '-5';
     document.getElementById('exp-category').value = 'Food';
     document.getElementById('exp-month').value = '';
@@ -134,4 +137,3 @@ describe('ui-expense DOM behaviour', () => {
     expect(document.getElementById('exp-empty').textContent).toMatch(/No expenses found/i);
   });
 });
-

@@ -5,12 +5,12 @@ import { StopwatchUI } from './stopwatch-ui.js';
 
 function initStopwatchUI() {
   const container = document.querySelector('.stopwatch-container');
-  
+
   if (!container) {
     console.error('Stopwatch container not found');
     return;
   }
-  
+
   try {
     const stopwatchUI = new StopwatchUI(container);
     console.log('Stopwatch UI initialized successfully');

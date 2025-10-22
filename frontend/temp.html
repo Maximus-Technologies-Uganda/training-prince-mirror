@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Temperature Converter - Hello World Apps</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app" class="app-grid" role="main">
+      <section id="temp-app" class="section-card temp-app" aria-labelledby="temp-heading">
+        <h1 id="temp-heading">Temperature Converter</h1>
+        <div class="temp-controls" role="group" aria-label="Conversion inputs">
+          <label for="temp-value">Value</label>
+          <input
+            id="temp-value"
+            data-testid="celsius-input"
+            type="text"
+            inputmode="decimal"
+            aria-describedby="temp-error temp-result"
+            placeholder="Enter temperature value"
+          />
+          <label for="temp-from">From</label>
+          <select id="temp-from" aria-describedby="temp-error temp-result">
+            <option value="C">Celsius (C)</option>
+            <option value="F">Fahrenheit (F)</option>
+          </select>
+          <label for="temp-to">To</label>
+          <select id="temp-to" aria-describedby="temp-error temp-result">
+            <option value="F">Fahrenheit (F)</option>
+            <option value="C">Celsius (C)</option>
+          </select>
+          <button id="temp-convert" data-testid="convert-button" type="button">Convert</button>
+          <button id="temp-clear" data-testid="clear-button" type="button">Clear</button>
+        </div>
+        <p id="temp-error" data-testid="error-message" role="alert" aria-live="assertive" tabindex="-1"></p>
+        <div>
+          <input id="temp-result-display" data-testid="fahrenheit-input" type="text" readonly placeholder="Result" />
+        </div>
+        <p id="temp-result" role="status" aria-live="polite" aria-label="Conversion result"></p>
+        <div id="conversion-history" data-testid="conversion-history" style="margin-top: 1rem;"></div>
+      </section>
+    </div>
+    <script>
+      // Inline script to mark page load
+      document.body.setAttribute('data-html-loaded', 'true');
+      
+      // Try to dynamically import the module and catch errors
+      // Use computed string to avoid Vite's module resolution
+      const modulePath = '/temp' + '.js';
+      import(modulePath)
+        .then(() => {
+          document.body.setAttribute('data-module-imported', 'true');
+        })
+        .catch((error) => {
+          document.body.setAttribute('data-import-error', error.message);
+          console.error('Module import error:', error);
+        });
+    </script>
+    <script type="module" src="/src/temp-page.js"></script>
+  </body>
+</html>

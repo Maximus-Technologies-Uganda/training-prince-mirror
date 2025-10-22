@@ -4,5 +4,3 @@ export function createClock(tz = 'Africa/Kampala', nowFn = () => Date.now()) {
   }
   return { nowMs };
 }
-
-

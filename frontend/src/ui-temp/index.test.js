@@ -6,12 +6,12 @@ function setupDom() {
     <section id="temp-app">
       <input id="temp-value" />
       <select id="temp-from">
-        <option value="C">C</option>
+        <option value="C" selected>C</option>
         <option value="F">F</option>
       </select>
       <select id="temp-to">
-        <option value="F">F</option>
         <option value="C">C</option>
+        <option value="F" selected>F</option>
       </select>
       <p id="temp-error" aria-live="assertive"></p>
       <p id="temp-result" aria-live="polite"></p>
@@ -29,6 +29,8 @@ describe('UI Temp', () => {
     document.getElementById('temp-value').value = '0';
     document.getElementById('temp-from').value = 'C';
     document.getElementById('temp-to').value = 'F';
+    document.getElementById('temp-from').dispatchEvent(new Event('change'));
+    document.getElementById('temp-to').dispatchEvent(new Event('change'));
     document.getElementById('temp-value').dispatchEvent(new Event('input'));
     expect(document.getElementById('temp-result').textContent).toBe('32');
   });
@@ -37,6 +39,8 @@ describe('UI Temp', () => {
     document.getElementById('temp-value').value = '32';
     document.getElementById('temp-from').value = 'F';
     document.getElementById('temp-to').value = 'C';
+    document.getElementById('temp-from').dispatchEvent(new Event('change'));
+    document.getElementById('temp-to').dispatchEvent(new Event('change'));
     document.getElementById('temp-value').dispatchEvent(new Event('input'));
     expect(document.getElementById('temp-result').textContent).toBe('0');
   });
@@ -45,6 +49,7 @@ describe('UI Temp', () => {
     document.getElementById('temp-value').value = '1';
     document.getElementById('temp-from').value = 'C';
     document.getElementById('temp-to').value = 'C';
+    document.getElementById('temp-value').dispatchEvent(new Event('input'));
     document.getElementById('temp-to').dispatchEvent(new Event('change'));
     expect(document.getElementById('temp-error').textContent).toMatch(/cannot be the same/i);
     expect(document.getElementById('temp-result').textContent).toBe('');
@@ -64,4 +69,3 @@ describe('UI Temp', () => {
     expect(document.getElementById('temp-result').textContent).toBe('');
   });
 });
-

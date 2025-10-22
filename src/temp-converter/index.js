@@ -35,8 +35,8 @@ function run(argv = process.argv.slice(2)) {
   }
 }
 
-// Only call run() if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Only call run() if this file is executed directly (and not in a browser)
+if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
   run();
 }
 

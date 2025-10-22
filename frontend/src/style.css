@@ -63,7 +63,9 @@ button,
 input,
 select,
 textarea {
-  transition: outline-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    outline-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 a:focus-visible,
@@ -197,6 +199,11 @@ textarea:focus-visible {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+#temp-error {
+  min-height: 1.5rem;
+  display: block !important;
 }
 
 @media (max-width: 540px) {

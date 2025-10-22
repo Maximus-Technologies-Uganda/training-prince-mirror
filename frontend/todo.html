@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List - Hello World Apps</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app" class="app-grid" role="main">
+      <section id="todo-app" class="section-card todo-app" aria-labelledby="todo-heading">
+        <h1 id="todo-heading">Todo List</h1>
+        <div class="todo-controls" role="group" aria-label="Add a task">
+          <label for="todo-input">Task description</label>
+          <input
+            id="todo-input"
+            data-testid="task-input"
+            type="text"
+            placeholder="What needs to be done?"
+            autocomplete="off"
+            aria-describedby="todo-helper"
+            required
+          />
+          <label for="todo-due">Due date (optional)</label>
+          <input id="todo-due" type="date" aria-describedby="todo-helper" />
+          <label for="todo-high" class="todo-high-label"
+            ><input id="todo-high" type="checkbox" aria-describedby="todo-helper" /> High
+            priority</label
+          >
+          <button id="todo-add" data-testid="add-task" type="button" aria-describedby="todo-helper">Add task</button>
+        </div>
+        <p id="todo-helper" class="visually-hidden">
+          Due date is optional; high priority helps sorting.
+        </p>
+        <p id="todo-error" data-testid="validation-error" role="alert" aria-live="assertive" tabindex="-1"></p>
+        <div class="todo-filters" role="group" aria-label="Filter tasks">
+          <button id="filter-all" data-testid="filter-all" type="button">All</button>
+          <button id="filter-active" data-testid="filter-active" type="button">Active</button>
+          <button id="filter-completed" data-testid="filter-completed" type="button">Completed</button>
+        </div>
+        <p id="task-count" data-testid="task-count"></p>
+        <ul id="todo-list" data-testid="task-list" class="todo-list" aria-live="polite"></ul>
+      </section>
+    </div>
+    <script type="module" src="/src/todo-page.js"></script>
+  </body>
+</html>

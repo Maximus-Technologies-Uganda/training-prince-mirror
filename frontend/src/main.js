@@ -1,9 +1,49 @@
 import './style.css';
 import { defaultQuotes, pickRandom, filterByAuthor } from '../../src/quote/core.js';
+import { initEnhancedQuoteUI } from './quote-ui/quote-ui.js';
 import { createExpenseUi } from './ui-expense/index.js';
 import { initTodoUI } from './ui-todo/index.js';
 import { initTempUI } from './ui-temp/index.js';
 import './ui-stopwatch/index.js';
+
+// Client-side routing helper
+function getCurrentPath() {
+  return window.location.pathname;
+}
+
+function shouldShowSection(sectionId, currentPath) {
+  const pathMap = {
+    '/': 'quote-app',
+    '/quote': 'quote-app',
+    '/expense': 'expense-app',
+    '/temp': 'temp-app',
+    '/todo': 'todo-app',
+    '/stopwatch': 'stopwatch-app',
+  };
+  
+  const requiredSection = pathMap[currentPath] || 'quote-app';
+  return sectionId === requiredSection;
+}
+
+function initRouting() {
+  const currentPath = getCurrentPath();
+  const sections = document.querySelectorAll('[id$="-app"]');
+  
+  sections.forEach((section) => {
+    if (shouldShowSection(section.id, currentPath)) {
+      section.style.display = '';
+      section.setAttribute('aria-hidden', 'false');
+    } else {
+      section.style.display = 'none';
+      section.setAttribute('aria-hidden', 'true');
+    }
+  });
+}
+
+// Initialize routing on navigation
+window.addEventListener('popstate', () => {
+  initRouting();
+});
 
 const state = {
   quotes: defaultQuotes,
@@ -61,6 +101,21 @@ function applyFilter(elements, value) {
 }
 
 function initQuoteUI() {
+  const app = document.getElementById('app');
+  if (!app) return;
+  
+  // Initialize enhanced quote UI with debounced filtering and error handling
+  try {
+    initEnhancedQuoteUI(defaultQuotes);
+  } catch (error) {
+    console.error('Failed to initialize enhanced quote UI:', error);
+    // Fallback to basic functionality if enhanced UI fails
+    initBasicQuoteUI();
+  }
+}
+
+function initBasicQuoteUI() {
+  // Fallback implementation for basic functionality
   const elements = getElements();
   if (!elements.app) return;
 
@@ -94,6 +149,7 @@ function initExpenseUI() {
 }
 
 function initUIs() {
+  initRouting();
   initQuoteUI();
   initExpenseUI();
   initTodoUI();

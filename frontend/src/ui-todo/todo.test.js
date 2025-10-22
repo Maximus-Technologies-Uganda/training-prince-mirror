@@ -71,7 +71,12 @@ describe('T005b high-priority filtering utilities', () => {
     const clock = createClock('Africa/Kampala', () => Date.parse('2025-09-30T21:30:00Z'));
     let state = createUiState();
     state = addItem(state, 'Normal tomorrow', { dueDate: '2025-10-02' }, clock).state;
-    state = addItem(state, 'High today', { dueDate: '2025-10-01', highPriority: true }, clock).state;
+    state = addItem(
+      state,
+      'High today',
+      { dueDate: '2025-10-01', highPriority: true },
+      clock,
+    ).state;
     const visible = getVisibleItems(state, { today: true, high: true }, clock);
     expect(visible).toHaveLength(1);
     expect(visible[0].text).toBe('High today');
@@ -132,6 +137,7 @@ describe('DOM wiring', () => {
 
   afterEach(() => {
     document.body.innerHTML = '';
+    localStorage.clear();
   });
 
   it('surfaces error when adding empty task and focuses message', () => {
