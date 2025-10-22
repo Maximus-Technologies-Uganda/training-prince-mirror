@@ -1,6 +1,9 @@
 name: Update PRI-289 Status
 
 on:
+  push:
+    branches:
+      - feature/PRI-289-wednesday-ui-polishing
   workflow_dispatch:
 
 jobs:
