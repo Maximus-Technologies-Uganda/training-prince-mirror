@@ -65,6 +65,17 @@ async function main() {
             id
             name
           }
+          children(first: 100) {
+            nodes {
+              id
+              identifier
+              title
+              state {
+                id
+                name
+              }
+            }
+          }
         }
       }
     `;
@@ -78,11 +89,7 @@ async function main() {
     
     console.log(`✅ Found: ${issue.identifier} - ${issue.title}`);
     console.log(`   Current state: ${issue.state.name}`);
-    
-    if (issue.state.name === 'In Progress') {
-      console.log('✅ Already in "In Progress" state');
-      return;
-    }
+    console.log(`   Sub-issues: ${issue.children.nodes.length}`);
     
     console.log('🔍 Getting team states...');
     const statesQuery = `
@@ -109,7 +116,7 @@ async function main() {
     
     console.log(`✅ Found "In Progress" state: ${inProgressState.id}`);
     
-    console.log('📝 Updating issue state...');
+    console.log('\n📝 Updating issue states...');
     const updateQuery = `
       mutation UpdateIssue($id: String!, $input: IssueUpdateInput!) {
         issueUpdate(id: $id, input: $input) {
@@ -126,19 +133,47 @@ async function main() {
       }
     `;
     
-    const updateResult = await graphqlRequest(updateQuery, {
-      id: issue.id,
-      input: {
-        stateId: inProgressState.id
+    // Update parent issue
+    if (issue.state.name !== 'In Progress') {
+      console.log(`  Updating parent: ${issue.identifier}...`);
+      const updateResult = await graphqlRequest(updateQuery, {
+        id: issue.id,
+        input: {
+          stateId: inProgressState.id
+        }
+      });
+      
+      if (updateResult.issueUpdate.success) {
+        console.log(`    ✅ ${updateResult.issueUpdate.issue.identifier} → ${updateResult.issueUpdate.issue.state.name}`);
+      } else {
+        throw new Error(`Failed to update ${issue.identifier}`);
       }
-    });
-    
-    if (updateResult.issueUpdate.success) {
-      console.log('✅ Successfully updated!');
-      console.log(`   ${updateResult.issueUpdate.issue.identifier} → ${updateResult.issueUpdate.issue.state.name}`);
     } else {
-      throw new Error('Update returned success: false');
+      console.log(`  ✅ ${issue.identifier} already "In Progress"`);
     }
+    
+    // Update all sub-issues
+    for (const child of issue.children.nodes) {
+      if (child.state.name !== 'In Progress') {
+        console.log(`  Updating sub-issue: ${child.identifier}...`);
+        const updateResult = await graphqlRequest(updateQuery, {
+          id: child.id,
+          input: {
+            stateId: inProgressState.id
+          }
+        });
+        
+        if (updateResult.issueUpdate.success) {
+          console.log(`    ✅ ${updateResult.issueUpdate.issue.identifier} → ${updateResult.issueUpdate.issue.state.name}`);
+        } else {
+          throw new Error(`Failed to update ${child.identifier}`);
+        }
+      } else {
+        console.log(`  ✅ ${child.identifier} already "In Progress"`);
+      }
+    }
+    
+    console.log('\n✅ All issues updated successfully!');
     
   } catch (err) {
     console.error('❌ Error:', err.message);

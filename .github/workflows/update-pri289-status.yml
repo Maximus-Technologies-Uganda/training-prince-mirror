@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Update PRI-289 to In Progress
+      - name: Update PRI-289 and Sub-issues to In Progress
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
         run: |
@@ -76,7 +76,7 @@ jobs:
           
           async function main() {
             try {
-              console.log('🔍 Getting PRI-289...');
+              console.log('🔍 Getting PRI-289 and sub-issues...');
               const issueQuery = `
                 query GetIssue($id: String!) {
                   issue(id: $id) {
@@ -89,6 +89,17 @@ jobs:
                     state {
                       id
                       name
+                    }
+                    children(first: 100) {
+                      nodes {
+                        id
+                        identifier
+                        title
+                        state {
+                          id
+                          name
+                        }
+                      }
                     }
                   }
                 }
@@ -103,13 +114,9 @@ jobs:
               
               console.log(`✅ Found: ${issue.identifier} - ${issue.title}`);
               console.log(`   Current state: ${issue.state.name}`);
+              console.log(`   Sub-issues: ${issue.children.nodes.length}`);
               
-              if (issue.state.name === 'In Progress') {
-                console.log('✅ Already in "In Progress" state');
-                return;
-              }
-              
-              console.log('🔍 Getting team states...');
+              console.log('\n🔍 Getting team states...');
               const statesQuery = `
                 query GetTeamStates($teamId: String!) {
                   team(id: $teamId) {
@@ -134,7 +141,7 @@ jobs:
               
               console.log(`✅ Found "In Progress" state: ${inProgressState.id}`);
               
-              console.log('📝 Updating issue state...');
+              console.log('\n📝 Updating issue states...');
               const updateQuery = `
                 mutation UpdateIssue($id: String!, $input: IssueUpdateInput!) {
                   issueUpdate(id: $id, input: $input) {
@@ -151,19 +158,47 @@ jobs:
                 }
               `;
               
-              const updateResult = await graphqlRequest(updateQuery, {
-                id: issue.id,
-                input: {
-                  stateId: inProgressState.id
+              // Update parent issue
+              if (issue.state.name !== 'In Progress') {
+                console.log(`  Updating parent: ${issue.identifier}...`);
+                const updateResult = await graphqlRequest(updateQuery, {
+                  id: issue.id,
+                  input: {
+                    stateId: inProgressState.id
+                  }
+                });
+                
+                if (updateResult.issueUpdate.success) {
+                  console.log(`    ✅ ${updateResult.issueUpdate.issue.identifier} → ${updateResult.issueUpdate.issue.state.name}`);
+                } else {
+                  throw new Error(`Failed to update ${issue.identifier}`);
                 }
-              });
-              
-              if (updateResult.issueUpdate.success) {
-                console.log('✅ Successfully updated!');
-                console.log(`   ${updateResult.issueUpdate.issue.identifier} → ${updateResult.issueUpdate.issue.state.name}`);
               } else {
-                throw new Error('Update returned success: false');
+                console.log(`  ✅ ${issue.identifier} already "In Progress"`);
               }
+              
+              // Update all sub-issues
+              for (const child of issue.children.nodes) {
+                if (child.state.name !== 'In Progress') {
+                  console.log(`  Updating sub-issue: ${child.identifier}...`);
+                  const updateResult = await graphqlRequest(updateQuery, {
+                    id: child.id,
+                    input: {
+                      stateId: inProgressState.id
+                    }
+                  });
+                  
+                  if (updateResult.issueUpdate.success) {
+                    console.log(`    ✅ ${updateResult.issueUpdate.issue.identifier} → ${updateResult.issueUpdate.issue.state.name}`);
+                  } else {
+                    throw new Error(`Failed to update ${child.identifier}`);
+                  }
+                } else {
+                  console.log(`  ✅ ${child.identifier} already "In Progress"`);
+                }
+              }
+              
+              console.log('\n✅ All issues updated successfully!');
               
             } catch (err) {
               console.error('❌ Error:', err.message);
