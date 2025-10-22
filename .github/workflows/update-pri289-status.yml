@@ -22,11 +22,16 @@ jobs:
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
         run: |
-          cat > update-status.js << 'SCRIPT'
+          cat > update-status.mjs << 'SCRIPT'
           import https from 'https';
           
           const API_KEY = process.env.LINEAR_API_KEY;
           const ISSUE_ID = 'PRI-289';
+          
+          if (!API_KEY) {
+            console.error('❌ LINEAR_API_KEY not set');
+            process.exit(1);
+          }
           
           async function graphqlRequest(query, variables) {
             return new Promise((resolve, reject) => {
@@ -44,9 +49,16 @@ jobs:
                 let data = '';
                 res.on('data', (chunk) => (data += chunk));
                 res.on('end', () => {
-                  const json = JSON.parse(data);
-                  if (json.errors) reject(new Error(json.errors.map(e => e.message).join('; ')));
-                  else resolve(json.data);
+                  try {
+                    const json = JSON.parse(data);
+                    if (json.errors) {
+                      reject(new Error(json.errors.map(e => e.message).join('; ')));
+                    } else {
+                      resolve(json.data);
+                    }
+                  } catch (e) {
+                    reject(new Error(`Parse error: ${e.message}`));
+                  }
                 });
               });
               req.on('error', reject);
@@ -56,30 +68,46 @@ jobs:
           }
           
           async function main() {
-            const issueData = await graphqlRequest(
-              `query($identifier: String!) { issue(id: $identifier) { id team { id } } }`,
-              { identifier: ISSUE_ID }
-            );
-            
-            const statesData = await graphqlRequest(
-              `query($teamId: String!) { team(id: $teamId) { states(first: 100) { nodes { id name } } } }`,
-              { teamId: issueData.issue.team.id }
-            );
-            
-            const inProgressState = statesData.team.states.nodes.find(
-              s => s.name.toLowerCase() === 'in progress'
-            );
-            
-            await graphqlRequest(
-              `mutation($input: IssueUpdateInput!) { issueUpdate(id: $input) { success } }`,
-              { input: { id: issueData.issue.id, stateId: inProgressState.id } }
-            );
-            
-            console.log('✅ PRI-289 updated to In Progress');
+            try {
+              console.log('🔍 Getting PRI-289...');
+              const issueData = await graphqlRequest(
+                `query($identifier: String!) { issue(id: $identifier) { id team { id } } }`,
+                { identifier: ISSUE_ID }
+              );
+              
+              if (!issueData.issue) {
+                throw new Error('Issue not found');
+              }
+              
+              console.log('🔍 Getting team states...');
+              const statesData = await graphqlRequest(
+                `query($teamId: String!) { team(id: $teamId) { states(first: 100) { nodes { id name } } } }`,
+                { teamId: issueData.issue.team.id }
+              );
+              
+              const inProgressState = statesData.team.states.nodes.find(
+                s => s.name.toLowerCase() === 'in progress'
+              );
+              
+              if (!inProgressState) {
+                throw new Error('In Progress state not found');
+              }
+              
+              console.log('📝 Updating to In Progress...');
+              await graphqlRequest(
+                `mutation($input: IssueUpdateInput!) { issueUpdate(id: $input) { success } }`,
+                { input: { id: issueData.issue.id, stateId: inProgressState.id } }
+              );
+              
+              console.log('✅ PRI-289 updated to In Progress');
+            } catch (err) {
+              console.error('❌ Error:', err.message);
+              process.exit(1);
+            }
           }
           
-          main().catch(err => { console.error(err); process.exit(1); });
+          main();
           SCRIPT
           
-          node update-status.js
+          node update-status.mjs
 
