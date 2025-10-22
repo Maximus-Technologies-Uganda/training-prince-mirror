@@ -1,12 +1,7 @@
-name: Fix Linear Duplicates and Update Status
+name: Fix Linear Duplicates and Remove them
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feature/PRI-289-wednesday-ui-polishing
-    paths:
-      - '.github/workflows/fix-linear-duplicates.yml'
 
 jobs:
   fix-linear:
@@ -20,11 +15,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Fix Linear Duplicates
+      - name: Delete Duplicate Sub-issues
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
         run: |
-          cat > fix-duplicates.mjs << 'SCRIPT'
+          cat > delete-duplicates.mjs << 'SCRIPT'
           import https from 'https';
           
           const API_KEY = process.env.LINEAR_API_KEY;
@@ -58,13 +53,11 @@ jobs:
                         if (e.message) return e.message;
                         return JSON.stringify(e);
                       }).join('; ');
-                      console.error('GraphQL Errors:', errorMsg);
                       reject(new Error(errorMsg));
                     } else {
                       resolve(json.data);
                     }
                   } catch (e) {
-                    console.error('Parse error:', e.message);
                     reject(e);
                   }
                 });
@@ -88,10 +81,6 @@ jobs:
                       id
                       identifier
                       title
-                      state {
-                        id
-                        name
-                      }
                     }
                   }
                 }
@@ -116,11 +105,12 @@ jobs:
             
             for (const title in titleMap) {
               if (titleMap[title].length > 1) {
-                console.log(`\n⚠️  DUPLICATE FOUND: "${title}"`);
+                console.log(`\n⚠️  DUPLICATE: "${title}" (${titleMap[title].length} copies)`);
                 titleMap[title].forEach((issue, idx) => {
-                  console.log(`   [${idx}] ${issue.identifier} - ${issue.state.name}`);
+                  console.log(`   [${idx}] ${issue.identifier}`);
                 });
                 
+                // Keep first, rest are duplicates
                 keep.push(titleMap[title][0]);
                 for (let i = 1; i < titleMap[title].length; i++) {
                   duplicates.push(titleMap[title][i]);
@@ -133,96 +123,55 @@ jobs:
             return { keep, duplicates };
           }
           
-          async function deleteIssue(issueId) {
-            const query = `
-              mutation DeleteIssue($id: String!) {
-                issueDelete(id: $id)
+          async function deleteIssue(issueId, issueIdentifier) {
+            // Step 1: Archive the issue first (safer than delete)
+            console.log(`  Archiving ${issueIdentifier}...`);
+            
+            const updateQuery = `
+              mutation UpdateIssue($id: String!, $input: IssueUpdateInput!) {
+                issueUpdate(id: $id, input: $input) {
+                  success
+                  issue {
+                    id
+                    identifier
+                  }
+                }
               }
             `;
             
             try {
-              const result = await graphqlRequest(query, { id: issueId });
-              return result.issueDelete === true;
-            } catch (err) {
-              console.error(`  ❌ Error deleting ${issueId}:`, err.message);
-              return false;
-            }
-          }
-          
-          async function updateIssueStatus(issueId, issueIdentifier, statusName) {
-            const stateQuery = `
-              query GetTeamStates($teamId: String!) {
-                team(id: $teamId) {
-                  states(first: 100) {
-                    nodes {
-                      id
-                      name
-                    }
-                  }
-                }
-              }
-            `;
-          
-            const issueQuery = `
-              query GetIssue($id: String!) {
-                issue(id: $id) {
-                  id
-                  team {
-                    id
-                  }
-                  state {
-                    name
-                  }
-                }
-              }
-            `;
-          
-            try {
-              const issueResult = await graphqlRequest(issueQuery, { id: issueId });
-              const issue = issueResult.issue;
-          
-              const statesResult = await graphqlRequest(stateQuery, { teamId: issue.team.id });
-              const targetState = statesResult.team.states.nodes.find(
-                s => s.name.toLowerCase() === statusName.toLowerCase()
-              );
-          
-              if (!targetState) {
-                console.log(`  ⚠️  Status "${statusName}" not found for team`);
-                return false;
-              }
-          
-              if (issue.state.name.toLowerCase() === statusName.toLowerCase()) {
-                console.log(`  ✅ ${issueIdentifier} already in "${statusName}" state`);
+              // Try to archive (set archivedAt)
+              const updateResult = await graphqlRequest(updateQuery, {
+                id: issueId,
+                input: { archived: true }
+              });
+              
+              if (updateResult.issueUpdate?.success) {
+                console.log(`    ✅ ${issueIdentifier} archived`);
                 return true;
               }
-          
-              const updateQuery = `
-                mutation UpdateIssue($id: String!, $input: IssueUpdateInput!) {
-                  issueUpdate(id: $id, input: $input) {
-                    success
-                    issue {
-                      id
-                      identifier
-                      state {
-                        name
-                      }
-                    }
-                  }
+              
+              // If archiving fails, try direct delete
+              const deleteQuery = `
+                mutation DeleteIssue($id: String!) {
+                  issueDelete(id: $id)
                 }
               `;
-          
-              const updateResult = await graphqlRequest(updateQuery, {
-                id: issue.id,
-                input: { stateId: targetState.id }
-              });
-          
-              if (updateResult.issueUpdate.success) {
-                console.log(`  ✅ ${issueIdentifier} → ${updateResult.issueUpdate.issue.state.name}`);
+              
+              const deleteResult = await graphqlRequest(deleteQuery, { id: issueId });
+              
+              if (deleteResult.issueDelete === true) {
+                console.log(`    ✅ ${issueIdentifier} deleted`);
                 return true;
+              } else if (deleteResult.issueDelete) {
+                console.log(`    ✅ ${issueIdentifier} removed`);
+                return true;
+              } else {
+                console.log(`    ⚠️  Could not remove ${issueIdentifier}`);
+                return false;
               }
-              return false;
             } catch (err) {
-              console.error(`  ❌ Error updating ${issueIdentifier}:`, err.message);
+              console.error(`    ❌ Error removing ${issueIdentifier}:`, err.message);
               return false;
             }
           }
@@ -238,26 +187,20 @@ jobs:
               console.log(`   Unique issues: ${keep.length}`);
               console.log(`   Duplicates to remove: ${duplicates.length}\n`);
           
-              if (duplicates.length > 0) {
-                console.log('🗑️  REMOVING DUPLICATES:\n');
-                for (const dup of duplicates) {
-                  console.log(`  Deleting ${dup.identifier}: "${dup.title}"...`);
-                  const deleted = await deleteIssue(dup.id);
-                  if (deleted) {
-                    console.log(`    ✅ Deleted`);
-                  }
-                }
+              if (duplicates.length === 0) {
+                console.log('✅ No duplicates found!');
+                return;
               }
           
-              console.log(`\n📝 UPDATING STATUSES:\n`);
-              for (const issue of keep) {
-                console.log(`  Updating ${issue.identifier}: "${issue.title}"...`);
-                await updateIssueStatus(issue.id, issue.identifier, 'Done');
+              console.log('🗑️  REMOVING DUPLICATES:\n');
+              let removed = 0;
+              for (const dup of duplicates) {
+                const success = await deleteIssue(dup.id, dup.identifier);
+                if (success) removed++;
               }
-          
-              console.log(`\n✅ Linear sync fix complete!`);
-              console.log(`   - Removed ${duplicates.length} duplicate(s)`);
-              console.log(`   - Updated ${keep.length} issue(s) to "Done"`);
+              
+              console.log(`\n✅ Complete!`);
+              console.log(`   - Removed/Archived: ${removed}/${duplicates.length} duplicates`);
               
             } catch (err) {
               console.error('❌ Error:', err.message);
@@ -268,4 +211,4 @@ jobs:
           main();
           SCRIPT
           
-          node fix-duplicates.mjs
+          node delete-duplicates.mjs
