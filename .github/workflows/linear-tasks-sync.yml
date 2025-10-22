@@ -66,21 +66,6 @@ jobs:
           LINEAR_PROJECT_NAME: Training-Prince
         run: |
           set -euo pipefail
-          for file in ${{ steps.detect.outputs.changed }}; do
-            dir=$(dirname "$file")
-            parent=""
-            if [ -f "$dir/.linear-parent" ]; then
-              parent=$(cat "$dir/.linear-parent" | tr -d '\n' | tr -d '\r' | xargs)
-            fi
-            if [ -z "$parent" ] && [[ "$GITHUB_REF_NAME" =~ ([A-Za-z]+-[0-9]+) ]]; then
-              parent="${BASH_REMATCH[1]}"
-            fi
-            if [ -z "$parent" ]; then
-              echo "Skipping $file: cannot determine parent issue id" >> $GITHUB_STEP_SUMMARY
-              continue
-            fi
-            echo "Sync: $file -> $parent" >> $GITHUB_STEP_SUMMARY
-            TASKS_FILE="$file" LINEAR_PARENT_IDENTIFIER="$parent" node scripts/linear-sync.js
-          done
+          node .github/scripts/linear-sync.js
 
 
