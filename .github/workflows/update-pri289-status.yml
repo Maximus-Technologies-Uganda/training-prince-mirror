@@ -33,7 +33,7 @@ jobs:
             process.exit(1);
           }
           
-          async function graphqlRequest(query, variables) {
+          async function graphqlRequest(query, variables = {}) {
             return new Promise((resolve, reject) => {
               const body = JSON.stringify({ query, variables });
               const req = https.request({
@@ -52,12 +52,19 @@ jobs:
                   try {
                     const json = JSON.parse(data);
                     if (json.errors) {
-                      reject(new Error(json.errors.map(e => e.message).join('; ')));
+                      const errorMsg = json.errors.map(e => {
+                        if (e.message) return e.message;
+                        return JSON.stringify(e);
+                      }).join('; ');
+                      console.error('GraphQL Errors:', errorMsg);
+                      reject(new Error(errorMsg));
                     } else {
                       resolve(json.data);
                     }
                   } catch (e) {
-                    reject(new Error(`Parse error: ${e.message}`));
+                    console.error('Parse error:', e.message);
+                    console.error('Response:', data);
+                    reject(e);
                   }
                 });
               });
@@ -70,36 +77,92 @@ jobs:
           async function main() {
             try {
               console.log('🔍 Getting PRI-289...');
-              const issueData = await graphqlRequest(
-                `query($identifier: String!) { issue(id: $identifier) { id team { id } } }`,
-                { identifier: ISSUE_ID }
-              );
+              const issueQuery = `
+                query GetIssue($id: String!) {
+                  issue(id: $id) {
+                    id
+                    identifier
+                    title
+                    team {
+                      id
+                    }
+                    state {
+                      id
+                      name
+                    }
+                  }
+                }
+              `;
               
-              if (!issueData.issue) {
-                throw new Error('Issue not found');
+              const issueResult = await graphqlRequest(issueQuery, { id: ISSUE_ID });
+              const issue = issueResult.issue;
+              
+              if (!issue) {
+                throw new Error(`Issue ${ISSUE_ID} not found`);
+              }
+              
+              console.log(`✅ Found: ${issue.identifier} - ${issue.title}`);
+              console.log(`   Current state: ${issue.state.name}`);
+              
+              if (issue.state.name === 'In Progress') {
+                console.log('✅ Already in "In Progress" state');
+                return;
               }
               
               console.log('🔍 Getting team states...');
-              const statesData = await graphqlRequest(
-                `query($teamId: String!) { team(id: $teamId) { states(first: 100) { nodes { id name } } } }`,
-                { teamId: issueData.issue.team.id }
-              );
+              const statesQuery = `
+                query GetTeamStates($teamId: String!) {
+                  team(id: $teamId) {
+                    states(first: 100) {
+                      nodes {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              `;
               
-              const inProgressState = statesData.team.states.nodes.find(
+              const statesResult = await graphqlRequest(statesQuery, { teamId: issue.team.id });
+              const inProgressState = statesResult.team.states.nodes.find(
                 s => s.name.toLowerCase() === 'in progress'
               );
               
               if (!inProgressState) {
-                throw new Error('In Progress state not found');
+                throw new Error('In Progress state not found on team');
               }
               
-              console.log('📝 Updating to In Progress...');
-              await graphqlRequest(
-                `mutation($id: String!, $stateId: String!) { issueUpdate(id: $id, stateId: $stateId) { success } }`,
-                { id: issueData.issue.id, stateId: inProgressState.id }
-              );
+              console.log(`✅ Found "In Progress" state: ${inProgressState.id}`);
               
-              console.log('✅ PRI-289 updated to In Progress');
+              console.log('📝 Updating issue state...');
+              const updateQuery = `
+                mutation UpdateIssue($id: String!, $stateId: String!) {
+                  issueUpdate(id: $id, stateId: $stateId) {
+                    success
+                    issue {
+                      id
+                      identifier
+                      state {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              `;
+              
+              const updateResult = await graphqlRequest(updateQuery, {
+                id: issue.id,
+                stateId: inProgressState.id
+              });
+              
+              if (updateResult.issueUpdate.success) {
+                console.log('✅ Successfully updated!');
+                console.log(`   ${updateResult.issueUpdate.issue.identifier} → ${updateResult.issueUpdate.issue.state.name}`);
+              } else {
+                throw new Error('Update returned success: false');
+              }
+              
             } catch (err) {
               console.error('❌ Error:', err.message);
               process.exit(1);
