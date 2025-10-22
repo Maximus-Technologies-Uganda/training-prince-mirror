@@ -95,8 +95,8 @@ jobs:
               
               console.log('📝 Updating to In Progress...');
               await graphqlRequest(
-                `mutation($input: IssueUpdateInput!) { issueUpdate(id: $input) { success } }`,
-                { input: { id: issueData.issue.id, stateId: inProgressState.id } }
+                `mutation($id: String!, $stateId: String!) { issueUpdate(id: $id, stateId: $stateId) { success } }`,
+                { id: issueData.issue.id, stateId: inProgressState.id }
               );
               
               console.log('✅ PRI-289 updated to In Progress');
