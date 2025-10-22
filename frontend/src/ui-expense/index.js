@@ -1,8 +1,13 @@
 import './styles.css';
 import { addExpense as coreAddExpense, calculateTotal } from '../../../src/expense/core.js';
+import { filterExpensesByBoth } from '../utils/filterUtils.js';
 
 export function createExpenseState() {
-  return { entries: [], filter: 'all' };
+  return { 
+    entries: [], 
+    filter: 'all',
+    filters: { category: null, month: null }  // New: support advanced filtering
+  };
 }
 
 export function normalizeCategory(category) {
@@ -47,6 +52,8 @@ export function addEntry(state, { amount, category, month, description }) {
     amount: parsedAmount,
     category: normalizedCategory,
     month: normalizedMonth,
+    date: new Date().toISOString().split('T')[0],  // Add ISO date for filtering
+    timestamp: new Date().toISOString()
   };
 
   const entries = coreAddExpense(nextState.entries, entry);
@@ -60,7 +67,23 @@ export function setFilter(state, category) {
   return { ...state, filter: value };
 }
 
+export function setAdvancedFilter(state, filters) {
+  return { 
+    ...state, 
+    filters: { 
+      category: filters.category || null, 
+      month: filters.month || null 
+    }
+  };
+}
+
 export function getVisibleEntries(state) {
+  // Use new filtering logic with both category and month
+  if (state.filters && (state.filters.category || state.filters.month)) {
+    return filterExpensesByBoth(state.entries, state.filters);
+  }
+  
+  // Fallback to old filtering for backward compatibility
   const current = state.filter;
   if (!current || current === 'all') {
     return state.entries;
@@ -111,6 +134,7 @@ function getElements(root) {
     filter: root.querySelector('#exp-filter'),
     total: root.querySelector('#exp-total'),
     rows: root.querySelector('#exp-rows'),
+    filterContainer: root.querySelector('#exp-filter-container')  // New
   };
 }
 
@@ -122,6 +146,9 @@ function render(state, els) {
   visible.forEach((entry, idx) => {
     const row = document.createElement('tr');
     row.setAttribute('data-testid', 'expense-item');
+    row.setAttribute('data-category', entry.category);
+    row.setAttribute('data-date', entry.date || '');
+    
     const descriptionCell = document.createElement('td');
     descriptionCell.textContent = entry.description || '';
     descriptionCell.setAttribute('data-label', 'Description');
@@ -139,8 +166,6 @@ function render(state, els) {
     deleteBtn.textContent = 'Delete';
     deleteBtn.setAttribute('data-testid', 'delete-expense');
     deleteBtn.addEventListener('click', () => {
-      // Remove this entry from visible entries
-      const visibleIndex = visible.indexOf(entry);
       const realIndex = state.entries.indexOf(entry);
       if (realIndex >= 0) {
         state.entries.splice(realIndex, 1);
@@ -172,7 +197,6 @@ function render(state, els) {
       existingOptions.length !== categories.length ||
       !categories.every((cat) => existingOptions.includes(cat))
     ) {
-      // Rebuild options when categories change
       els.filter.innerHTML = '';
       const defaultOption = document.createElement('option');
       defaultOption.value = 'all';
@@ -214,7 +238,7 @@ export function createExpenseUi(root) {
       amount: els.amount.value,
       category: els.category.value,
       month: els.month.value,
-      description: els.description.value, // Use the description field
+      description: els.description.value,
     });
 
     if (result.error) {
