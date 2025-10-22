@@ -111,7 +111,8 @@ class CoverageGenerator {
       // Run tests with coverage
       execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/${appName}/**/*.js" ${testPattern}`, {
         cwd: ROOT_DIR,
-        stdio: 'inherit'
+        stdio: 'inherit',
+        env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
       });
       
       // Read coverage data
@@ -152,7 +153,8 @@ class CoverageGenerator {
       try {
         execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/${appName}/**/*.js" ${testPattern}`, {
           cwd: ROOT_DIR,
-          stdio: 'inherit'
+          stdio: 'inherit',
+          env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
         });
       } catch (debugError) {
         console.error(`❌ Debug run also failed:`, debugError.message);
@@ -241,7 +243,8 @@ class CoverageGenerator {
       const output = execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/ui-${uiAppName}/**/*.js"`, {
         cwd: frontendDir,
         stdio: 'pipe',
-        encoding: 'utf8'
+        encoding: 'utf8',
+        env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
       });
       
       // Parse coverage data from JSON output
@@ -297,7 +300,8 @@ class CoverageGenerator {
       try {
         execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/ui-${uiAppName}/**/*.js"`, {
           cwd: frontendDir,
-          stdio: 'inherit'
+          stdio: 'inherit',
+          env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
         });
       } catch (debugError) {
         console.error(`❌ Debug run also failed:`, debugError.message);
@@ -323,7 +327,8 @@ class CoverageGenerator {
       const output = execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/main.js"`, {
         cwd: frontendDir,
         stdio: 'pipe',
-        encoding: 'utf8'
+        encoding: 'utf8',
+        env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
       });
       
       // Parse coverage data from JSON output
@@ -375,7 +380,8 @@ class CoverageGenerator {
       try {
         execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/main.js"`, {
           cwd: frontendDir,
-          stdio: 'inherit'
+          stdio: 'inherit',
+          env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
         });
       } catch (debugError) {
         console.error(`❌ Debug run also failed:`, debugError.message);
