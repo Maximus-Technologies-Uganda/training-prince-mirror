@@ -1,0 +1,81 @@
+name: Update PRI-289 Status
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update PRI-289 to In Progress
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        run: |
+          cat > update-status.js << 'SCRIPT'
+          import https from 'https';
+          
+          const API_KEY = process.env.LINEAR_API_KEY;
+          const ISSUE_ID = 'PRI-289';
+          
+          async function graphqlRequest(query, variables) {
+            return new Promise((resolve, reject) => {
+              const body = JSON.stringify({ query, variables });
+              const req = https.request({
+                method: 'POST',
+                hostname: 'api.linear.app',
+                path: '/graphql',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Content-Length': Buffer.byteLength(body),
+                  'Authorization': API_KEY
+                }
+              }, (res) => {
+                let data = '';
+                res.on('data', (chunk) => (data += chunk));
+                res.on('end', () => {
+                  const json = JSON.parse(data);
+                  if (json.errors) reject(new Error(json.errors.map(e => e.message).join('; ')));
+                  else resolve(json.data);
+                });
+              });
+              req.on('error', reject);
+              req.write(body);
+              req.end();
+            });
+          }
+          
+          async function main() {
+            const issueData = await graphqlRequest(
+              `query($identifier: String!) { issue(id: $identifier) { id team { id } } }`,
+              { identifier: ISSUE_ID }
+            );
+            
+            const statesData = await graphqlRequest(
+              `query($teamId: String!) { team(id: $teamId) { states(first: 100) { nodes { id name } } } }`,
+              { teamId: issueData.issue.team.id }
+            );
+            
+            const inProgressState = statesData.team.states.nodes.find(
+              s => s.name.toLowerCase() === 'in progress'
+            );
+            
+            await graphqlRequest(
+              `mutation($input: IssueUpdateInput!) { issueUpdate(id: $input) { success } }`,
+              { input: { id: issueData.issue.id, stateId: inProgressState.id } }
+            );
+            
+            console.log('✅ PRI-289 updated to In Progress');
+          }
+          
+          main().catch(err => { console.error(err); process.exit(1); });
+          SCRIPT
+          
+          node update-status.js
