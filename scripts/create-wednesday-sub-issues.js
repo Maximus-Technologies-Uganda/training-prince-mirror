@@ -2,13 +2,17 @@
 
 /**
  * Creates Linear sub-issues under PRI-289 from tasks.md
+ * Sets all issues to "In Progress"
+ * Saves mapping file for status tracking
  * Usage: LINEAR_API_KEY=xxx node scripts/create-wednesday-sub-issues.js
  */
 
 import fs from 'fs';
 import https from 'https';
+import path from 'path';
 
 const TASKS_FILE = 'specs/013-title-wednesday-spec/tasks.md';
+const MAPPING_FILE = 'specs/013-title-wednesday-spec/linear-map.json';
 const PARENT_ISSUE_ID = 'PRI-289';
 const API_KEY = process.env.LINEAR_API_KEY;
 
@@ -26,7 +30,7 @@ function parseTasksMarkdown(markdown) {
   const lines = markdown.split(/\r?\n/);
   const tasks = [];
   for (const line of lines) {
-    // Match: - [ ] Task Title
+    // Match: - [ ] Task Title or - [x] Task Title
     const m = /^- \[( |x)\] (.+)$/.exec(line.trim());
     if (m) {
       const done = m[1] === 'x';
@@ -91,6 +95,26 @@ async function getParentIssueId(identifier) {
   return data.issue;
 }
 
+async function getTeamStates(teamId) {
+  const query = `
+    query($teamId: String!) {
+      team(id: $teamId) {
+        states(first: 100) {
+          nodes { id name type }
+        }
+      }
+    }
+  `;
+  const data = await graphqlRequest(query, { teamId });
+  return data?.team?.states?.nodes ?? [];
+}
+
+function findStateId(states, preferredName) {
+  const lowerPreferred = String(preferredName).toLowerCase();
+  const state = states.find(s => String(s.name).toLowerCase() === lowerPreferred);
+  return state?.id || null;
+}
+
 async function createSubIssue(teamId, parentId, title) {
   const query = `
     mutation($input: IssueCreateInput!) {
@@ -114,6 +138,22 @@ async function createSubIssue(teamId, parentId, title) {
   return data.issueCreate.issue;
 }
 
+async function updateIssueState(issueId, stateId) {
+  const query = `
+    mutation($input: IssueUpdateInput!) {
+      issueUpdate(id: $input) {
+        success
+      }
+    }
+  `;
+  await graphqlRequest(query, {
+    input: {
+      id: issueId,
+      stateId
+    }
+  });
+}
+
 async function main() {
   try {
     console.log('📋 Reading tasks.md...');
@@ -131,22 +171,47 @@ async function main() {
     const parentIssue = await getParentIssueId(PARENT_ISSUE_ID);
     console.log(`✅ Parent issue: ${parentIssue.identifier} (Team: ${parentIssue.team.name})\n`);
     
+    console.log('🔍 Getting team states...');
+    const states = await getTeamStates(parentIssue.team.id);
+    const inProgressStateId = findStateId(states, 'In Progress');
+    if (!inProgressStateId) {
+      console.warn('⚠️  "In Progress" state not found on team');
+    }
+    
     console.log('🚀 Creating sub-issues...\n');
     const created = [];
+    const mapping = {};
     
     for (let i = 0; i < tasks.length; i++) {
       const task = tasks[i];
       try {
         const issue = await createSubIssue(parentIssue.team.id, parentIssue.id, task.title);
         created.push(issue);
-        console.log(`  ✅ [${i + 1}/${tasks.length}] ${issue.identifier}: ${issue.title}`);
+        mapping[issue.identifier] = {
+          title: task.title,
+          id: issue.id,
+          linearId: issue.identifier
+        };
+        
+        // Set to "In Progress"
+        if (inProgressStateId) {
+          await updateIssueState(issue.id, inProgressStateId);
+          console.log(`  ✅ [${i + 1}/${tasks.length}] ${issue.identifier}: ${issue.title} → In Progress`);
+        } else {
+          console.log(`  ✅ [${i + 1}/${tasks.length}] ${issue.identifier}: ${issue.title}`);
+        }
       } catch (err) {
         console.error(`  ❌ [${i + 1}/${tasks.length}] Failed: ${task.title}`);
         console.error(`     Error: ${err.message}`);
       }
     }
     
-    console.log(`\n✨ Done! Created ${created.length}/${tasks.length} sub-issues under ${PARENT_ISSUE_ID}\n`);
+    // Save mapping file
+    fs.writeFileSync(MAPPING_FILE, JSON.stringify(mapping, null, 2));
+    console.log(`\n💾 Saved mapping to ${MAPPING_FILE}`);
+    
+    console.log(`\n✨ Done! Created ${created.length}/${tasks.length} sub-issues under ${PARENT_ISSUE_ID}`);
+    console.log(`✅ All issues set to "In Progress"\n`);
     
   } catch (err) {
     console.error(`❌ Error: ${err.message}`);
