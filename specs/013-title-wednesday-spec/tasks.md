@@ -11,11 +11,11 @@
 
 ### Phase 1: Contract Tests & Utilities Setup
 
-- [ ] Create filterUtils.js module with filter function stubs
-- [ ] Write Vitest unit tests for expense filtering logic
-- [ ] Write Vitest unit tests for to-do filtering logic
-- [ ] Write Playwright E2E smoke test for expense filtering
-- [ ] Write Playwright E2E smoke test for to-do filtering
+- [x] Create filterUtils.js module with filter function stubs
+- [x] Write Vitest unit tests for expense filtering logic
+- [x] Write Vitest unit tests for to-do filtering logic
+- [x] Write Playwright E2E smoke test for expense filtering
+- [x] Write Playwright E2E smoke test for to-do filtering
 
 ### Phase 2: Implement Filter Logic (Make Tests Pass)
 
