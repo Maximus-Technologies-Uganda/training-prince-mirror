@@ -78,32 +78,24 @@ async function getTeamAndStates() {
         id
         team {
           id
-          states(first: 100) {
-            nodes {
-              id
-              name
-            }
-          }
         }
       }
     }
   `;
   
   const result = await graphqlRequest(query);
-  const team = result.issue.team;
-  const doneState = team.states.nodes.find(s => s.name.toLowerCase() === 'done');
+  const issue = result.issue;
   
-  return { teamId: team.id, doneStateId: doneState.id };
+  return { teamId: issue.team.id, parentUUID: issue.id };
 }
 
-async function createSubIssue(title, teamId, doneStateId, parentId) {
+async function createSubIssue(title, teamId, parentId) {
   const mutation = `
-    mutation {
+    mutation createIssue($title: String!, $teamId: String!, $parentId: String!) {
       issueCreate(input: {
-        title: "${title.replace(/"/g, '\\"')}"
-        teamId: "${teamId}"
-        stateId: "${doneStateId}"
-        parentId: "${parentId}"
+        title: $title
+        teamId: $teamId
+        parentId: $parentId
       }) {
         success
         issue {
@@ -118,8 +110,14 @@ async function createSubIssue(title, teamId, doneStateId, parentId) {
     }
   `;
   
+  const variables = {
+    title,
+    teamId,
+    parentId
+  };
+  
   try {
-    const result = await graphqlRequest(mutation);
+    const result = await graphqlRequest(mutation, variables);
     if (result.issueCreate?.success) {
       console.log(`  ✅ ${result.issueCreate.issue.identifier} - ${result.issueCreate.issue.title}`);
       return true;
@@ -139,13 +137,13 @@ async function main() {
     console.log('═'.repeat(70));
     
     // Get team and done state
-    const { teamId, doneStateId } = await getTeamAndStates();
+    const { teamId, parentUUID } = await getTeamAndStates();
     
     console.log(`\n📊 Creating ${SUB_ISSUES.length} sub-issues...\n`);
     
     let successful = 0;
     for (const title of SUB_ISSUES) {
-      const success = await createSubIssue(title, teamId, doneStateId, PARENT_ID);
+      const success = await createSubIssue(title, teamId, parentUUID);
       if (success) successful++;
       // Small delay to avoid rate limiting
       await new Promise(resolve => setTimeout(resolve, 200));
@@ -155,7 +153,7 @@ async function main() {
     console.log(`\n✅ CREATION COMPLETE!`);
     console.log(`   Successfully created: ${successful}/${SUB_ISSUES.length}`);
     console.log(`   Parent: ${PARENT_ID}`);
-    console.log(`   All marked as: Done`);
+    console.log(`   Status: Default (Backlog)`);
     console.log('\n💡 Refresh Linear to see the new sub-issues (may take 10-30 seconds)\n');
     
   } catch (err) {

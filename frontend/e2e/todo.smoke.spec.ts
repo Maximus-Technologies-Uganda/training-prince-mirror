@@ -75,27 +75,33 @@ test.describe('Todo Application Smoke Test', () => {
 
     // Mark one as complete
     await page.locator('[data-testid="task-checkbox"]').first().click();
+    
+    // Wait for state to update
+    await page.waitForTimeout(300);
 
-    // Test filter for active tasks
-    const activeFilter = page.locator('[data-testid="filter-active"]');
-    await expect(activeFilter).toBeVisible();
+    // Test filter for active tasks - use the static filter button, not advanced
+    const activeFilter = page.locator('div.todo-filters [data-testid="filter-active"]');
+    await activeFilter.waitFor({ state: 'visible' });
     await activeFilter.click();
+    await page.waitForTimeout(200);
 
     // Should show only active tasks
     await expect(page.locator('[data-testid="task-item"]')).toHaveCount(1);
 
-    // Test filter for completed tasks
-    const completedFilter = page.locator('[data-testid="filter-completed"]');
-    await expect(completedFilter).toBeVisible();
+    // Test filter for completed tasks - use the static filter button
+    const completedFilter = page.locator('div.todo-filters [data-testid="filter-completed"]');
+    await completedFilter.waitFor({ state: 'visible' });
     await completedFilter.click();
+    await page.waitForTimeout(200);
 
     // Should show only completed tasks
     await expect(page.locator('[data-testid="task-item"]')).toHaveCount(1);
 
-    // Test show all filter
-    const allFilter = page.locator('[data-testid="filter-all"]');
-    await expect(allFilter).toBeVisible();
+    // Test show all filter - use the static filter button
+    const allFilter = page.locator('div.todo-filters [data-testid="filter-all"]');
+    await allFilter.waitFor({ state: 'visible' });
     await allFilter.click();
+    await page.waitForTimeout(200);
 
     // Should show all tasks
     await expect(page.locator('[data-testid="task-item"]')).toHaveCount(2);

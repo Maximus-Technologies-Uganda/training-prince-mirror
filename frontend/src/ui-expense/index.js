@@ -134,8 +134,89 @@ function getElements(root) {
     filter: root.querySelector('#exp-filter'),
     total: root.querySelector('#exp-total'),
     rows: root.querySelector('#exp-rows'),
-    filterContainer: root.querySelector('#exp-filter-container')  // New
+    filterContainer: root.querySelector('#exp-filter-advanced')  // New
   };
+}
+
+function renderAdvancedFilters(state, els, onFilterChange) {
+  if (!els.filterContainer) return;
+  
+  const categories = getCategories(state.entries);
+  
+  els.filterContainer.innerHTML = '';
+  
+  // Category filter
+  const categoryDiv = document.createElement('div');
+  categoryDiv.className = 'filter-group';
+  const categoryLabel = document.createElement('label');
+  categoryLabel.htmlFor = 'category-filter';
+  categoryLabel.textContent = 'Category:';
+  const categorySelect = document.createElement('select');
+  categorySelect.id = 'category-filter';
+  categorySelect.name = 'category';
+  categorySelect.className = 'filter-select';
+  const categoryDefaultOption = document.createElement('option');
+  categoryDefaultOption.value = '';
+  categoryDefaultOption.textContent = 'All Categories';
+  categorySelect.appendChild(categoryDefaultOption);
+  categories.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat;
+    option.textContent = cat;
+    categorySelect.appendChild(option);
+  });
+  categorySelect.value = state.filters?.category || '';
+  categorySelect.addEventListener('change', (e) => {
+    onFilterChange({ category: e.target.value || null, month: state.filters?.month || null });
+  });
+  categoryDiv.appendChild(categoryLabel);
+  categoryDiv.appendChild(categorySelect);
+  
+  // Month filter
+  const monthDiv = document.createElement('div');
+  monthDiv.className = 'filter-group';
+  const monthLabel = document.createElement('label');
+  monthLabel.htmlFor = 'month-filter';
+  monthLabel.textContent = 'Month:';
+  const monthSelect = document.createElement('select');
+  monthSelect.id = 'month-filter';
+  monthSelect.name = 'month';
+  monthSelect.className = 'filter-select';
+  const monthDefaultOption = document.createElement('option');
+  monthDefaultOption.value = '';
+  monthDefaultOption.textContent = 'All Months';
+  monthSelect.appendChild(monthDefaultOption);
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  months.forEach((month, index) => {
+    const option = document.createElement('option');
+    option.value = String(index + 1);
+    option.textContent = month;
+    monthSelect.appendChild(option);
+  });
+  monthSelect.value = state.filters?.month ? String(state.filters.month) : '';
+  monthSelect.addEventListener('change', (e) => {
+    const monthValue = e.target.value ? parseInt(e.target.value, 10) : null;
+    onFilterChange({ category: state.filters?.category || null, month: monthValue });
+  });
+  monthDiv.appendChild(monthLabel);
+  monthDiv.appendChild(monthSelect);
+  
+  // Clear filters button
+  const clearDiv = document.createElement('div');
+  clearDiv.className = 'filter-group';
+  const clearBtn = document.createElement('button');
+  clearBtn.textContent = 'Clear Filters';
+  clearBtn.className = 'clear-filters-btn';
+  clearBtn.type = 'button';
+  clearBtn.setAttribute('data-testid', 'clear-filters');
+  clearBtn.addEventListener('click', () => {
+    onFilterChange({ category: null, month: null });
+  });
+  clearDiv.appendChild(clearBtn);
+  
+  els.filterContainer.appendChild(categoryDiv);
+  els.filterContainer.appendChild(monthDiv);
+  els.filterContainer.appendChild(clearDiv);
 }
 
 function render(state, els) {
@@ -248,11 +329,18 @@ export function createExpenseUi(root) {
 
     state = result.state;
     render(state, els);
+    renderAdvancedFilters(state, els, handleAdvancedFilterChange);
     els.description.value = '';
     els.amount.value = '';
     els.category.value = '';
     els.month.value = '';
     els.description.focus();
+  };
+
+  const handleAdvancedFilterChange = (filters) => {
+    state = setAdvancedFilter(state, filters);
+    render(state, els);
+    renderAdvancedFilters(state, els, handleAdvancedFilterChange);
   };
 
   els.form.addEventListener('submit', handleFormSubmit);
@@ -261,6 +349,9 @@ export function createExpenseUi(root) {
     state = setFilter(state, event.target.value);
     render(state, els);
   });
+
+  // Initial render of advanced filters
+  renderAdvancedFilters(state, els, handleAdvancedFilterChange);
 
   return state;
 }

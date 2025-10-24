@@ -12,6 +12,7 @@ export function normalizeText(text) {
 export function createUiState() {
   return {
     items: [],
+    filters: { status: 'all', priority: null }
   };
 }
 
@@ -28,7 +29,7 @@ function loadStateFromLocalStorage() {
     const saved = localStorage.getItem('todo-ui-state');
     if (saved) {
       const parsed = JSON.parse(saved);
-      return { items: parsed.items || [] };
+      return { items: parsed.items || [], filters: parsed.filters || { status: 'all', priority: null } };
     }
   } catch (error) {
     console.warn('Failed to load todo state from localStorage:', error);
@@ -117,7 +118,88 @@ function getElements() {
     filterActive: document.getElementById('filter-active'),
     filterCompleted: document.getElementById('filter-completed'),
     taskCount: document.getElementById('task-count'),
+    filterContainer: document.getElementById('todo-filter-advanced')
   };
+}
+
+function renderAdvancedFilters(state, elements, onFilterChange) {
+  if (!elements.filterContainer) return;
+  
+  elements.filterContainer.innerHTML = '';
+  
+  // Status filter buttons
+  const statusDiv = document.createElement('div');
+  statusDiv.className = 'filter-group status-filters';
+  const statusLabel = document.createElement('label');
+  statusLabel.className = 'filter-label';
+  statusLabel.textContent = 'Status:';
+  statusDiv.appendChild(statusLabel);
+  
+  const statusTabs = document.createElement('div');
+  statusTabs.className = 'status-tabs';
+  
+  ['all', 'pending', 'completed'].forEach(status => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `status-tab ${state.filters?.status === status ? 'active' : ''}`;
+    btn.setAttribute('data-testid', `filter-${status}`);
+    btn.textContent = status === 'all' ? 'All' : status === 'pending' ? 'Pending' : 'Completed';
+    btn.addEventListener('click', () => {
+      onFilterChange({ status, priority: state.filters?.priority });
+    });
+    statusTabs.appendChild(btn);
+  });
+  
+  statusDiv.appendChild(statusTabs);
+  
+  // Priority filter dropdown
+  const priorityDiv = document.createElement('div');
+  priorityDiv.className = 'filter-group';
+  const priorityLabel = document.createElement('label');
+  priorityLabel.htmlFor = 'priority-filter';
+  priorityLabel.textContent = 'Priority:';
+  const prioritySelect = document.createElement('select');
+  prioritySelect.id = 'priority-filter';
+  prioritySelect.name = 'priority';
+  prioritySelect.className = 'filter-select';
+  
+  const priorityOptions = [
+    { value: '', label: 'All Priorities' },
+    { value: 'High', label: 'High' },
+    { value: 'Low', label: 'Low' },
+    { value: 'Medium', label: 'Medium' }
+  ];
+  
+  priorityOptions.forEach(opt => {
+    const option = document.createElement('option');
+    option.value = opt.value;
+    option.textContent = opt.label;
+    prioritySelect.appendChild(option);
+  });
+  
+  prioritySelect.value = state.filters?.priority || '';
+  prioritySelect.addEventListener('change', (e) => {
+    onFilterChange({ status: state.filters?.status || 'all', priority: e.target.value || null });
+  });
+  priorityDiv.appendChild(priorityLabel);
+  priorityDiv.appendChild(prioritySelect);
+  
+  // Clear filters button
+  const clearDiv = document.createElement('div');
+  clearDiv.className = 'filter-group';
+  const clearBtn = document.createElement('button');
+  clearBtn.type = 'button';
+  clearBtn.textContent = 'Clear Filters';
+  clearBtn.className = 'clear-filters-btn';
+  clearBtn.setAttribute('data-testid', 'clear-filters');
+  clearBtn.addEventListener('click', () => {
+    onFilterChange({ status: 'all', priority: null });
+  });
+  clearDiv.appendChild(clearBtn);
+  
+  elements.filterContainer.appendChild(statusDiv);
+  elements.filterContainer.appendChild(priorityDiv);
+  elements.filterContainer.appendChild(clearDiv);
 }
 
 function renderList(state, elements, clock, setError, filter = 'all') {
@@ -130,11 +212,17 @@ function renderList(state, elements, clock, setError, filter = 'all') {
     visible = visible.filter((t) => t.completed);
   }
   
+  // Apply priority filter if set
+  if (state.filters?.priority === 'High') {
+    visible = visible.filter((t) => t.highPriority === true);
+  }
+  
   elements.list.innerHTML = '';
   visible.forEach((t, index) => {
     const li = document.createElement('li');
     li.className = 'todo-item';
     li.setAttribute('data-testid', 'task-item');
+    li.setAttribute('data-completed', String(t.completed));
     if (t.completed) {
       li.classList.add('completed');
     }
@@ -194,7 +282,7 @@ export function initTodoUI() {
   if (!elements.input || !elements.list) return;
   const clock = createClock('Africa/Kampala');
   const state = loadStateFromLocalStorage();
-  let currentFilter = 'all';
+  let currentFilter = state.filters?.status || 'all';
 
   const setError = (message) => {
     if (!elements.error) return;
@@ -204,7 +292,16 @@ export function initTodoUI() {
     }
   };
 
+  const handleAdvancedFilterChange = (filters) => {
+    state.filters = filters;
+    currentFilter = filters.status;
+    saveStateToLocalStorage(state);
+    renderList(state, elements, clock, setError, currentFilter);
+    renderAdvancedFilters(state, elements, handleAdvancedFilterChange);
+  };
+
   renderList(state, elements, clock, setError, currentFilter);
+  renderAdvancedFilters(state, elements, handleAdvancedFilterChange);
 
   elements.addBtn?.addEventListener('click', () => {
     setError('');
@@ -224,21 +321,31 @@ export function initTodoUI() {
     saveStateToLocalStorage(state);
     elements.input.value = '';
     renderList(state, elements, clock, setError, currentFilter);
+    renderAdvancedFilters(state, elements, handleAdvancedFilterChange);
     elements.input.focus();
   });
 
   elements.filterAll?.addEventListener('click', () => {
     currentFilter = 'all';
+    state.filters.status = 'all';
+    saveStateToLocalStorage(state);
     renderList(state, elements, clock, setError, currentFilter);
+    renderAdvancedFilters(state, elements, handleAdvancedFilterChange);
   });
   
   elements.filterActive?.addEventListener('click', () => {
     currentFilter = 'active';
+    state.filters.status = 'pending';
+    saveStateToLocalStorage(state);
     renderList(state, elements, clock, setError, currentFilter);
+    renderAdvancedFilters(state, elements, handleAdvancedFilterChange);
   });
   
   elements.filterCompleted?.addEventListener('click', () => {
     currentFilter = 'completed';
+    state.filters.status = 'completed';
+    saveStateToLocalStorage(state);
     renderList(state, elements, clock, setError, currentFilter);
+    renderAdvancedFilters(state, elements, handleAdvancedFilterChange);
   });
 }

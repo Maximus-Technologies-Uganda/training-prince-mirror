@@ -11,6 +11,21 @@ test.describe('Expense Filtering E2E Tests', () => {
       // If selector not found, page may still be loading
       return page.waitForLoadState('networkidle');
     });
+    
+    // Add test data
+    const addExpense = async (description, amount, category) => {
+      await page.locator('[data-testid="expense-description"]').fill(description);
+      await page.locator('[data-testid="expense-amount"]').fill(amount);
+      await page.locator('[data-testid="expense-category"]').fill(category);
+      await page.locator('[data-testid="add-expense"]').click();
+      await page.waitForTimeout(200);
+    };
+    
+    // Add various expenses
+    await addExpense('Coffee', '3.50', 'Food');
+    await addExpense('Lunch', '12.00', 'Food');
+    await addExpense('Movie', '15.00', 'Entertainment');
+    await addExpense('Gas', '45.00', 'Transportation');
   });
 
   test('User selects category filter → list updates with matching items', async ({ page }) => {

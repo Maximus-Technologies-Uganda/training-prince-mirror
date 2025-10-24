@@ -11,6 +11,31 @@ test.describe('To-Do Filtering E2E Tests', () => {
       // If selector not found, page may still be loading
       return page.waitForLoadState('networkidle');
     });
+    
+    // Add test data
+    const addTask = async (text, isHighPriority = false) => {
+      await page.locator('[data-testid="task-input"]').fill(text);
+      if (isHighPriority) {
+        const checkbox = page.locator('#todo-high');
+        await checkbox.check();
+      }
+      await page.locator('[data-testid="add-task"]').click();
+      await page.waitForTimeout(200);
+    };
+    
+    // Add various tasks
+    await addTask('Buy groceries', false);
+    await addTask('Complete project', true);
+    await addTask('Review code', true);
+    await addTask('Write tests', false);
+    
+    // Mark some tasks as complete
+    const checkboxes = await page.locator('[data-testid="task-checkbox"]').all();
+    if (checkboxes.length >= 2) {
+      await checkboxes[0].check();
+      await checkboxes[2].check();
+    }
+    await page.waitForTimeout(300);
   });
 
   test('User clicks status filter (Pending) → list updates with pending tasks', async ({ page }) => {

@@ -69,6 +69,227 @@
   },
   "suites": [
     {
+      "title": "expense-filter.spec.ts",
+      "file": "expense-filter.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Expense Filtering E2E Tests",
+          "file": "expense-filter.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "User selects category filter → list updates with matching items",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3007,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:02.124Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cdb664a7930ba48c6912-6e677a4020ae97e59033",
+              "file": "expense-filter.spec.ts",
+              "line": 31,
+              "column": 3
+            },
+            {
+              "title": "User selects month filter → list updates with matching items",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4788,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:05.585Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cdb664a7930ba48c6912-5e5aea061fe8b68ad200",
+              "file": "expense-filter.spec.ts",
+              "line": 54,
+              "column": 3
+            },
+            {
+              "title": "User applies both filters → AND logic applied correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1896,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:10.398Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cdb664a7930ba48c6912-5e0357bb803e7b99536c",
+              "file": "expense-filter.spec.ts",
+              "line": 71,
+              "column": 3
+            },
+            {
+              "title": "Empty state displays when no matches exist",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1558,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:12.304Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cdb664a7930ba48c6912-af3713699841f58b00cc",
+              "file": "expense-filter.spec.ts",
+              "line": 97,
+              "column": 3
+            },
+            {
+              "title": "Clear filters button resets state and shows full list",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1546,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:13.873Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cdb664a7930ba48c6912-141a852907e9fdb072af",
+              "file": "expense-filter.spec.ts",
+              "line": 120,
+              "column": 3
+            },
+            {
+              "title": "Filter update completes within 300ms performance target",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1443,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:15.428Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "cdb664a7930ba48c6912-ad9421e34cb91d968b44",
+              "file": "expense-filter.spec.ts",
+              "line": 145,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
       "title": "expense.smoke.spec.ts",
       "file": "expense.smoke.spec.ts",
       "column": 0,
@@ -94,15 +315,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 4855,
+                      "duration": 1117,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:19.769Z",
+                      "startTime": "2025-10-24T10:02:02.123Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -128,15 +349,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1525,
+                      "duration": 905,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:29.079Z",
+                      "startTime": "2025-10-24T10:02:03.684Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -162,15 +383,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1472,
+                      "duration": 922,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:30.647Z",
+                      "startTime": "2025-10-24T10:02:04.605Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -213,15 +434,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 4866,
+                      "duration": 1353,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:19.765Z",
+                      "startTime": "2025-10-24T10:02:02.130Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -247,15 +468,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 901,
+                      "duration": 744,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:29.092Z",
+                      "startTime": "2025-10-24T10:02:03.914Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -281,15 +502,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 817,
+                      "duration": 489,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:30.028Z",
+                      "startTime": "2025-10-24T10:02:04.683Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -325,15 +546,15 @@
               "projectName": "",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 2,
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 4301,
+                  "duration": 1127,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-10-21T12:29:19.743Z",
+                  "startTime": "2025-10-24T10:02:02.122Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -377,12 +598,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 5109,
+                      "duration": 1443,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:19.755Z",
+                      "startTime": "2025-10-24T10:02:03.715Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -411,12 +632,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2942,
+                      "duration": 2984,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:29.416Z",
+                      "startTime": "2025-10-24T10:02:05.176Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -445,12 +666,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1736,
+                      "duration": 2160,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:32.398Z",
+                      "startTime": "2025-10-24T10:02:08.267Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -479,12 +700,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2537,
+                      "duration": 1999,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:34.169Z",
+                      "startTime": "2025-10-24T10:02:10.473Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -513,12 +734,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1670,
+                      "duration": 1349,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:36.746Z",
+                      "startTime": "2025-10-24T10:02:12.487Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -547,12 +768,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1418,
+                      "duration": 1240,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:38.439Z",
+                      "startTime": "2025-10-24T10:02:13.844Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -598,12 +819,12 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1785,
+                      "duration": 1708,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:28.636Z",
+                      "startTime": "2025-10-24T10:02:05.203Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -632,12 +853,12 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1471,
+                      "duration": 1394,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:30.519Z",
+                      "startTime": "2025-10-24T10:02:06.956Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -666,12 +887,12 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 760,
+                      "duration": 2018,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:32.032Z",
+                      "startTime": "2025-10-24T10:02:08.387Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -700,12 +921,12 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1611,
+                      "duration": 1191,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:32.818Z",
+                      "startTime": "2025-10-24T10:02:10.424Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -716,6 +937,261 @@
               "id": "efecd2d495ad743071a7-4984d54fc209f635be2b",
               "file": "temp.smoke.spec.ts",
               "line": 97,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "todo-filter.spec.ts",
+      "file": "todo-filter.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "To-Do Filtering E2E Tests",
+          "file": "todo-filter.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "User clicks status filter (Pending) → list updates with pending tasks",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 7617,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:05.583Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2d3e122b042d3be3db2a-a0dcce4bb1de9bc1e9a2",
+              "file": "todo-filter.spec.ts",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "User clicks status filter (Completed) → list updates with completed tasks",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 7875,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:13.216Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2d3e122b042d3be3db2a-f09c5f7e6b5f9ca3f662",
+              "file": "todo-filter.spec.ts",
+              "line": 64,
+              "column": 3
+            },
+            {
+              "title": "User selects priority filter → list updates with matching items",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6866,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:21.098Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2d3e122b042d3be3db2a-1d4b7c60ad0f09df10e1",
+              "file": "todo-filter.spec.ts",
+              "line": 80,
+              "column": 3
+            },
+            {
+              "title": "User applies both filters (status + priority) → AND logic applied correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6896,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:27.974Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2d3e122b042d3be3db2a-1ab70b46cf223703e9ef",
+              "file": "todo-filter.spec.ts",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "Empty state displays when no matches exist",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 7047,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:34.878Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2d3e122b042d3be3db2a-723395c7d35cdedf0071",
+              "file": "todo-filter.spec.ts",
+              "line": 126,
+              "column": 3
+            },
+            {
+              "title": "Clear filters button resets state and shows full list",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6882,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:41.932Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2d3e122b042d3be3db2a-2d82c31301c46e3e1ae2",
+              "file": "todo-filter.spec.ts",
+              "line": 153,
+              "column": 3
+            },
+            {
+              "title": "Filter update completes within 300ms performance target",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 7061,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-24T10:02:48.820Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "2d3e122b042d3be3db2a-86425d936369d2a1ef9b",
+              "file": "todo-filter.spec.ts",
+              "line": 186,
               "column": 3
             }
           ]
@@ -748,15 +1224,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1566,
+                      "duration": 382,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:30.938Z",
+                      "startTime": "2025-10-24T10:02:11.653Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -782,15 +1258,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 922,
+                      "duration": 278,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:32.531Z",
+                      "startTime": "2025-10-24T10:02:12.048Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -816,15 +1292,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1353,
+                      "duration": 1246,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:33.474Z",
+                      "startTime": "2025-10-24T10:02:12.333Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -850,15 +1326,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 906,
+                      "duration": 196,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:34.846Z",
+                      "startTime": "2025-10-24T10:02:13.583Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -868,7 +1344,7 @@
               ],
               "id": "bd7055ff46a40b8c44ca-c285f8e8bf9e2f335dfc",
               "file": "todo.smoke.spec.ts",
-              "line": 104,
+              "line": 110,
               "column": 3
             },
             {
@@ -884,15 +1360,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 967,
+                      "duration": 279,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-21T12:29:35.783Z",
+                      "startTime": "2025-10-24T10:02:13.784Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -902,7 +1378,7 @@
               ],
               "id": "bd7055ff46a40b8c44ca-d30707fa056c9345d4fe",
               "file": "todo.smoke.spec.ts",
-              "line": 114,
+              "line": 120,
               "column": 3
             }
           ]
@@ -912,9 +1388,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-10-21T12:29:18.466Z",
-    "duration": 21434.076,
-    "expected": 22,
+    "startTime": "2025-10-24T10:02:01.536Z",
+    "duration": 54381.835,
+    "expected": 35,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
