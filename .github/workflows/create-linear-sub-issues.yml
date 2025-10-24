@@ -1,0 +1,54 @@
+name: Create Linear Sub-Issues for PRI-258
+
+on:
+  workflow_dispatch:
+    inputs:
+      parent_id:
+        description: 'Parent Linear Issue ID'
+        required: true
+        default: 'PRI-258'
+        type: string
+
+jobs:
+  create-sub-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create Linear Sub-Issues
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          LINEAR_TEAM_NAME: Prince Training
+          LINEAR_PROJECT_NAME: Training-Prince
+          LINEAR_PARENT_IDENTIFIER: ${{ inputs.parent_id }}
+          TASKS_FILE: specs/012-title-tuesday-spec/tasks.md
+        run: |
+          echo "Creating Linear sub-issues for parent: $LINEAR_PARENT_IDENTIFIER"
+          echo "Tasks file: $TASKS_FILE"
+          echo "Team: $LINEAR_TEAM_NAME"
+          echo "Project: $LINEAR_PROJECT_NAME"
+          
+          if [ ! -f "$TASKS_FILE" ]; then
+            echo "❌ Error: Tasks file not found at $TASKS_FILE"
+            exit 1
+          fi
+          
+          if [ -z "$LINEAR_API_KEY" ]; then
+            echo "❌ Error: LINEAR_API_KEY not set"
+            exit 1
+          fi
+          
+          echo "✅ All required files and environment variables are present"
+          echo "🚀 Running Linear sync..."
+          
+          node scripts/linear-sync.js
+          
+          echo "✅ Linear sync completed!"

@@ -1,0 +1,29 @@
+name: Sync Wednesday Task Status
+
+on:
+  push:
+    branches:
+      - feature/PRI-289-wednesday-ui-polishing
+    paths:
+      - 'specs/013-title-wednesday-spec/tasks.md'
+
+jobs:
+  sync-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync Task Status to Linear
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        run: |
+          echo "🔄 Syncing completed tasks to Linear..."
+          node scripts/sync-wednesday-task-status.js

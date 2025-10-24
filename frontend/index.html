@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello World Apps</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app" class="app-grid" role="main">
+      <section id="quote-app" class="section-card quote-app" aria-labelledby="quote-heading">
+        <header class="quote-app__header">
+          <h1 id="quote-heading">Quote Explorer</h1>
+          <p>Find inspiration and filter quotes by your favourite authors.</p>
+        </header>
+        <section class="quote-app__controls" aria-label="Quote controls">
+          <label for="author-filter">Author</label>
+          <input
+            type="text"
+            id="author-filter"
+            name="author-filter"
+            placeholder="Filter by author…"
+            autocomplete="off"
+            aria-describedby="quote-helper"
+          />
+          <button id="shuffle-quote" type="button" aria-label="Show a different quote">
+            Show another quote
+          </button>
+        </section>
+        <p id="quote-helper" class="visually-hidden">
+          Type an author's name to narrow the results.
+        </p>
+        <blockquote
+          id="quote-display"
+          class="quote-app__quote"
+          cite=""
+          role="status"
+          aria-live="polite"
+        >
+          <p id="quote-text" tabindex="0">Loading…</p>
+          <footer>— <cite id="quote-author">Unknown</cite></footer>
+        </blockquote>
+      </section>
+
+      <section id="expense-app" class="section-card expense-app" aria-labelledby="expense-heading">
+        <h2 id="expense-heading">Expense Tracker</h2>
+        <form class="expense-controls" id="expense-form" novalidate>
+          <div class="expense-field">
+            <label for="exp-amount">Amount</label>
+            <input
+              id="exp-amount"
+              data-testid="expense-amount"
+              name="amount"
+              type="number"
+              step="0.01"
+              min="0"
+              inputmode="decimal"
+              required
+              aria-describedby="exp-error"
+            />
+          </div>
+          <div class="expense-field">
+            <label for="exp-category">Category</label>
+            <input
+              id="exp-category"
+              data-testid="expense-category"
+              name="category"
+              type="text"
+              autocomplete="off"
+              required
+              aria-describedby="exp-error"
+            />
+          </div>
+          <div class="expense-field">
+            <label for="exp-month">Month (1–12)</label>
+            <input
+              id="exp-month"
+              name="month"
+              type="number"
+              min="1"
+              max="12"
+              inputmode="numeric"
+              aria-describedby="exp-error"
+            />
+          </div>
+          <button id="exp-add" data-testid="add-expense" type="submit">Record expense</button>
+        </form>
+        <p
+          id="exp-error"
+          data-testid="validation-error"
+          class="expense-error"
+          role="alert"
+          aria-live="assertive"
+          tabindex="-1"
+        ></p>
+        <div class="expense-summary" aria-live="polite">
+          <label for="exp-filter">Filter by category</label>
+          <select id="exp-filter" name="category-filter">
+            <option value="all">All categories</option>
+          </select>
+          <p class="expense-total">
+            <strong>Total:</strong> <span id="exp-total" data-testid="total-amount" aria-live="polite">0</span>
+          </p>
+          <p id="exp-empty" aria-live="polite"></p>
+        </div>
+        <div class="expense-table-wrapper">
+          <table class="expense-table" data-testid="expense-list" aria-describedby="exp-total">
+            <caption class="visually-hidden">
+              Recorded expenses
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Amount</th>
+                <th scope="col">Category</th>
+                <th scope="col">Month</th>
+              </tr>
+            </thead>
+            <tbody id="exp-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="temp-app" class="section-card temp-app" aria-labelledby="temp-heading">
+        <h2 id="temp-heading">Temperature Converter</h2>
+        <div class="temp-controls" role="group" aria-label="Conversion inputs">
+          <label for="temp-value">Value</label>
+          <input
+            id="temp-value"
+            data-testid="celsius-input"
+            type="number"
+            inputmode="decimal"
+            aria-describedby="temp-error temp-result"
+            placeholder="Enter temperature value"
+          />
+          <label for="temp-from">From</label>
+          <select id="temp-from" aria-describedby="temp-error temp-result">
+            <option value="C">Celsius (C)</option>
+            <option value="F">Fahrenheit (F)</option>
+          </select>
+          <label for="temp-to">To</label>
+          <select id="temp-to" aria-describedby="temp-error temp-result">
+            <option value="F">Fahrenheit (F)</option>
+            <option value="C">Celsius (C)</option>
+          </select>
+          <button id="temp-convert" data-testid="convert-button" type="button">Convert</button>
+          <button id="temp-clear" data-testid="clear-button" type="button">Clear</button>
+        </div>
+        <p id="temp-error" data-testid="error-message" role="alert" aria-live="assertive" tabindex="-1"></p>
+        <div>
+          <input id="temp-result-display" data-testid="fahrenheit-input" type="text" readonly placeholder="Result" />
+        </div>
+        <p id="temp-result" role="status" aria-live="polite" aria-label="Conversion result"></p>
+        <div id="conversion-history" data-testid="conversion-history" style="margin-top: 1rem;"></div>
+      </section>
+
+      <section id="todo-app" class="section-card todo-app" aria-labelledby="todo-heading">
+        <h2 id="todo-heading">To‑Do</h2>
+        <div class="todo-controls" role="group" aria-label="Add a task">
+          <label for="todo-input">Task description</label>
+          <input
+            id="todo-input"
+            data-testid="task-input"
+            type="text"
+            placeholder="What needs to be done?"
+            autocomplete="off"
+            aria-describedby="todo-helper"
+            required
+          />
+          <label for="todo-due">Due date (optional)</label>
+          <input id="todo-due" type="date" aria-describedby="todo-helper" />
+          <label for="todo-high" class="todo-high-label"
+            ><input id="todo-high" type="checkbox" aria-describedby="todo-helper" /> High
+            priority</label
+          >
+          <button id="todo-add" data-testid="add-task" type="button" aria-describedby="todo-helper">Add task</button>
+        </div>
+        <p id="todo-helper" class="visually-hidden">
+          Due date is optional; high priority helps sorting.
+        </p>
+        <p id="todo-error" data-testid="validation-error" role="alert" aria-live="assertive" tabindex="-1"></p>
+        <div class="todo-filters" role="group" aria-label="Filter tasks">
+          <button id="filter-all" data-testid="filter-all" type="button">All</button>
+          <button id="filter-active" data-testid="filter-active" type="button">Active</button>
+          <button id="filter-completed" data-testid="filter-completed" type="button">Completed</button>
+        </div>
+        <p id="task-count" data-testid="task-count"></p>
+        <ul id="todo-list" data-testid="task-list" class="todo-list" aria-live="polite"></ul>
+      </section>
+
+      <section
+        id="stopwatch-app"
+        class="section-card stopwatch-app"
+        aria-labelledby="stopwatch-heading"
+      >
+        <h2 id="stopwatch-heading">Stopwatch</h2>
+        <div class="stopwatch-container">
+          <div class="timer-display" data-testid="time-display" role="timer" aria-live="polite" aria-label="Elapsed time">
+            00:00.00
+          </div>
+          <div class="controls" role="group" aria-label="Stopwatch controls">
+            <button class="start-btn" data-testid="start-button" aria-label="Start stopwatch">Start</button>
+            <button class="pause-btn" data-testid="pause-button" disabled aria-label="Pause stopwatch">Pause</button>
+            <button class="resume-btn" data-testid="resume-button" disabled aria-label="Resume stopwatch">Resume</button>
+            <button class="stop-btn" data-testid="reset-button" aria-label="Reset stopwatch">Reset</button>
+            <button class="lap-btn" data-testid="lap-button" aria-label="Record lap time">Lap</button>
+            <button class="clear-laps-btn" data-testid="clear-laps" aria-label="Clear lap times">Clear Laps</button>
+            <button class="export-btn" aria-label="Export lap times as CSV file">Export CSV</button>
+          </div>
+          <div
+            class="laps-display"
+            data-testid="lap-list"
+            role="region"
+            aria-label="Recorded lap times"
+            aria-live="polite"
+          >
+            <!-- Dynamic lap list will be populated here -->
+          </div>
+        </div>
+      </section>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
