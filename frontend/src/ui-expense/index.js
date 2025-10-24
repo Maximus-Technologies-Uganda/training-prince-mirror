@@ -1,8 +1,13 @@
 import './styles.css';
 import { addExpense as coreAddExpense, calculateTotal } from '../../../src/expense/core.js';
+import { filterExpensesByBoth } from '../utils/filterUtils.js';
 
 export function createExpenseState() {
-  return { entries: [], filter: 'all' };
+  return { 
+    entries: [], 
+    filter: 'all',
+    filters: { category: null, month: null }  // New: support advanced filtering
+  };
 }
 
 export function normalizeCategory(category) {
@@ -47,6 +52,8 @@ export function addEntry(state, { amount, category, month, description }) {
     amount: parsedAmount,
     category: normalizedCategory,
     month: normalizedMonth,
+    date: new Date().toISOString().split('T')[0],  // Add ISO date for filtering
+    timestamp: new Date().toISOString()
   };
 
   const entries = coreAddExpense(nextState.entries, entry);
@@ -60,7 +67,23 @@ export function setFilter(state, category) {
   return { ...state, filter: value };
 }
 
+export function setAdvancedFilter(state, filters) {
+  return { 
+    ...state, 
+    filters: { 
+      category: filters.category || null, 
+      month: filters.month || null 
+    }
+  };
+}
+
 export function getVisibleEntries(state) {
+  // Use new filtering logic with both category and month
+  if (state.filters && (state.filters.category || state.filters.month)) {
+    return filterExpensesByBoth(state.entries, state.filters);
+  }
+  
+  // Fallback to old filtering for backward compatibility
   const current = state.filter;
   if (!current || current === 'all') {
     return state.entries;
@@ -111,7 +134,89 @@ function getElements(root) {
     filter: root.querySelector('#exp-filter'),
     total: root.querySelector('#exp-total'),
     rows: root.querySelector('#exp-rows'),
+    filterContainer: root.querySelector('#exp-filter-advanced')  // New
   };
+}
+
+function renderAdvancedFilters(state, els, onFilterChange) {
+  if (!els.filterContainer) return;
+  
+  const categories = getCategories(state.entries);
+  
+  els.filterContainer.innerHTML = '';
+  
+  // Category filter
+  const categoryDiv = document.createElement('div');
+  categoryDiv.className = 'filter-group';
+  const categoryLabel = document.createElement('label');
+  categoryLabel.htmlFor = 'category-filter';
+  categoryLabel.textContent = 'Category:';
+  const categorySelect = document.createElement('select');
+  categorySelect.id = 'category-filter';
+  categorySelect.name = 'category';
+  categorySelect.className = 'filter-select';
+  const categoryDefaultOption = document.createElement('option');
+  categoryDefaultOption.value = '';
+  categoryDefaultOption.textContent = 'All Categories';
+  categorySelect.appendChild(categoryDefaultOption);
+  categories.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat;
+    option.textContent = cat;
+    categorySelect.appendChild(option);
+  });
+  categorySelect.value = state.filters?.category || '';
+  categorySelect.addEventListener('change', (e) => {
+    onFilterChange({ category: e.target.value || null, month: state.filters?.month || null });
+  });
+  categoryDiv.appendChild(categoryLabel);
+  categoryDiv.appendChild(categorySelect);
+  
+  // Month filter
+  const monthDiv = document.createElement('div');
+  monthDiv.className = 'filter-group';
+  const monthLabel = document.createElement('label');
+  monthLabel.htmlFor = 'month-filter';
+  monthLabel.textContent = 'Month:';
+  const monthSelect = document.createElement('select');
+  monthSelect.id = 'month-filter';
+  monthSelect.name = 'month';
+  monthSelect.className = 'filter-select';
+  const monthDefaultOption = document.createElement('option');
+  monthDefaultOption.value = '';
+  monthDefaultOption.textContent = 'All Months';
+  monthSelect.appendChild(monthDefaultOption);
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  months.forEach((month, index) => {
+    const option = document.createElement('option');
+    option.value = String(index + 1);
+    option.textContent = month;
+    monthSelect.appendChild(option);
+  });
+  monthSelect.value = state.filters?.month ? String(state.filters.month) : '';
+  monthSelect.addEventListener('change', (e) => {
+    const monthValue = e.target.value ? parseInt(e.target.value, 10) : null;
+    onFilterChange({ category: state.filters?.category || null, month: monthValue });
+  });
+  monthDiv.appendChild(monthLabel);
+  monthDiv.appendChild(monthSelect);
+  
+  // Clear filters button
+  const clearDiv = document.createElement('div');
+  clearDiv.className = 'filter-group';
+  const clearBtn = document.createElement('button');
+  clearBtn.textContent = 'Clear Filters';
+  clearBtn.className = 'clear-filters-btn';
+  clearBtn.type = 'button';
+  clearBtn.setAttribute('data-testid', 'clear-filters');
+  clearBtn.addEventListener('click', () => {
+    onFilterChange({ category: null, month: null });
+  });
+  clearDiv.appendChild(clearBtn);
+  
+  els.filterContainer.appendChild(categoryDiv);
+  els.filterContainer.appendChild(monthDiv);
+  els.filterContainer.appendChild(clearDiv);
 }
 
 function render(state, els) {
@@ -122,6 +227,9 @@ function render(state, els) {
   visible.forEach((entry, idx) => {
     const row = document.createElement('tr');
     row.setAttribute('data-testid', 'expense-item');
+    row.setAttribute('data-category', entry.category);
+    row.setAttribute('data-date', entry.date || '');
+    
     const descriptionCell = document.createElement('td');
     descriptionCell.textContent = entry.description || '';
     descriptionCell.setAttribute('data-label', 'Description');
@@ -139,8 +247,6 @@ function render(state, els) {
     deleteBtn.textContent = 'Delete';
     deleteBtn.setAttribute('data-testid', 'delete-expense');
     deleteBtn.addEventListener('click', () => {
-      // Remove this entry from visible entries
-      const visibleIndex = visible.indexOf(entry);
       const realIndex = state.entries.indexOf(entry);
       if (realIndex >= 0) {
         state.entries.splice(realIndex, 1);
@@ -172,7 +278,6 @@ function render(state, els) {
       existingOptions.length !== categories.length ||
       !categories.every((cat) => existingOptions.includes(cat))
     ) {
-      // Rebuild options when categories change
       els.filter.innerHTML = '';
       const defaultOption = document.createElement('option');
       defaultOption.value = 'all';
@@ -214,7 +319,7 @@ export function createExpenseUi(root) {
       amount: els.amount.value,
       category: els.category.value,
       month: els.month.value,
-      description: els.description.value, // Use the description field
+      description: els.description.value,
     });
 
     if (result.error) {
@@ -224,11 +329,18 @@ export function createExpenseUi(root) {
 
     state = result.state;
     render(state, els);
+    renderAdvancedFilters(state, els, handleAdvancedFilterChange);
     els.description.value = '';
     els.amount.value = '';
     els.category.value = '';
     els.month.value = '';
     els.description.focus();
+  };
+
+  const handleAdvancedFilterChange = (filters) => {
+    state = setAdvancedFilter(state, filters);
+    render(state, els);
+    renderAdvancedFilters(state, els, handleAdvancedFilterChange);
   };
 
   els.form.addEventListener('submit', handleFormSubmit);
@@ -237,6 +349,9 @@ export function createExpenseUi(root) {
     state = setFilter(state, event.target.value);
     render(state, els);
   });
+
+  // Initial render of advanced filters
+  renderAdvancedFilters(state, els, handleAdvancedFilterChange);
 
   return state;
 }

@@ -1,0 +1,31 @@
+{
+  "parent": "PRI-289",
+  "created_at": "2025-10-24T00:00:00Z",
+  "tasks": [
+    {"task_num": 1, "linear_id": "PRI-289-1", "title": "Create filterUtils.js module with filter function stubs", "status": "Done"},
+    {"task_num": 2, "linear_id": "PRI-289-2", "title": "Write Vitest unit tests for expense filtering logic", "status": "Done"},
+    {"task_num": 3, "linear_id": "PRI-289-3", "title": "Write Vitest unit tests for to-do filtering logic", "status": "Done"},
+    {"task_num": 4, "linear_id": "PRI-289-4", "title": "Write Playwright E2E smoke test for expense filtering", "status": "Done"},
+    {"task_num": 5, "linear_id": "PRI-289-5", "title": "Write Playwright E2E smoke test for to-do filtering", "status": "Done"},
+    {"task_num": 6, "linear_id": "PRI-289-6", "title": "Implement filterExpensesByCategory() to make tests pass", "status": "Done"},
+    {"task_num": 7, "linear_id": "PRI-289-7", "title": "Implement filterExpensesByMonth() to make tests pass", "status": "Done"},
+    {"task_num": 8, "linear_id": "PRI-289-8", "title": "Implement filterExpensesByBoth() with AND logic", "status": "Done"},
+    {"task_num": 9, "linear_id": "PRI-289-9", "title": "Implement filterTodosByStatus() to make tests pass", "status": "Done"},
+    {"task_num": 10, "linear_id": "PRI-289-10", "title": "Implement filterTodosByPriority() to make tests pass", "status": "Done"},
+    {"task_num": 11, "linear_id": "PRI-289-11", "title": "Implement filterTodosByBoth() with AND logic", "status": "Done"},
+    {"task_num": 12, "linear_id": "PRI-289-12", "title": "Implement detectEmptyState() helper function", "status": "Done"},
+    {"task_num": 13, "linear_id": "PRI-289-13", "title": "Create ExpenseFilter React component with category & month dropdowns", "status": "Done"},
+    {"task_num": 14, "linear_id": "PRI-289-14", "title": "Create ExpenseEmptyState component with icon & CTA button", "status": "Done"},
+    {"task_num": 15, "linear_id": "PRI-289-15", "title": "Create TodoFilter component with status tabs & priority dropdown", "status": "Done"},
+    {"task_num": 16, "linear_id": "PRI-289-16", "title": "Create TodoEmptyState component with icon & CTA button", "status": "Done"},
+    {"task_num": 17, "linear_id": "PRI-289-17", "title": "Integrate ExpenseFilter component into expense page UI", "status": "Done"},
+    {"task_num": 18, "linear_id": "PRI-289-18", "title": "Add filtering logic to ExpenseList component", "status": "Done"},
+    {"task_num": 19, "linear_id": "PRI-289-19", "title": "Integrate TodoFilter component into to-do page UI", "status": "Done"},
+    {"task_num": 20, "linear_id": "PRI-289-20", "title": "Add filtering logic to TodoList component", "status": "Done"},
+    {"task_num": 21, "linear_id": "PRI-289-21", "title": "Run Vitest unit tests and verify ≥50% coverage for UI modules", "status": "Done"},
+    {"task_num": 22, "linear_id": "PRI-289-22", "title": "Run Playwright E2E smoke tests for filter functionality", "status": "Done"},
+    {"task_num": 23, "linear_id": "PRI-289-23", "title": "Manually validate all quickstart test scenarios (12 scenarios)", "status": "Done"},
+    {"task_num": 24, "linear_id": "PRI-289-24", "title": "Generate coverage reports and prepare PR documentation", "status": "Done"}
+  ],
+  "note": "All 24 tasks completed successfully. Run with LINEAR_API_KEY to sync actual sub-issues to Linear."
+}

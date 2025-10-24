@@ -1,0 +1,207 @@
+name: Nuke Linear Duplicates
+
+on:
+  workflow_dispatch:
+
+jobs:
+  nuke-duplicates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Aggressively Delete Duplicates
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        run: |
+          cat > nuke-duplicates.mjs << 'SCRIPT'
+          import https from 'https';
+          
+          const API_KEY = process.env.LINEAR_API_KEY;
+          
+          if (!API_KEY) {
+            console.error('❌ LINEAR_API_KEY not set');
+            process.exit(1);
+          }
+          
+          async function graphqlRequest(query, variables = {}) {
+            return new Promise((resolve, reject) => {
+              const body = JSON.stringify({ query, variables });
+              const req = https.request({
+                method: 'POST',
+                hostname: 'api.linear.app',
+                path: '/graphql',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Content-Length': Buffer.byteLength(body),
+                  'Authorization': API_KEY
+                }
+              }, (res) => {
+                let data = '';
+                res.on('data', (chunk) => (data += chunk));
+                res.on('end', () => {
+                  try {
+                    const json = JSON.parse(data);
+                    if (json.errors) {
+                      reject(new Error(json.errors.map(e => e.message).join('; ')));
+                    } else {
+                      resolve(json.data);
+                    }
+                  } catch (e) {
+                    reject(e);
+                  }
+                });
+              });
+              req.on('error', reject);
+              req.write(body);
+              req.end();
+            });
+          }
+          
+          async function getSubIssues() {
+            const query = `
+              query {
+                issue(id: "PRI-289") {
+                  children(first: 100) {
+                    nodes {
+                      id
+                      identifier
+                      title
+                    }
+                  }
+                }
+              }
+            `;
+            const result = await graphqlRequest(query);
+            return result.issue.children.nodes;
+          }
+          
+          function findDuplicates(issues) {
+            const titleMap = {};
+            const duplicates = [];
+            
+            for (const issue of issues) {
+              if (!titleMap[issue.title]) {
+                titleMap[issue.title] = [];
+              }
+              titleMap[issue.title].push(issue);
+            }
+            
+            for (const title in titleMap) {
+              if (titleMap[title].length > 1) {
+                for (let i = 1; i < titleMap[title].length; i++) {
+                  duplicates.push(titleMap[title][i]);
+                }
+              }
+            }
+            
+            return duplicates;
+          }
+          
+          async function nuke(issue) {
+            console.log(`\n🎯 Targeting ${issue.identifier}: "${issue.title}"`);
+            
+            // Strategy 1: Try trashing via old API
+            try {
+              console.log('  → Strategy 1: Attempting trash mutation...');
+              const trashQuery = `
+                mutation {
+                  issueArchive(id: "${issue.id}") {
+                    success
+                    issue {
+                      id
+                    }
+                  }
+                }
+              `;
+              const result = await graphqlRequest(trashQuery);
+              if (result.issueArchive?.success) {
+                console.log('  ✅ Trashed successfully!');
+                return true;
+              }
+            } catch (e1) {
+              console.log(`  ✗ Trash failed: ${e1.message.substring(0, 50)}`);
+            }
+            
+            // Strategy 2: Try delete mutation
+            try {
+              console.log('  → Strategy 2: Attempting delete mutation...');
+              const deleteQuery = `
+                mutation {
+                  issueDelete(id: "${issue.id}")
+                }
+              `;
+              const result = await graphqlRequest(deleteQuery);
+              if (result.issueDelete) {
+                console.log('  ✅ Deleted successfully!');
+                return true;
+              }
+            } catch (e2) {
+              console.log(`  ✗ Delete failed: ${e2.message.substring(0, 50)}`);
+            }
+            
+            // Strategy 3: Try update with archived flag
+            try {
+              console.log('  → Strategy 3: Attempting archive flag...');
+              const archiveQuery = `
+                mutation {
+                  issueUpdate(id: "${issue.id}", input: {archived: true}) {
+                    success
+                    issue {
+                      id
+                    }
+                  }
+                }
+              `;
+              const result = await graphqlRequest(archiveQuery);
+              if (result.issueUpdate?.success) {
+                console.log('  ✅ Archived successfully!');
+                return true;
+              }
+            } catch (e3) {
+              console.log(`  ✗ Archive failed: ${e3.message.substring(0, 50)}`);
+            }
+            
+            console.log('  ⚠️  All strategies failed - this issue may require manual deletion');
+            return false;
+          }
+          
+          async function main() {
+            try {
+              console.log('\n🔍 Fetching sub-issues of PRI-289...\n');
+              const allIssues = await getSubIssues();
+              const duplicates = findDuplicates(allIssues);
+              
+              console.log(`Found ${duplicates.length} duplicate issues to remove\n`);
+              console.log('═'.repeat(70));
+              
+              let successful = 0;
+              for (const dup of duplicates) {
+                const success = await nuke(dup);
+                if (success) successful++;
+              }
+              
+              console.log('\n' + '═'.repeat(70));
+              console.log(`\n📊 RESULTS:`);
+              console.log(`   ✅ Successfully removed: ${successful}/${duplicates.length}`);
+              console.log(`   ⚠️  Failed/Manual: ${duplicates.length - successful}/${duplicates.length}`);
+              
+              if (successful > 0) {
+                console.log('\n💡 TIP: Refresh Linear to see changes (may take 10-30 seconds)');
+              }
+              
+            } catch (err) {
+              console.error('❌ Critical error:', err.message);
+              process.exit(1);
+            }
+          }
+          
+          main();
+          SCRIPT
+          
+          node nuke-duplicates.mjs
