@@ -1,0 +1,59 @@
+name: Create Linear Sub-Issues for PRI-1412
+
+on:
+  workflow_dispatch:
+    inputs:
+      parent_id:
+        description: 'Parent Linear Issue ID'
+        required: true
+        default: 'PRI-1412'
+        type: string
+
+jobs:
+  create-sub-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create Linear Sub-Issues for PRI-1412
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          PARENT_ID: ${{ inputs.parent_id }}
+        run: |
+          echo "🚀 Creating Linear sub-issues for parent: $PARENT_ID"
+          echo ""
+          echo "✅ LINEAR_API_KEY is set from GitHub secrets"
+          echo ""
+          
+          if [ ! -f "create-sub-issues-pri1412.mjs" ]; then
+            echo "❌ Error: create-sub-issues-pri1412.mjs not found"
+            exit 1
+          fi
+          
+          if [ -z "$LINEAR_API_KEY" ]; then
+            echo "❌ Error: LINEAR_API_KEY not set"
+            exit 1
+          fi
+          
+          echo "Running sub-issue creation script..."
+          echo "════════════════════════════════════════════════════════════════"
+          echo ""
+          
+          node create-sub-issues-pri1412.mjs
+          
+          echo ""
+          echo "════════════════════════════════════════════════════════════════"
+          echo "✅ Sub-issue creation completed!"
+          echo ""
+          echo "📋 Next steps:"
+          echo "   1. Refresh Linear to see the new sub-issues"
+          echo "   2. Begin Phase 3.2 contract tests (T002-T007)"
+          echo "   3. Follow the dependency order in tasks.md"
