@@ -1,0 +1,243 @@
+/**
+ * Stopwatch UI Styles
+ * Layout: Flexbox column with timer display on top, buttons in row, lap list below
+ * Accessibility: WCAG AA contrast (4.5:1 normal, 3:1 large), focus indicators
+ */
+
+.stopwatch-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Timer Display */
+.timer-display {
+  font-size: 48px;
+  font-weight: 600;
+  text-align: center;
+  color: #1a1a1a;
+  margin-bottom: 30px;
+  font-family: 'Courier New', monospace;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Button Container */
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Button Styles */
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 2px solid #1a1a1a;
+  border-radius: 4px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+button:hover:not(:disabled) {
+  background-color: #333333;
+  border-color: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Focus Indicator - Keyboard Navigation */
+button:focus-visible {
+  outline: 3px solid #4A90E2;
+  outline-offset: 2px;
+}
+
+/* Disabled Button State */
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #cccccc;
+  border-color: #cccccc;
+}
+
+/* Button Specific Styles */
+.btn-start {
+  background-color: #27ae60;
+  border-color: #27ae60;
+}
+
+.btn-start:hover:not(:disabled) {
+  background-color: #229954;
+  border-color: #229954;
+}
+
+.btn-stop {
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.btn-stop:hover:not(:disabled) {
+  background-color: #c0392b;
+  border-color: #c0392b;
+}
+
+.btn-reset {
+  background-color: #95a5a6;
+  border-color: #95a5a6;
+}
+
+.btn-reset:hover:not(:disabled) {
+  background-color: #7f8c8d;
+  border-color: #7f8c8d;
+}
+
+.btn-lap {
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
+.btn-lap:hover:not(:disabled) {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+.btn-export {
+  background-color: #9b59b6;
+  border-color: #9b59b6;
+}
+
+.btn-export:hover:not(:disabled) {
+  background-color: #8e44ad;
+  border-color: #8e44ad;
+}
+
+/* Lap List Container */
+.lap-list-container {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.lap-list-container:empty::after {
+  content: 'No laps recorded';
+  display: block;
+  padding: 20px;
+  text-align: center;
+  color: #999999;
+  font-size: 14px;
+}
+
+/* Lap Item */
+.lap-item {
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+.lap-item:last-child {
+  border-bottom: none;
+}
+
+.lap-item:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.lap-number {
+  font-weight: 600;
+  min-width: 60px;
+}
+
+.lap-times {
+  display: flex;
+  gap: 30px;
+  font-family: 'Courier New', monospace;
+}
+
+.lap-time-label {
+  font-size: 12px;
+  color: #666666;
+  display: block;
+}
+
+.lap-time-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: block;
+}
+
+/* Session Status Message */
+#session-status {
+  display: none;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .stopwatch-container {
+    padding: 15px;
+  }
+
+  .timer-display {
+    font-size: 36px;
+  }
+
+  button {
+    padding: 10px 16px;
+    font-size: 14px;
+    min-width: 80px;
+  }
+
+  .lap-times {
+    gap: 15px;
+  }
+
+  .lap-item {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .button-container {
+    display: none;
+  }
+
+  .stopwatch-container {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
