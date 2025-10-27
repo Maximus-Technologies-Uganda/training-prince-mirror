@@ -1,5 +1,62 @@
 # 🚀 Generic Linear Sub-Issues Workflow Guide
 
+## 📝 COPY-PASTE PROMPT FOR YOUR NEXT AGENT
+
+**If you're asking a new agent to create Linear sub-issues, use this exact prompt:**
+
+```
+I need to create Linear sub-issues from a tasks.md file.
+
+Here's what you need to know:
+- Feature branch: [BRANCH_NAME] (already merged to development)
+- Tasks file location: specs/[BRANCH_NAME]/tasks.md
+- Parent Linear issue ID: PRI-[XXXX]
+
+Follow these steps:
+
+1. Verify the tasks.md file exists at specs/[BRANCH_NAME]/tasks.md
+2. Go to: https://github.com/Maximus-Technologies-Uganda/training-prince/actions
+3. Find the workflow: "Create Linear Sub-Issues (Generic)"
+4. Click on it, then click "Run workflow ▼"
+5. In the workflow inputs, enter:
+   - Parent Issue ID: PRI-[XXXX]
+   - Tasks File: specs/[BRANCH_NAME]/tasks.md
+6. Click the green "Run workflow" button
+7. Wait ~1 minute for the workflow to complete
+8. Verify all sub-issues were created in Linear under the parent issue
+9. Show me the Linear link and confirm success
+
+Reference guide: CREATE_LINEAR_SUB_ISSUES.md (this file)
+```
+
+### Real Example:
+```
+I need to create Linear sub-issues from a tasks.md file.
+
+Here's what you need to know:
+- Feature branch: 015-friday-feature (already merged to development)
+- Tasks file location: specs/015-friday-feature/tasks.md
+- Parent Linear issue ID: PRI-2000
+
+Follow these steps:
+
+1. Verify the tasks.md file exists at specs/015-friday-feature/tasks.md
+2. Go to: https://github.com/Maximus-Technologies-Uganda/training-prince/actions
+3. Find the workflow: "Create Linear Sub-Issues (Generic)"
+4. Click on it, then click "Run workflow ▼"
+5. In the workflow inputs, enter:
+   - Parent Issue ID: PRI-2000
+   - Tasks File: specs/015-friday-feature/tasks.md
+6. Click the green "Run workflow" button
+7. Wait ~1 minute for the workflow to complete
+8. Verify all sub-issues were created in Linear under PRI-2000
+9. Show me the Linear link and confirm success
+
+Reference guide: CREATE_LINEAR_SUB_ISSUES.md (this file)
+```
+
+---
+
 ## 📌 Quick Reference Card
 
 **When?** Whenever you create a `tasks.md` file and want to sync it to Linear  
