@@ -13,13 +13,16 @@ const STORAGE_KEY = 'stopwatchState';
 export function persistState(state) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    showPersistenceStatus('✓ State saved', 'success');
     return { success: true };
   } catch (error) {
     if (error.name === 'SecurityError') {
       console.warn('localStorage not available (private browsing mode)');
+      showPersistenceStatus('⚠ Private browsing - session only', 'warning');
       return { success: false, error: 'SecurityError: Private browsing mode detected' };
     }
     console.error('Error persisting state:', error);
+    showPersistenceStatus('✗ Save failed', 'error');
     return { success: false, error: error.message };
   }
 }
@@ -85,6 +88,23 @@ function showSessionMessage(message) {
   const statusEl = document.getElementById('session-status');
   if (statusEl) {
     statusEl.textContent = message;
+    statusEl.style.display = 'block';
+    setTimeout(() => {
+      statusEl.style.display = 'none';
+    }, 5000);
+  }
+}
+
+/**
+ * Display persistence status message to user
+ * @param {string} message - Status message to display
+ * @param {string} type - Type of status (e.g., 'success', 'warning', 'error')
+ */
+function showPersistenceStatus(message, type) {
+  const statusEl = document.getElementById('persistence-status');
+  if (statusEl) {
+    statusEl.textContent = message;
+    statusEl.className = `status-message ${type}`;
     statusEl.style.display = 'block';
     setTimeout(() => {
       statusEl.style.display = 'none';

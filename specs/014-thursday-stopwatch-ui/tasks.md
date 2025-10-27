@@ -72,7 +72,7 @@
 
 ## Phase 3.5: Persistence & DOM Integration
 
-- [ ] **T017** Implement `persistState(state)` helper in `frontend/src/ui-stopwatch/persistence.js` → Serialize state to JSON, write to localStorage with key 'stopwatchState', wrap in try-catch, handle SecurityError (private browsing), show status indicator
+- [x] **T017** Implement `persistState(state)` helper in `frontend/src/ui-stopwatch/persistence.js` → Serialize state to JSON, write to localStorage with key 'stopwatchState', wrap in try-catch, handle SecurityError (private browsing), show status indicator
 - [ ] **T018** Create `stopwatch.html` page in `frontend/stopwatch.html` → Add HTML structure: timer display (`<div class="timer-display">00:00:00</div>`), buttons (Start, Stop, Reset, Lap, Export), lap list container, include `index.js` and `index.css`
 
 ---
