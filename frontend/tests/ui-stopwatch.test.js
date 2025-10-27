@@ -454,6 +454,12 @@ describe('Stopwatch UI - exportToCSV() Contract Tests', () => {
       startTimer = module.startTimer;
       recordLap = module.recordLap;
       
+      // Get resetForTesting to clear module state between tests
+      const resetForTesting = module.__resetForTesting;
+      if (resetForTesting) {
+        resetForTesting();
+      }
+      
       // Try to import from exporter module
       const exporterModule = await import('../src/ui-stopwatch/exporter.js');
       exportToCSV = exporterModule.exportToCSV;

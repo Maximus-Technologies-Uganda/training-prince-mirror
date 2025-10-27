@@ -65,8 +65,8 @@
 - [x] **T012** Implement `stopTimer()` function in `frontend/src/ui-stopwatch/index.js` → Set `isRunning = false`, preserve `startTime`, persist to localStorage, return result object
 - [x] **T013** Implement `resetTimer()` function in `frontend/src/ui-stopwatch/index.js` → Set `startTime = null`, `isRunning = false`, `laps = []`, clear localStorage via `localStorage.removeItem('stopwatchState')`, return result object
 - [x] **T014** Implement `recordLap()` function with 100ms debounce in `frontend/src/ui-stopwatch/index.js` → Check `isRunning=true` (return error if false), implement debounce logic (track `lastLapTime`, ignore calls within 100ms), append `Date.now()` to laps array, persist to localStorage
-- [ ] **T015** Implement `exportToCSV()` function in `frontend/src/ui-stopwatch/exporter.js` → Derive LapRecords, format CSV string with headers "Lap Number,Absolute Elapsed Time,Lap Duration", create Blob, trigger download with filename `stopwatch_export_{timestamp}.csv`, return `{success: true, filename}`
-- [ ] **T016** Implement `restoreState()` function in `frontend/src/ui-stopwatch/persistence.js` → Try-catch wrap localStorage read, parse JSON to TimerState, return default state if unavailable/empty/corrupted, set `resumed=true` if `isRunning=true`, show "Session-only mode" message if localStorage unavailable
+- [x] **T015** Implement `exportToCSV()` function in `frontend/src/ui-stopwatch/exporter.js` → Derive LapRecords, format CSV string with headers "Lap Number,Absolute Elapsed Time,Lap Duration", create Blob, trigger download with filename `stopwatch_export_{timestamp}.csv`, return `{success: true, filename}`
+- [x] **T016** Implement `restoreState()` function in `frontend/src/ui-stopwatch/persistence.js` → Try-catch wrap localStorage read, parse JSON to TimerState, return default state if unavailable/empty/corrupted, set `resumed=true` if `isRunning=true`, show "Session-only mode" message if localStorage unavailable
 
 ---
 

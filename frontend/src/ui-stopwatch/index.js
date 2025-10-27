@@ -36,6 +36,15 @@ function __resetForTesting() {
 }
 
 /**
+ * Get current timer state (for exporter and external use)
+ * @private
+ * @returns {Object} Current timerState
+ */
+function getTimerState() {
+  return { ...timerState };
+}
+
+/**
  * Start the timer
  * @returns {Object} {success: boolean, newState: Object}
  */
@@ -167,4 +176,4 @@ export function restoreState() {
 }
 
 // Export for testing purposes
-export { __resetForTesting };
+export { __resetForTesting, getTimerState };
