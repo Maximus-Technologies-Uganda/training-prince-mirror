@@ -4,6 +4,9 @@
  * Handles: timer control (start/stop/reset), lap recording, state management, DOM updates
  */
 
+// Import formatTime utility
+import { formatTime } from './utils.js';
+
 // Timer state object
 let timerState = {
   startTime: null,
@@ -18,6 +21,10 @@ let animationFrameId = null;
 let lastLapTime = 0;
 const LAP_DEBOUNCE_MS = 100;
 
+// Track last display update time for throttling
+let lastDisplayUpdateTime = 0;
+const DISPLAY_UPDATE_INTERVAL_MS = 100; // Update display every 100ms
+
 /**
  * Internal reset function for testing (resets debounce timer and state)
  * @private
@@ -29,10 +36,126 @@ function __resetForTesting() {
     laps: [],
   };
   lastLapTime = 0;
+  lastDisplayUpdateTime = 0;
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId);
     animationFrameId = null;
   }
+}
+
+/**
+ * Update timer display with current elapsed time
+ * Uses requestAnimationFrame for smooth updates
+ * @private
+ */
+function updateTimerDisplay() {
+  if (!timerState.isRunning || !timerState.startTime) {
+    return;
+  }
+
+  const now = Date.now();
+  
+  // Throttle display updates to 100-500ms interval
+  if (now - lastDisplayUpdateTime < DISPLAY_UPDATE_INTERVAL_MS) {
+    animationFrameId = requestAnimationFrame(updateTimerDisplay);
+    return;
+  }
+
+  const elapsedMs = now - timerState.startTime;
+  const displayElement = document.querySelector('.timer-display');
+  
+  if (displayElement) {
+    displayElement.textContent = formatTime(elapsedMs);
+  }
+
+  lastDisplayUpdateTime = now;
+  
+  // Continue animation loop if timer is still running
+  if (timerState.isRunning) {
+    animationFrameId = requestAnimationFrame(updateTimerDisplay);
+  }
+}
+
+/**
+ * Update lap list display with current recorded laps
+ * Derives LapRecords from current state and renders each lap
+ * @private
+ */
+function updateLapListDisplay() {
+  const lapListContainer = document.querySelector('.laps-display');
+  if (!lapListContainer) {
+    return;
+  }
+
+  // If no laps, show empty state
+  if (!timerState.laps || timerState.laps.length === 0) {
+    lapListContainer.innerHTML = '';
+    return;
+  }
+
+  // Validate we have startTime to calculate durations
+  if (timerState.startTime === null) {
+    lapListContainer.innerHTML = '';
+    return;
+  }
+
+  // Derive lap records from current state
+  const lapRecords = deriveLapRecords(timerState);
+  
+  // Render each lap as an HTML element
+  const lapHTML = lapRecords
+    .map(lap => {
+      // Format lap display: "Lap N: 00:MM:SS (Duration: 00:MM:SS)"
+      const lapNumberText = `Lap ${lap.lapNumber}`;
+      const absoluteTimeText = lap.absoluteElapsedTimeDisplay;
+      const lapDurationText = lap.lapDurationDisplay;
+      
+      return `<div class="lap-item">
+        <div class="lap-info">
+          <span class="lap-number">${lapNumberText}</span>
+          <span class="lap-time">Total: ${absoluteTimeText}</span>
+        </div>
+        <div class="lap-duration">
+          Duration: ${lapDurationText}
+        </div>
+      </div>`;
+    })
+    .join('');
+  
+  lapListContainer.innerHTML = lapHTML;
+}
+
+/**
+ * Derive lap records from current state
+ * This function transforms the raw laps array into display-ready records
+ * @private
+ * @returns {Array} Array of lap record objects
+ */
+function deriveLapRecords(state) {
+  if (!state || !Array.isArray(state.laps) || state.laps.length === 0) {
+    return [];
+  }
+
+  if (state.startTime === null) {
+    return [];
+  }
+
+  return state.laps.map((lapTimestamp, index) => {
+    const lapNumber = index + 1;
+    const absoluteElapsedTime = lapTimestamp - state.startTime;
+    const lapDuration = index === 0
+      ? absoluteElapsedTime
+      : lapTimestamp - state.laps[index - 1];
+
+    return {
+      lapNumber,
+      recordedAtTimestamp: lapTimestamp,
+      absoluteElapsedTime,
+      lapDuration,
+      absoluteElapsedTimeDisplay: formatTime(absoluteElapsedTime),
+      lapDurationDisplay: formatTime(lapDuration),
+    };
+  });
 }
 
 /**
@@ -53,6 +176,13 @@ export function startTimer() {
     timerState.startTime = Date.now();
     timerState.isRunning = true;
     persistState(timerState);
+    
+    // Start the display animation loop
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+    }
+    animationFrameId = requestAnimationFrame(updateTimerDisplay);
+    
     return { success: true, newState: { ...timerState } };
   } catch (error) {
     console.error('Error starting timer:', error);
@@ -95,6 +225,10 @@ export function resetTimer() {
       cancelAnimationFrame(animationFrameId);
       animationFrameId = null;
     }
+    
+    // Clear lap list display
+    updateLapListDisplay();
+    
     return { success: true, newState: { ...timerState } };
   } catch (error) {
     console.error('Error resetting timer:', error);
@@ -120,6 +254,9 @@ export function recordLap() {
     lastLapTime = now;
     timerState.laps.push(now);
     persistState(timerState);
+    
+    // Update lap list display after recording lap
+    updateLapListDisplay();
 
     return {
       success: true,
@@ -175,5 +312,16 @@ export function restoreState() {
   }
 }
 
+/**
+ * Provide access to updateTimerDisplay for manual updates (if needed)
+ * @private
+ */
+function startDisplayAnimation() {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+  }
+  animationFrameId = requestAnimationFrame(updateTimerDisplay);
+}
+
 // Export for testing purposes
-export { __resetForTesting, getTimerState };
+export { __resetForTesting, getTimerState, startDisplayAnimation, updateLapListDisplay };

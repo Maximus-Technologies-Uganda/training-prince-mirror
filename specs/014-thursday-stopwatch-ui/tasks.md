@@ -73,14 +73,14 @@
 ## Phase 3.5: Persistence & DOM Integration
 
 - [x] **T017** Implement `persistState(state)` helper in `frontend/src/ui-stopwatch/persistence.js` → Serialize state to JSON, write to localStorage with key 'stopwatchState', wrap in try-catch, handle SecurityError (private browsing), show status indicator
-- [ ] **T018** Create `stopwatch.html` page in `frontend/stopwatch.html` → Add HTML structure: timer display (`<div class="timer-display">00:00:00</div>`), buttons (Start, Stop, Reset, Lap, Export), lap list container, include `index.js` and `index.css`
+- [x] **T018** Create `stopwatch.html` page in `frontend/stopwatch.html` → Add HTML structure: timer display (`<div class="timer-display">00:00:00</div>`), buttons (Start, Stop, Reset, Lap, Export), lap list container, include `index.js` and `index.css`
 
 ---
 
 ## Phase 3.6: UI Components & Styling (Parallel CSS)
 
-- [ ] **T019 [P]** Implement timer display animation in `frontend/src/ui-stopwatch/index.js` → Use `requestAnimationFrame` loop to update `.timer-display` text with `formatTime(Date.now() - startTime)` every 100-500ms when running, stop on pause
-- [ ] **T020 [P]** Implement lap list rendering in `frontend/src/ui-stopwatch/index.js` → Derive LapRecords from current state, render each lap as `<div class="lap-item">Lap N: 00:MM:SS (Duration: 00:MM:SS)</div>`, update on `recordLap()`
+- [x] **T019 [P]** Implement timer display animation in `frontend/src/ui-stopwatch/index.js` → Use `requestAnimationFrame` loop to update `.timer-display` text with `formatTime(Date.now() - startTime)` every 100-500ms when running, stop on pause
+- [x] **T020 [P]** Implement lap list rendering in `frontend/src/ui-stopwatch/index.js` → Derive LapRecords from current state, render each lap as `<div class="lap-item">Lap N: 00:MM:SS (Duration: 00:MM:SS)</div>`, update on `recordLap()`
 - [ ] **T021 [P]** Implement button event handlers in `frontend/src/ui-stopwatch/index.js` → Wire buttons (Start→`startTimer()`, Stop→`stopTimer()`, Reset→`resetTimer()`, Lap→`recordLap()`, Export→`exportToCSV()`), update button visibility (hide Stop/Lap while not running), disable Lap when stopped
 - [ ] **T022 [P]** Style Stopwatch UI in `frontend/src/ui-stopwatch/index.css` → Create layout (flexbox column: timer display on top, buttons in row, lap list below), meet WCAG AA contrast 4.5:1 (normal text), 3:1 (large text), include focus indicators (outline or box-shadow) for keyboard navigation, font size ≥14px for body text
 
@@ -116,127 +116,3 @@
 ## Dependencies & Blocking
 
 ```
-Setup (T001)
-   ↓
-Contract Tests (T002-T007) [ALL MUST FAIL before implementation]
-   ↓ (blocker: implement to make tests pass)
-Models (T008-T010) [parallel, no deps between files]
-   ↓
-Core Implementation (T011-T016) [sequential, same file]
-   ↓
-Persistence & DOM (T017-T018)
-   ↓
-UI Components (T019-T022) [parallel, different concerns]
-   ↓
-Testing (T023-T026) [sequential, depends on UI complete]
-   ↓
-a11y Audit (T027-T030) [parallel, independent audits]
-   ↓
-Polish (T031-T034) [sequential, fixes depend on audit results]
-
-Non-blocking:
-- a11y tasks (T027-T030) can START after T001, but RESULTS used by T031
-```
-
----
-
-## Parallel Execution Examples
-
-### Launch Parallel Groups Immediately:
-
-**Group 1 - Contract Tests** (after T001):
-```
-Task: Write contract test startTimer() in frontend/tests/ui-stopwatch.test.js
-Task: Write contract test stopTimer() in frontend/tests/ui-stopwatch.test.js
-Task: Write contract test resetTimer() in frontend/tests/ui-stopwatch.test.js
-Task: Write contract test recordLap() in frontend/tests/ui-stopwatch.test.js
-Task: Write contract test exportToCSV() in frontend/tests/ui-stopwatch.test.js
-Task: Write contract test restoreState() in frontend/tests/ui-stopwatch.test.js
-# All can run in parallel; different test sections in same file
-```
-
-**Group 2 - Data Models** (after T001):
-```
-Task: Implement TimerState model in frontend/src/ui-stopwatch/models.js
-Task: Implement LapRecord derivation in frontend/src/ui-stopwatch/models.js
-Task: Implement formatTime utility in frontend/src/ui-stopwatch/utils.js
-# Can run in parallel; different files
-```
-
-**Group 3 - UI Components** (after T016, DOM ready):
-```
-Task: Implement timer animation in frontend/src/ui-stopwatch/index.js
-Task: Implement lap list rendering in frontend/src/ui-stopwatch/index.js
-Task: Implement button handlers in frontend/src/ui-stopwatch/index.js
-Task: Style UI with CSS in frontend/src/ui-stopwatch/index.css
-# Can run in parallel on initial draft; resolve merge conflicts when main logic done
-```
-
-**Group 4 - a11y Audits** (after T001, independent):
-```
-Task: Audit contrast ratios in all 5 UIs
-Task: Audit keyboard navigation in all 5 UIs
-Task: Audit screen reader labels in all 5 UIs
-Task: Fix contrast issues in CSS
-# Can run in parallel; different files/UIs
-```
-
----
-
-## Linear Integration Setup
-
-**When ready to sync with Linear:**
-
-1. Provide the **Linear Parent Issue ID** (e.g., `PRJ-123`)
-2. Provide **GitHub API Token** (for automation)
-3. I will:
-   - Create 34 sub-issues in Linear under parent
-   - Map each task T001-T034 to a sub-issue
-   - Track status as tasks are completed
-   - Automatically update after each task completion
-
-**Example parent structure:**
-```
-PRJ-123: Thursday - Stopwatch UI & a11y Polish (Parent)
-├── T001: Create project structure
-├── T002: Contract test startTimer [P]
-├── T003: Contract test stopTimer [P]
-├── ...
-├── T033: CSV export format test
-└── T034: Coverage reports update
-```
-
----
-
-## Validation Checklist
-
-- [x] All 6 contracts have corresponding test tasks (T002-T007)
-- [x] All 3 data model entities have tasks (T008-T010)
-- [x] All tests come before implementation (T002-T007 before T011-T016)
-- [x] Parallel tasks are truly independent (different files, no shared state)
-- [x] Each task specifies exact file path
-- [x] No [P] task modifies same file as another [P] task in same group
-- [x] TDD order enforced (failing tests → implementation → passing tests)
-- [x] 27 total tasks: 8 [P] capable, 19 sequential
-- [x] Accessibility audit included (T027-T030)
-- [x] Coverage target ≥40% included (T024, T034)
-
----
-
-## Execution Notes
-
-✅ Ready to execute: All design artifacts available, 27 tasks generated, TDD order enforced  
-📝 Mark tasks [x] as completed  
-🔗 Linear sub-issue creation: Awaiting parent issue ID + GitHub token  
-⏱️ Estimated duration: 20-25 hours (8-10 hours parallel work possible)
-
----
-
-*After completing tasks, the Stopwatch UI will be:*
-- ✅ Fully functional (Start/Stop/Reset/Lap/Export)
-- ✅ Persisted across page reloads
-- ✅ ≥40% code coverage (Vitest + Playwright)
-- ✅ WCAG AA accessible (contrast, keyboard nav, labels)
-- ✅ <300 LOC per PR (ready for merge)
-- ✅ All 5 existing UIs a11y reviewed & fixed
-

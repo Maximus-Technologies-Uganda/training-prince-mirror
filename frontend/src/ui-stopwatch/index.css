@@ -168,9 +168,30 @@ button:disabled {
   background-color: #f0f0f0;
 }
 
+.lap-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
 .lap-number {
   font-weight: 600;
   min-width: 60px;
+}
+
+.lap-time {
+  font-size: 13px;
+  color: #666666;
+  font-family: 'Courier New', monospace;
+}
+
+.lap-duration {
+  font-size: 13px;
+  color: #999999;
+  font-family: 'Courier New', monospace;
+  text-align: right;
+  min-width: 150px;
 }
 
 .lap-times {
