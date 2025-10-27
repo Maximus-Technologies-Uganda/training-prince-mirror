@@ -205,3 +205,188 @@ For questions or enhancements, check:
 - Workflow file: `.github/workflows/create-sub-issues-pri1412.yml`
 - Script: `create-sub-issues-pri1412.mjs`
 - This guide: `CREATE_LINEAR_SUB_ISSUES.md`
+
+---
+
+## 🎯 Complete Example: Using for a Future Feature
+
+### Scenario: You're building the "Friday Feature" on spec branch `015-friday-feature`
+
+**Step 1: Create your spec and plan** (using `/specify` and `/plan` commands)
+
+**Step 2: Create tasks.md** (using `/tasks` command)
+```
+specs/015-friday-feature/tasks.md
+```
+
+**Step 3: Merge to development**
+```bash
+git checkout development
+git pull
+git merge 015-friday-feature
+git push origin development
+```
+
+**Step 4: Create Linear sub-issues**
+1. Go to: https://github.com/Maximus-Technologies-Uganda/training-prince/actions
+2. Click: **"Create Linear Sub-Issues (Generic)"**
+3. Click: **"Run workflow ▼"**
+4. Fill in:
+   - **Parent Issue ID**: `PRI-2000` (or whatever your parent is)
+   - **Tasks File**: `specs/015-friday-feature/tasks.md`
+5. Click: **"Run workflow"** (green)
+6. Wait ~1 minute
+7. Check Linear → All sub-issues created! ✅
+
+**Step 5: Begin implementation**
+- Follow the dependency order in your `tasks.md`
+- Mark tasks complete in Linear as you go
+- When done, merge PR to `development` → CI syncs status
+
+---
+
+## 📝 Exact Prompt for Your Next Agent
+
+When you need to create Linear sub-issues in the future, use this exact prompt:
+
+```
+I need to create Linear sub-issues for a new feature.
+
+Here's what I have:
+- Feature branch: [BRANCH_NAME] (merged to development)
+- Tasks file: specs/[BRANCH_NAME]/tasks.md
+- Parent issue ID: PRI-[XXXX]
+
+Please use the generic workflow to create the sub-issues:
+
+1. Verify specs/[BRANCH_NAME]/tasks.md exists
+2. Go to: https://github.com/Maximus-Technologies-Uganda/training-prince/actions
+3. Find: "Create Linear Sub-Issues (Generic)"
+4. Click: "Run workflow"
+5. Enter inputs:
+   - Parent Issue ID: PRI-[XXXX]
+   - Tasks File: specs/[BRANCH_NAME]/tasks.md
+6. Click: "Run workflow"
+7. Confirm all sub-issues created in Linear
+8. Show me the Linear link and summary of created issues
+```
+
+### Example with Real Values:
+```
+I need to create Linear sub-issues for the Friday feature.
+
+Here's what I have:
+- Feature branch: 015-friday-feature (merged to development)
+- Tasks file: specs/015-friday-feature/tasks.md
+- Parent issue ID: PRI-2000
+
+Please use the generic workflow to create the sub-issues:
+
+1. Verify specs/015-friday-feature/tasks.md exists
+2. Go to: https://github.com/Maximus-Technologies-Uganda/training-prince/actions
+3. Find: "Create Linear Sub-Issues (Generic)"
+4. Click: "Run workflow"
+5. Enter inputs:
+   - Parent Issue ID: PRI-2000
+   - Tasks File: specs/015-friday-feature/tasks.md
+6. Click: "Run workflow"
+7. Confirm all sub-issues created in Linear
+8. Show me the Linear link and summary of created issues
+```
+
+---
+
+## 📊 What Happens Behind the Scenes
+
+When you trigger the workflow, this is what happens:
+
+1. **GitHub Actions starts** on the `development` branch
+2. **Node.js environment** is set up (v20)
+3. **Prerequisites validated**:
+   - ✅ Script file exists
+   - ✅ Tasks file exists at specified path
+   - ✅ LINEAR_API_KEY available in secrets
+4. **Script runs**: `create-sub-issues-pri1412.mjs`
+   - Reads your `tasks.md` file
+   - Parses each task (T001, T002, etc.)
+   - Extracts description, file path, parallel indicators [P]
+5. **GraphQL requests sent** to Linear API
+   - One request per sub-issue
+   - Uses PARENT_ID to create hierarchy
+6. **Linear issues created** with:
+   - Title: Task ID + Description
+   - Description: Full context from tasks.md
+   - Parent: Your specified parent issue
+   - State: Backlog (default)
+7. **Workflow logs** show success/failure for each issue
+8. **You get** a Linear link in the "Next steps" section
+
+---
+
+## 🔧 Technical Details
+
+### Environment Variables Passed
+- `LINEAR_API_KEY` - From GitHub secrets (secure)
+- `PARENT_ID` - From workflow input (user-provided)
+- `TASKS_FILE` - From workflow input (user-provided, defaults to Thursday's)
+
+### Script Used
+- `create-sub-issues-pri1412.mjs`
+  - Language: Node.js (JavaScript)
+  - Reads: `tasks.md` file
+  - Calls: Linear GraphQL API
+  - Output: Console logs with issue IDs
+
+### Linear API Integration
+- **Authentication**: LINEAR_API_KEY header
+- **Endpoint**: Linear GraphQL (`https://api.linear.app/graphql`)
+- **Operation**: Create nested issues with parent relationship
+
+---
+
+## 📈 Success Metrics
+
+How to know it worked:
+
+✅ **Workflow run shows green checkmark**  
+✅ **Console output shows "✅ Created: T001..." for each task**  
+✅ **Linear issue has a "Sub-issues" section**  
+✅ **Each sub-issue appears under parent in Linear**  
+✅ **Sub-issue title matches task ID + description**  
+✅ **Sub-issue description includes file path**  
+
+---
+
+## 🚨 Common Mistakes & Fixes
+
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Branch not merged | Workflow not visible | `git push origin development` |
+| Wrong parent ID | Sub-issues go to wrong issue | Check Linear issue ID format (PRI-XXXX) |
+| Wrong tasks file path | "File not found" error | Use relative path from repo root |
+| Tasks file not created | Script fails | Run `/tasks` command first |
+| LINEAR_API_KEY expired | "401 Unauthorized" | Regenerate key in Linear account → Integrations |
+
+---
+
+## 🎓 Learning Resources
+
+- **GitHub Actions Docs**: https://docs.github.com/en/actions
+- **Linear API Docs**: https://developers.linear.app/docs
+- **GraphQL Basics**: https://graphql.org/learn/
+- **Your Script**: `/create-sub-issues-pri1412.mjs`
+
+---
+
+## 🏁 Next Steps
+
+1. **Now**: Merge your current PR to `development`
+2. **Next time**: Use this workflow for all future feature branches
+3. **Always**: Follow the prompt template when asking for sub-issue creation
+4. **Remember**: The workflow works for ANY parent issue ID - it's fully reusable!
+
+---
+
+*Last Updated: October 27, 2025*  
+*Maintained by: Your AI Agent*  
+*Status: ✅ Production Ready - Generic & Reusable*
