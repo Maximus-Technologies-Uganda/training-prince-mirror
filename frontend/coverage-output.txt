@@ -1,0 +1,228 @@
+
+> frontend@0.0.0 test:coverage
+> vitest run --coverage
+
+
+ RUN  v3.2.4 /Users/prnceb/Desktop/WORK/hello-world/frontend
+      Coverage enabled with v8
+
+stdout | src/ui-temp/index.test.js > UI Temp > C→F: 0 becomes 32
+Conversion result: 32 formatted: 32 tempResultDisplay exists: false
+Conversion result: 32 formatted: 32 tempResultDisplay exists: false
+Conversion result: 32 formatted: 32 tempResultDisplay exists: false
+
+stdout | src/ui-temp/index.test.js > UI Temp > F→C: 32 becomes 0
+Conversion result: 0 formatted: 0 tempResultDisplay exists: false
+Conversion result: 0 formatted: 0 tempResultDisplay exists: false
+Conversion result: 0 formatted: 0 tempResultDisplay exists: false
+
+stderr | tests/ui-stopwatch.test.js > Stopwatch UI - exportToCSV() Contract Tests > T005: exportToCSV() Contract > should return an object with success and filename properties
+Could not trigger download: TypeError: URL.createObjectURL is not a function
+    at exportToCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/exporter.js:87:25)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/tests/ui-stopwatch.test.js:496:22
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | tests/ui-stopwatch.test.js > Stopwatch UI - exportToCSV() Contract Tests > T005: exportToCSV() Contract > should return success=true when exporting with recorded laps
+Could not trigger download: TypeError: URL.createObjectURL is not a function
+    at exportToCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/exporter.js:87:25)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/tests/ui-stopwatch.test.js:513:22
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | tests/ui-stopwatch.test.js > Stopwatch UI - exportToCSV() Contract Tests > T005: exportToCSV() Contract > should generate filename matching pattern "stopwatch_export_*.csv"
+Could not trigger download: TypeError: URL.createObjectURL is not a function
+    at exportToCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/exporter.js:87:25)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/tests/ui-stopwatch.test.js:530:22
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | tests/ui-stopwatch.test.js > Stopwatch UI - exportToCSV() Contract Tests > T005: exportToCSV() Contract > should generate timestamp-based filename
+Could not trigger download: TypeError: URL.createObjectURL is not a function
+    at exportToCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/exporter.js:87:25)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/tests/ui-stopwatch.test.js:550:22
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | src/main.test.js > Quote UI interactions > renders a random quote on load (seeded)
+Temperature UI: Required DOM elements not found
+
+ ✓ tests/ui-stopwatch-models.test.js (90 tests) 14ms
+stderr | tests/ui-stopwatch.test.js > Stopwatch UI - exportToCSV() Contract Tests > T005: exportToCSV() Contract > should return CSV data with proper headers
+Could not trigger download: TypeError: URL.createObjectURL is not a function
+    at exportToCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/exporter.js:87:25)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/tests/ui-stopwatch.test.js:581:22
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | tests/ui-stopwatch.test.js > Stopwatch UI - exportToCSV() Contract Tests > T005: exportToCSV() Contract > should include lap records with 3 columns in CSV
+Could not trigger download: TypeError: URL.createObjectURL is not a function
+    at exportToCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/exporter.js:87:25)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/tests/ui-stopwatch.test.js:605:22
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | tests/ui-stopwatch.test.js > Stopwatch UI - exportToCSV() Contract Tests > T005: exportToCSV() Contract > should format times as HH:MM:SS in CSV export
+Could not trigger download: TypeError: URL.createObjectURL is not a function
+    at exportToCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/exporter.js:87:25)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/tests/ui-stopwatch.test.js:637:22
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | tests/ui-stopwatch.test.js > Stopwatch UI - exportToCSV() Contract Tests > T005: exportToCSV() Contract > should handle multiple laps correctly in CSV format
+Could not trigger download: TypeError: URL.createObjectURL is not a function
+    at exportToCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/exporter.js:87:25)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/tests/ui-stopwatch.test.js:663:22
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stdout | tests/ui-stopwatch.test.js > Stopwatch UI - restoreState() Contract Tests > T006: restoreState() Contract > should read from localStorage and restore state correctly
+Session resumed: Timer state recovered from checkpoint
+
+stdout | tests/ui-stopwatch.test.js > Stopwatch UI - restoreState() Contract Tests > T006: restoreState() Contract > should return resumed=true if isRunning was true
+Session resumed: Timer state recovered from checkpoint
+
+stderr | tests/ui-stopwatch.test.js > Stopwatch UI - restoreState() Contract Tests > T006: restoreState() Contract > should return default state if localStorage unavailable (private browsing)
+Error restoring state: Error [SecurityError]: localStorage not available
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/tests/ui-stopwatch.test.js:810:33
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+Session-only mode: localStorage unavailable or corrupted
+
+stdout | tests/ui-stopwatch.test.js > Stopwatch UI - restoreState() Contract Tests > T006: restoreState() Contract > should restore state with laps array preserved
+Session resumed: Timer state recovered from checkpoint
+
+stderr | src/main.test.js > Quote UI interactions > displays a quote by the filtered author
+Temperature UI: Required DOM elements not found
+
+ ✓ src/ui-temp/index.test.js (5 tests) 45ms
+ ✓ src/ui-todo/todo.test.js (12 tests) 48ms
+stderr | src/main.test.js > Quote UI interactions > shows a not found message when author has no quotes
+Temperature UI: Required DOM elements not found
+
+ ✓ tests/ui-stopwatch.test.js (49 tests) 135ms
+stderr | src/ui-stopwatch/stopwatch-ui-comprehensive.test.js > StopwatchUI Comprehensive Coverage Tests > CSV Export > should export CSV file
+Failed to export CSV: TypeError: URL.createObjectURL is not a function
+    at StopwatchUI.exportCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/stopwatch-ui.js:287:23)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/stopwatch-ui-comprehensive.test.js:282:32
+    at Proxy.assertThrows (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/chai/index.js:2767:5)
+    at Proxy.methodWrapper (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/chai/index.js:1686:25)
+    at Proxy.<anonymous> (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/expect/dist/index.js:1088:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/chai/index.js:1735:33)
+    at Proxy.<anonymous> (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/expect/dist/index.js:1420:16)
+    at Proxy.<anonymous> (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/expect/dist/index.js:1029:14)
+    at Proxy.methodWrapper (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/chai/index.js:1686:25)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/stopwatch-ui-comprehensive.test.js:282:49
+Not implemented: Window's alert() method
+
+ ✓ src/ui-expense/index.test.js (12 tests) 118ms
+ ✓ src/main.test.js (3 tests) 170ms
+stderr | src/ui-stopwatch/stopwatch-ui-comprehensive.test.js > StopwatchUI Comprehensive Coverage Tests > Error Handling > should handle CSV export errors gracefully
+Failed to export CSV: Error: Blob creation failed
+    at t.<anonymous> (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/stopwatch-ui-comprehensive.test.js:358:15)
+    at new mockCall (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/spy/dist/index.js:96:15)
+    at new spy (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/tinyspy/dist/index.js:47:34)
+    at StopwatchUI.exportCSV (/Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/stopwatch-ui.js:286:20)
+    at /Users/prnceb/Desktop/WORK/hello-world/frontend/src/ui-stopwatch/stopwatch-ui-comprehensive.test.js:361:32
+    at Proxy.assertThrows (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/chai/index.js:2767:5)
+    at Proxy.methodWrapper (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/chai/index.js:1686:25)
+    at Proxy.<anonymous> (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/expect/dist/index.js:1088:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/chai/index.js:1735:33)
+    at Proxy.<anonymous> (file:///Users/prnceb/Desktop/WORK/hello-world/frontend/node_modules/@vitest/expect/dist/index.js:1420:16)
+Not implemented: Window's alert() method
+
+ ✓ src/ui-stopwatch/stopwatch-ui-comprehensive.test.js (27 tests) 271ms
+stderr | tests/persistence-validate.test.js > T017 - persistState() Validation > persistState() Contract Validation > should handle SecurityError (private browsing mode)
+localStorage not available (private browsing mode)
+
+ ✓ tests/persistence-validate.test.js (12 tests) 9ms
+ ✓ src/temp-ui/temp-ui.test.js (27 tests) 11ms
+ ✓ src/quote-ui/quote-ui.test.js (21 tests) 15ms
+ ✓ src/counter.test.js (1 test) 11ms
+ ✓ tests/expense-filter.test.js (13 tests) 6ms
+ ✓ tests/todo-filter.test.js (15 tests) 4ms
+
+ Test Files  13 passed (13)
+      Tests  287 passed (287)
+   Start at  23:35:26
+   Duration  2.79s (transform 566ms, setup 0ms, collect 988ms, tests 858ms, environment 8.67s, prepare 1.74s)
+
+ % Coverage report from v8
+------------------|---------|----------|---------|---------|--------------------
+File              | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s  
+------------------|---------|----------|---------|---------|--------------------
+All files         |   70.86 |    77.31 |   78.07 |   70.86 |                    
+ src              |   36.23 |    55.55 |      50 |   36.23 |                    
+  main.js         |   36.23 |    55.55 |      50 |   36.23 | ...143,148-149,161 
+ src/ui-expense   |   79.09 |    71.42 |      80 |   79.09 |                    
+  core.js         |       0 |        0 |       0 |       0 | 1-2                
+  index.js        |   79.57 |    72.36 |   84.21 |   79.57 | ...349-350,360-363 
+ src/ui-stopwatch |   73.92 |    87.17 |   76.78 |   73.92 |                    
+  clock.js        |       0 |        0 |       0 |       0 | 1-6                
+  exporter.js     |   94.68 |    77.77 |     100 |   94.68 | 29-30,104-106      
+  index.js        |   50.36 |    66.66 |      60 |   50.36 | ...364-423,432-455 
+  models.js       |     100 |    98.46 |     100 |     100 | 189                
+  persistence.js  |   75.72 |    76.92 |      80 |   75.72 | ...1,90-95,106-112 
+  stopwatch-ui.js |   80.84 |    90.24 |   80.95 |   80.84 | ...266-269,307-313 
+  utils.js        |      65 |      100 |       0 |      65 | 28-43              
+ src/ui-temp      |   75.19 |    66.66 |    87.5 |   75.19 |                    
+  index.js        |   75.19 |    66.66 |    87.5 |   75.19 | ...143-144,146-147 
+ src/ui-todo      |   64.92 |    68.18 |      90 |   64.92 |                    
+  clock.js        |     100 |       75 |      75 |     100 | 9                  
+  index.js        |    63.1 |    67.74 |   93.75 |    63.1 | ...337-341,345-349 
+------------------|---------|----------|---------|---------|--------------------

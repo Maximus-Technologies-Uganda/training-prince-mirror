@@ -82,14 +82,14 @@
 - [x] **T019 [P]** Implement timer display animation in `frontend/src/ui-stopwatch/index.js` → Use `requestAnimationFrame` loop to update `.timer-display` text with `formatTime(Date.now() - startTime)` every 100-500ms when running, stop on pause
 - [x] **T020 [P]** Implement lap list rendering in `frontend/src/ui-stopwatch/index.js` → Derive LapRecords from current state, render each lap as `<div class="lap-item">Lap N: 00:MM:SS (Duration: 00:MM:SS)</div>`, update on `recordLap()`
 - [x] **T021 [P]** Implement button event handlers in `frontend/src/ui-stopwatch/index.js` → Wire buttons (Start→`startTimer()`, Stop→`stopTimer()`, Reset→`resetTimer()`, Lap→`recordLap()`, Export→`exportToCSV()`), update button visibility (hide Stop/Lap while not running), disable Lap when stopped
-- [ ] **T022 [P]** Style Stopwatch UI in `frontend/src/ui-stopwatch/index.css` → Create layout (flexbox column: timer display on top, buttons in row, lap list below), meet WCAG AA contrast 4.5:1 (normal text), 3:1 (large text), include focus indicators (outline or box-shadow) for keyboard navigation, font size ≥14px for body text
+- [x] **T022 [P]** Style Stopwatch UI in `frontend/src/ui-stopwatch/index.css` → Create layout (flexbox column: timer display on top, buttons in row, lap list below), meet WCAG AA contrast 4.5:1 (normal text), 3:1 (large text), include focus indicators (outline or box-shadow) for keyboard navigation, font size ≥14px for body text
 
 ---
 
 ## Phase 3.7: Testing & Integration (Sequential Tests)
 
-- [ ] **T023** Write Playwright smoke test in `frontend/e2e/stopwatch.spec.ts` → Scenario: Start timer → wait 1+ seconds (verify counting) → Click Lap at ~1:00 (verify lap recorded) → Click Lap again at ~2:30 (verify 2 laps, second shows duration) → Click Stop (verify frozen) → Click Export (verify download) → Reload page (verify timer resumed from correct time)
-- [ ] **T024** Verify unit test coverage ≥40% in `frontend/tests/ui-stopwatch.test.js` → Run `npm run test:coverage -- frontend/src/ui-stopwatch/` and confirm statement coverage ≥40%, if <40%, add tests for uncovered branches
+- [x] **T023** Write Playwright smoke test in `frontend/e2e/stopwatch.spec.ts` → Scenario: Start timer → wait 1+ seconds (verify counting) → Click Lap at ~1:00 (verify lap recorded) → Click Lap again at ~2:30 (verify 2 laps, second shows duration) → Click Stop (verify frozen) → Click Export (verify download) → Reload page (verify timer resumed from correct time)
+- [x] **T024** Verify unit test coverage ≥40% in `frontend/tests/ui-stopwatch.test.js` → Run `npm run test:coverage -- frontend/src/ui-stopwatch/` and confirm statement coverage ≥40%, if <40%, add tests for uncovered branches
 - [ ] **T025** Verify all Vitest unit tests pass in `frontend/tests/ui-stopwatch.test.js` → Run `npm run test:vitest`, confirm T002-T007 contract tests pass (all functions implemented correctly), confirm no console errors
 - [ ] **T026** Verify Playwright smoke test passes in `frontend/e2e/stopwatch.spec.ts` → Run `npm run test:e2e -- e2e/stopwatch.spec.ts`, confirm all 9 scenarios pass, no flaky timeouts, CSV exports correctly
 
