@@ -81,7 +81,7 @@
 
 - [x] **T019 [P]** Implement timer display animation in `frontend/src/ui-stopwatch/index.js` → Use `requestAnimationFrame` loop to update `.timer-display` text with `formatTime(Date.now() - startTime)` every 100-500ms when running, stop on pause
 - [x] **T020 [P]** Implement lap list rendering in `frontend/src/ui-stopwatch/index.js` → Derive LapRecords from current state, render each lap as `<div class="lap-item">Lap N: 00:MM:SS (Duration: 00:MM:SS)</div>`, update on `recordLap()`
-- [ ] **T021 [P]** Implement button event handlers in `frontend/src/ui-stopwatch/index.js` → Wire buttons (Start→`startTimer()`, Stop→`stopTimer()`, Reset→`resetTimer()`, Lap→`recordLap()`, Export→`exportToCSV()`), update button visibility (hide Stop/Lap while not running), disable Lap when stopped
+- [x] **T021 [P]** Implement button event handlers in `frontend/src/ui-stopwatch/index.js` → Wire buttons (Start→`startTimer()`, Stop→`stopTimer()`, Reset→`resetTimer()`, Lap→`recordLap()`, Export→`exportToCSV()`), update button visibility (hide Stop/Lap while not running), disable Lap when stopped
 - [ ] **T022 [P]** Style Stopwatch UI in `frontend/src/ui-stopwatch/index.css` → Create layout (flexbox column: timer display on top, buttons in row, lap list below), meet WCAG AA contrast 4.5:1 (normal text), 3:1 (large text), include focus indicators (outline or box-shadow) for keyboard navigation, font size ≥14px for body text
 
 ---
@@ -115,4 +115,5 @@
 
 ## Dependencies & Blocking
 
+```
 ```

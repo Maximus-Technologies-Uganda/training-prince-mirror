@@ -323,5 +323,136 @@ function startDisplayAnimation() {
   animationFrameId = requestAnimationFrame(updateTimerDisplay);
 }
 
+/**
+ * Update button visibility and state based on timer state
+ * @private
+ */
+function updateButtonStates() {
+  const startBtn = document.querySelector('.start-btn');
+  const pauseBtn = document.querySelector('.pause-btn');
+  const resumeBtn = document.querySelector('.resume-btn');
+  const stopBtn = document.querySelector('.stop-btn');
+  const lapBtn = document.querySelector('.lap-btn');
+  const clearLapsBtn = document.querySelector('.clear-laps-btn');
+  const exportBtn = document.querySelector('.export-btn');
+
+  if (timerState.isRunning) {
+    // Timer is running
+    if (startBtn) startBtn.disabled = true;
+    if (pauseBtn) pauseBtn.disabled = false;
+    if (resumeBtn) resumeBtn.disabled = true;
+    if (lapBtn) lapBtn.disabled = false;
+  } else {
+    // Timer is stopped
+    if (startBtn) startBtn.disabled = false;
+    if (pauseBtn) pauseBtn.disabled = true;
+    if (resumeBtn) resumeBtn.disabled = true;
+    if (lapBtn) lapBtn.disabled = true;
+  }
+
+  // Reset and Export buttons are always enabled
+  if (stopBtn) stopBtn.disabled = false;
+  if (clearLapsBtn) clearLapsBtn.disabled = false;
+  if (exportBtn) exportBtn.disabled = false;
+}
+
+/**
+ * Initialize button event handlers
+ * Wires all buttons to their corresponding timer functions
+ * @private
+ */
+function initializeButtonHandlers() {
+  const startBtn = document.querySelector('.start-btn');
+  const pauseBtn = document.querySelector('.pause-btn');
+  const stopBtn = document.querySelector('.stop-btn');
+  const lapBtn = document.querySelector('.lap-btn');
+  const clearLapsBtn = document.querySelector('.clear-laps-btn');
+  const exportBtn = document.querySelector('.export-btn');
+
+  // Start button
+  if (startBtn) {
+    startBtn.addEventListener('click', () => {
+      startTimer();
+      updateButtonStates();
+    });
+  }
+
+  // Pause button (maps to stopTimer)
+  if (pauseBtn) {
+    pauseBtn.addEventListener('click', () => {
+      stopTimer();
+      updateButtonStates();
+    });
+  }
+
+  // Reset button (maps to resetTimer)
+  if (stopBtn) {
+    stopBtn.addEventListener('click', () => {
+      resetTimer();
+      updateButtonStates();
+    });
+  }
+
+  // Lap button
+  if (lapBtn) {
+    lapBtn.addEventListener('click', () => {
+      recordLap();
+      updateButtonStates();
+    });
+  }
+
+  // Clear Laps button (maps to resetTimer for clearing laps)
+  if (clearLapsBtn) {
+    clearLapsBtn.addEventListener('click', () => {
+      resetTimer();
+      updateButtonStates();
+    });
+  }
+
+  // Export CSV button
+  if (exportBtn) {
+    exportBtn.addEventListener('click', async () => {
+      try {
+        const exporter = await import('./exporter.js');
+        exporter.exportToCSV();
+      } catch (error) {
+        console.error('Error exporting CSV:', error);
+      }
+    });
+  }
+}
+
+/**
+ * Public initialization function for the Stopwatch UI
+ * Restores state from localStorage and initializes button handlers
+ * Call this when the DOM is ready (e.g., in DOMContentLoaded event)
+ * @public
+ */
+export function initializeStopwatch() {
+  // Restore state from localStorage if available
+  const restored = restoreState();
+  if (restored) {
+    timerState = {
+      startTime: restored.startTime,
+      isRunning: restored.isRunning,
+      laps: restored.laps,
+    };
+  }
+
+  // Initialize button event handlers
+  initializeButtonHandlers();
+
+  // Update button states based on current timer state
+  updateButtonStates();
+
+  // Update lap list display
+  updateLapListDisplay();
+
+  // If timer was running before page reload, resume the display
+  if (timerState.isRunning && timerState.startTime) {
+    startDisplayAnimation();
+  }
+}
+
 // Export for testing purposes
-export { __resetForTesting, getTimerState, startDisplayAnimation, updateLapListDisplay };
+export { __resetForTesting, getTimerState, startDisplayAnimation, updateLapListDisplay, initializeButtonHandlers, updateButtonStates };
