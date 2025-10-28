@@ -1,0 +1,294 @@
+{
+  "format_version": "1.0",
+  "exported_date": "2025-10-28",
+  "source": "Frontend UI Components",
+  "description": "Reusable UI components inventory for all five applications (Quote, Temperature Converter, Expense Tracker, To-Do List, Stopwatch). Components are organized by type and document cross-application usage.",
+  "component_categories": {
+    "buttons": [
+      {
+        "id": "btn-primary",
+        "name": "PrimaryButton",
+        "type": "button",
+        "description": "Primary action button used throughout all applications",
+        "file_locations": [
+          "frontend/src/components/buttons.js"
+        ],
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "css_classes": [
+          "btn",
+          "btn-primary"
+        ],
+        "css_variables": [
+          "--color-primary",
+          "--spacing-md",
+          "--typography-button"
+        ],
+        "example_usage": "<button class=\"btn btn-primary\">Click me</button>",
+        "accessibility": {
+          "aria_label": "action button",
+          "semantic_html": "native button element"
+        },
+        "responsive_behavior": "Full width on mobile (320px), auto width on tablet and desktop"
+      },
+      {
+        "id": "btn-secondary",
+        "name": "SecondaryButton",
+        "type": "button",
+        "description": "Secondary action button for alternative actions",
+        "file_locations": [
+          "frontend/src/components/buttons.js"
+        ],
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "css_classes": [
+          "btn",
+          "btn-secondary"
+        ],
+        "css_variables": [
+          "--color-secondary",
+          "--spacing-md"
+        ],
+        "example_usage": "<button class=\"btn btn-secondary\">Cancel</button>",
+        "accessibility": {
+          "aria_label": "secondary action button",
+          "semantic_html": "native button element"
+        },
+        "responsive_behavior": "Same as primary button"
+      }
+    ],
+    "inputs": [
+      {
+        "id": "input-text",
+        "name": "FormInput",
+        "type": "input",
+        "description": "Text input field for forms",
+        "file_locations": [
+          "frontend/src/components/inputs.js"
+        ],
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "css_classes": [
+          "form-input"
+        ],
+        "css_variables": [
+          "--color-border-primary",
+          "--spacing-sm",
+          "--typography-body"
+        ],
+        "example_usage": "<input class=\"form-input\" type=\"text\" placeholder=\"Enter text\">",
+        "accessibility": {
+          "aria_label": "text input",
+          "semantic_html": "input element with associated label"
+        },
+        "responsive_behavior": "Full width on mobile, auto width on larger screens"
+      },
+      {
+        "id": "textarea",
+        "name": "TextArea",
+        "type": "input",
+        "description": "Multi-line text input for longer text entries",
+        "file_locations": [
+          "frontend/src/components/inputs.js"
+        ],
+        "applications": [
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "css_classes": [
+          "form-textarea"
+        ],
+        "css_variables": [
+          "--color-border-primary",
+          "--spacing-md"
+        ],
+        "example_usage": "<textarea class=\"form-textarea\" rows=\"4\"></textarea>",
+        "accessibility": {
+          "aria_label": "text area",
+          "semantic_html": "textarea element"
+        },
+        "responsive_behavior": "Full width responsive"
+      }
+    ],
+    "cards": [
+      {
+        "id": "card-basic",
+        "name": "Card",
+        "type": "card",
+        "description": "Container for grouped content with consistent styling",
+        "file_locations": [
+          "frontend/src/components/cards.js"
+        ],
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "css_classes": [
+          "card"
+        ],
+        "css_variables": [
+          "--color-background-primary",
+          "--spacing-lg",
+          "--shadow-md",
+          "--border-radius-md"
+        ],
+        "example_usage": "<div class=\"card\"><h2>Title</h2><p>Content</p></div>",
+        "accessibility": {
+          "aria_label": "content card",
+          "semantic_html": "semantic section element"
+        },
+        "responsive_behavior": "Expands to fill container width"
+      }
+    ],
+    "modals": [
+      {
+        "id": "modal-confirm",
+        "name": "ConfirmModal",
+        "type": "modal",
+        "description": "Modal dialog for confirmation actions",
+        "file_locations": [
+          "frontend/src/components/modals.js"
+        ],
+        "applications": [
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "css_classes": [
+          "modal",
+          "modal-confirm"
+        ],
+        "css_variables": [
+          "--color-background-primary",
+          "--spacing-lg",
+          "--shadow-lg"
+        ],
+        "example_usage": "<div class=\"modal modal-confirm\"><!-- content --></div>",
+        "accessibility": {
+          "aria_modal": "true",
+          "aria_label": "confirmation dialog",
+          "semantic_html": "dialog element with keyboard navigation"
+        },
+        "responsive_behavior": "Centered on all screen sizes, max width on desktop"
+      }
+    ],
+    "lists": [
+      {
+        "id": "list-items",
+        "name": "ItemList",
+        "type": "list",
+        "description": "Reusable list component for displaying items",
+        "file_locations": [
+          "frontend/src/components/lists.js"
+        ],
+        "applications": [
+          "To-Do List",
+          "Expense Tracker"
+        ],
+        "css_classes": [
+          "item-list",
+          "item-row"
+        ],
+        "css_variables": [
+          "--spacing-md",
+          "--color-border-secondary",
+          "--typography-body"
+        ],
+        "example_usage": "<ul class=\"item-list\"><li class=\"item-row\">Item 1</li></ul>",
+        "accessibility": {
+          "aria_label": "list of items",
+          "semantic_html": "ul/li semantic elements"
+        },
+        "responsive_behavior": "Stacks vertically on mobile, horizontal layout on larger screens"
+      }
+    ],
+    "other": [
+      {
+        "id": "checkbox",
+        "name": "Checkbox",
+        "type": "checkbox",
+        "description": "Checkbox input for boolean selections",
+        "file_locations": [
+          "frontend/src/components/checkboxes.js"
+        ],
+        "applications": [
+          "To-Do List"
+        ],
+        "css_classes": [
+          "checkbox"
+        ],
+        "css_variables": [
+          "--color-primary",
+          "--spacing-sm"
+        ],
+        "example_usage": "<input class=\"checkbox\" type=\"checkbox\">",
+        "accessibility": {
+          "aria_label": "checkbox",
+          "semantic_html": "input type=checkbox with label"
+        },
+        "responsive_behavior": "Fixed size, scales appropriately for all screen sizes"
+      },
+      {
+        "id": "badge",
+        "name": "Badge",
+        "type": "badge",
+        "description": "Small decorative element for status or category indicators",
+        "file_locations": [
+          "frontend/src/components/badges.js"
+        ],
+        "applications": [
+          "Temperature Converter",
+          "Stopwatch",
+          "Expense Tracker"
+        ],
+        "css_classes": [
+          "badge"
+        ],
+        "css_variables": [
+          "--color-status-success",
+          "--color-status-error",
+          "--spacing-xs",
+          "--typography-caption"
+        ],
+        "example_usage": "<span class=\"badge badge-success\">Active</span>",
+        "accessibility": {
+          "aria_label": "status badge",
+          "semantic_html": "span element"
+        },
+        "responsive_behavior": "Inline element, scales with text"
+      }
+    ]
+  },
+  "summary": {
+    "total_components": 10,
+    "total_types": 6,
+    "components_by_type": {
+      "buttons": 2,
+      "inputs": 2,
+      "cards": 1,
+      "modals": 1,
+      "lists": 1,
+      "other": 3
+    },
+    "component_usage_statistics": {
+      "used_in_all_5_apps": 2,
+      "used_in_4_apps": 0,
+      "used_in_3_apps": 2,
+      "used_in_2_apps": 3,
+      "used_in_1_app": 3
+    }
+  },
+  "notes": "This is an example inventory. Actual inventory will be populated during Phase 2 component audit. Components are organized by type per clarification Q4. All components use design tokens from the Figma design library for colors, spacing, and typography."
+}
