@@ -1,7 +1,9 @@
 import https from 'https';
+import fs from 'fs';
 
 const API_KEY = process.env.LINEAR_API_KEY;
-const PARENT_ID = 'PRI-1412';
+const PARENT_ID = process.env.PARENT_ID || 'PRI-1412';
+const TASKS_FILE = process.env.TASKS_FILE || 'specs/014-thursday-stopwatch-ui/tasks.md';
 
 if (!API_KEY) {
   console.error('❌ LINEAR_API_KEY not set');
@@ -42,59 +44,29 @@ async function graphqlRequest(query, variables = {}) {
   });
 }
 
-const SUB_ISSUES = [
-  // Phase 3.1: Setup
-  'T001: Create Stopwatch UI module structure in frontend/src/ui-stopwatch/',
+// Parse tasks.md dynamically to extract task titles
+function getSubIssues(tasksFile) {
+  if (!fs.existsSync(tasksFile)) {
+    console.error(`❌ Tasks file not found: ${tasksFile}`);
+    process.exit(1);
+  }
   
-  // Phase 3.2: Contract Tests [P]
-  'T002 [P]: Contract test startTimer() - verify {success, newState}, isRunning=true, localStorage persist',
-  'T003 [P]: Contract test stopTimer() - verify {success, newState}, isRunning=false, startTime unchanged',
-  'T004 [P]: Contract test resetTimer() - verify reset to {startTime: null, isRunning: false, laps: []}',
-  'T005 [P]: Contract test recordLap() - verify lap appended, 100ms debounce, error if not running',
-  'T006 [P]: Contract test exportToCSV() - verify filename pattern, headers, 3 columns, HH:MM:SS format',
-  'T007 [P]: Contract test restoreState() - verify localStorage read, resumed flag, graceful error handling',
+  const content = fs.readFileSync(tasksFile, 'utf8');
+  const tasks = [];
   
-  // Phase 3.3: Data Models [P]
-  'T008 [P]: Implement TimerState model & validation in frontend/src/ui-stopwatch/models.js',
-  'T009 [P]: Implement LapRecord derivation function in frontend/src/ui-stopwatch/models.js',
-  'T010 [P]: Implement formatTime(ms) utility in frontend/src/ui-stopwatch/utils.js',
+  // Match task lines: - [ ] **T001** ... or - [x] **T001** ...
+  const taskRegex = /- \[.\] \*\*([T\d]+)\*\*\s+(.+?)(?:\n|$)/g;
+  let match;
   
-  // Phase 3.4: Core Implementation
-  'T011: Implement startTimer() in frontend/src/ui-stopwatch/index.js',
-  'T012: Implement stopTimer() in frontend/src/ui-stopwatch/index.js',
-  'T013: Implement resetTimer() in frontend/src/ui-stopwatch/index.js',
-  'T014: Implement recordLap() with 100ms debounce in frontend/src/ui-stopwatch/index.js',
-  'T015: Implement exportToCSV() in frontend/src/ui-stopwatch/exporter.js',
-  'T016: Implement restoreState() in frontend/src/ui-stopwatch/persistence.js',
+  while ((match = taskRegex.exec(content)) !== null) {
+    const [, taskId, description] = match;
+    tasks.push(`${taskId}: ${description.trim()}`);
+  }
   
-  // Phase 3.5: Persistence & DOM
-  'T017: Implement persistState(state) helper in frontend/src/ui-stopwatch/persistence.js',
-  'T018: Create stopwatch.html page in frontend/stopwatch.html',
-  
-  // Phase 3.6: UI Components [P]
-  'T019 [P]: Implement timer display animation in frontend/src/ui-stopwatch/index.js',
-  'T020 [P]: Implement lap list rendering in frontend/src/ui-stopwatch/index.js',
-  'T021 [P]: Implement button event handlers in frontend/src/ui-stopwatch/index.js',
-  'T022 [P]: Style Stopwatch UI with WCAG AA compliance in frontend/src/ui-stopwatch/index.css',
-  
-  // Phase 3.7: Testing & Integration
-  'T023: Write Playwright smoke test in frontend/e2e/stopwatch.spec.ts',
-  'T024: Verify unit test coverage ≥40% for ui-stopwatch module',
-  'T025: Verify all Vitest unit tests pass in frontend/tests/ui-stopwatch.test.js',
-  'T026: Verify Playwright smoke test passes in frontend/e2e/stopwatch.spec.ts',
-  
-  // Phase 3.8: Accessibility Audit [P]
-  'T027 [P]: Audit contrast ratios across all 5 UIs - document in ACCESSIBILITY_AUDIT.md',
-  'T028 [P]: Audit keyboard navigation & focus indicators across all 5 UIs',
-  'T029 [P]: Audit screen reader labels across all 5 UIs',
-  'T030 [P]: Fix contrast issues in CSS to meet WCAG AA standards',
-  
-  // Phase 3.9: Polish & Validation
-  'T031: Fix focus & label issues across all 5 UIs',
-  'T032: Verify localStorage edge case handling in private browsing mode',
-  'T033: Test CSV export format in Excel/Google Sheets',
-  'T034: Generate & update coverage reports for ui-stopwatch module'
-];
+  return tasks;
+}
+
+const SUB_ISSUES = getSubIssues(TASKS_FILE);
 
 async function getTeamAndStates() {
   console.log('📋 Getting team info...\n');
@@ -162,9 +134,9 @@ async function createSubIssue(title, teamId, parentId, inProgressStateId) {
 
 async function main() {
   try {
-    console.log('\n🚀 CREATING SUB-ISSUES UNDER PRI-1412\n');
+    console.log('\n🚀 CREATING SUB-ISSUES UNDER ' + PARENT_ID + '\n');
     console.log('═'.repeat(80));
-    console.log('   Thursday - Stopwatch UI Implementation & Accessibility Polish');
+    console.log('   Final Polish and Documentation Export');
     console.log('═'.repeat(80));
     
     // Get team and parent UUID
@@ -222,10 +194,9 @@ async function main() {
     console.log('\n💡 Refresh Linear to see the new sub-issues (may take 10-30 seconds)\n');
     console.log('═'.repeat(80));
     console.log('\n🎯 Next Steps:');
-    console.log('   1. Begin with Phase 3.2 contract tests (T002-T007) - these must FAIL first');
-    console.log('   2. Run tests in parallel: npm run test:vitest');
-    console.log('   3. Implement core functions (T011-T016) to make tests pass');
-    console.log('   4. Follow dependency order in tasks.md\n');
+    console.log('   1. Go to Linear: https://linear.app/coding-mystery/issue/' + PARENT_ID);
+    console.log('   2. Begin implementation following the dependency order');
+    console.log('   3. Update Linear status as you complete tasks\n');
     
   } catch (err) {
     console.error('❌ Critical error:', err.message);
