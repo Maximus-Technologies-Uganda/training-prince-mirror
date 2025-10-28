@@ -90,26 +90,26 @@
 
 - [x] **T023** Write Playwright smoke test in `frontend/e2e/stopwatch.spec.ts` → Scenario: Start timer → wait 1+ seconds (verify counting) → Click Lap at ~1:00 (verify lap recorded) → Click Lap again at ~2:30 (verify 2 laps, second shows duration) → Click Stop (verify frozen) → Click Export (verify download) → Reload page (verify timer resumed from correct time)
 - [x] **T024** Verify unit test coverage ≥40% in `frontend/tests/ui-stopwatch.test.js` → Run `npm run test:coverage -- frontend/src/ui-stopwatch/` and confirm statement coverage ≥40%, if <40%, add tests for uncovered branches
-- [ ] **T025** Verify all Vitest unit tests pass in `frontend/tests/ui-stopwatch.test.js` → Run `npm run test:vitest`, confirm T002-T007 contract tests pass (all functions implemented correctly), confirm no console errors
-- [ ] **T026** Verify Playwright smoke test passes in `frontend/e2e/stopwatch.spec.ts` → Run `npm run test:e2e -- e2e/stopwatch.spec.ts`, confirm all 9 scenarios pass, no flaky timeouts, CSV exports correctly
+- [x] **T025** Verify all Vitest unit tests pass in `frontend/tests/ui-stopwatch.test.js` → Run `npm run test:vitest`, confirm T002-T007 contract tests pass (all functions implemented correctly), confirm no console errors
+- [x] **T026** Verify Playwright smoke test passes in `frontend/e2e/stopwatch.spec.ts` → Run `npm run test:e2e -- e2e/stopwatch.spec.ts`, confirm all 9 scenarios pass, no flaky timeouts, CSV exports correctly
 
 ---
 
 ## Phase 3.8: Accessibility Audit & Fixes (Parallel Audits)
 
-- [ ] **T027 [P]** Audit contrast ratios across all 5 UIs in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/` → Use WebAIM Contrast Checker / WAVE tool, identify text with <4.5:1 (normal) or <3:1 (large), document baseline issues in `frontend/ACCESSIBILITY_AUDIT.md`
-- [ ] **T028 [P]** Audit keyboard navigation + focus indicators in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/` → Tab through all buttons/inputs, verify focus moves in logical order, verify focus indicator visible (outline, border, or highlight), document baseline in `frontend/ACCESSIBILITY_AUDIT.md`
-- [ ] **T029 [P]** Audit screen reader labels in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/` → Check all buttons/inputs have labels (implicit `<button>Label</button>` or explicit `aria-label="..."`, `aria-labelledby=...`), test with browser accessibility tree inspector, document missing labels in `frontend/ACCESSIBILITY_AUDIT.md`
-- [ ] **T030 [P]** Fix contrast issues in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/index.css` → Increase font weight or change background/text color to meet 4.5:1 (normal) and 3:1 (large) ratios, verify fixes with WebAIM Contrast Checker
+- [x] **T027 [P]** Audit contrast ratios across all 5 UIs in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/` → Use WebAIM Contrast Checker / WAVE tool, identify text with <4.5:1 (normal) or <3:1 (large), document baseline issues in `frontend/ACCESSIBILITY_AUDIT.md`
+- [x] **T028 [P]** Audit keyboard navigation + focus indicators in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/` → Tab through all buttons/inputs, verify focus moves in logical order, verify focus indicator visible (outline, border, or highlight), document baseline in `frontend/ACCESSIBILITY_AUDIT.md`
+- [x] **T029 [P]** Audit screen reader labels in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/` → Check all buttons/inputs have labels (implicit `<button>Label</button>` or explicit `aria-label="..."`, `aria-labelledby=...`), test with browser accessibility tree inspector, document missing labels in `frontend/ACCESSIBILITY_AUDIT.md`
+- [x] **T030 [P]** Fix contrast issues in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/index.css` → Increase font weight or change background/text color to meet 4.5:1 (normal) and 3:1 (large) ratios, verify fixes with WebAIM Contrast Checker
 
 ---
 
 ## Phase 3.9: Polish & Validation
 
-- [ ] **T031** Fix focus & label issues in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/index.{js,css}` → Add missing aria-label, ensure focus indicator visible (CSS :focus-visible with 3px outline or box-shadow), verify tab order logical, test with NVDA/screen reader
-- [ ] **T032** Verify localStorage edge case handling in `frontend/src/ui-stopwatch/persistence.js` → Test private browsing mode (localStorage unavailable), verify "Session-only mode" message shows, verify timer still works without persistence, verify no crashes
-- [ ] **T033** Test CSV export format in `frontend/src/ui-stopwatch/exporter.js` → Generate CSV with 2+ laps, open in Excel/Google Sheets, verify columns align, values display correctly, no encoding issues (UTF-8)
-- [ ] **T034** Generate & update coverage reports in `frontend/coverage/` → Run `npm run test:coverage`, update coverage reports in review-packet, verify ui-stopwatch module shows ≥40% statement coverage, no regressions in other modules
+- [x] **T031** Fix focus & label issues in `frontend/src/ui-{stopwatch,quote,temp,expense,todo}/index.{js,css}` → Add missing aria-label, ensure focus indicator visible (CSS :focus-visible with 3px outline or box-shadow), verify tab order logical, test with NVDA/screen reader
+- [x] **T032** Verify localStorage edge case handling in `frontend/src/ui-stopwatch/persistence.js` → Test private browsing mode (localStorage unavailable), verify "Session-only mode" message shows, verify timer still works without persistence, verify no crashes
+- [x] **T033** Test CSV export format in `frontend/src/ui-stopwatch/exporter.js` → Generate CSV with 2+ laps, open in Excel/Google Sheets, verify columns align, values display correctly, no encoding issues (UTF-8)
+- [x] **T034** Generate & update coverage reports in `frontend/coverage/` → Run `npm run test:coverage`, update coverage reports in review-packet, verify ui-stopwatch module shows ≥40% statement coverage, no regressions in other modules
 
 ---
 
