@@ -1,12 +1,16 @@
-name: Create Linear Sub-Issues for PRI-1412
+name: Create Linear Sub-Issues (Generic)
 
 on:
   workflow_dispatch:
     inputs:
       parent_id:
-        description: 'Parent Linear Issue ID'
+        description: 'Parent Linear Issue ID (e.g., PRI-1412, PRI-2000, etc.)'
         required: true
-        default: 'PRI-1412'
+        type: string
+      tasks_file:
+        description: 'Path to tasks.md file (relative to repo root)'
+        required: false
+        default: 'specs/014-thursday-stopwatch-ui/tasks.md'
         type: string
 
 jobs:
@@ -23,14 +27,17 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Create Linear Sub-Issues for PRI-1412
+      - name: Create Linear Sub-Issues
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
           PARENT_ID: ${{ inputs.parent_id }}
+          TASKS_FILE: ${{ inputs.tasks_file }}
         run: |
-          echo "🚀 Creating Linear sub-issues for parent: $PARENT_ID"
-          echo ""
-          echo "✅ LINEAR_API_KEY is set from GitHub secrets"
+          echo "🚀 Creating Linear sub-issues"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📌 Parent Issue ID: $PARENT_ID"
+          echo "📋 Tasks File: $TASKS_FILE"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
           
           if [ ! -f "create-sub-issues-pri1412.mjs" ]; then
@@ -38,12 +45,19 @@ jobs:
             exit 1
           fi
           
-          if [ -z "$LINEAR_API_KEY" ]; then
-            echo "❌ Error: LINEAR_API_KEY not set"
+          if [ ! -f "$TASKS_FILE" ]; then
+            echo "❌ Error: Tasks file not found at $TASKS_FILE"
             exit 1
           fi
           
-          echo "Running sub-issue creation script..."
+          if [ -z "$LINEAR_API_KEY" ]; then
+            echo "❌ Error: LINEAR_API_KEY not set in GitHub secrets"
+            exit 1
+          fi
+          
+          echo "✅ All prerequisites met"
+          echo ""
+          echo "Running sub-issue creation..."
           echo "════════════════════════════════════════════════════════════════"
           echo ""
           
@@ -54,6 +68,6 @@ jobs:
           echo "✅ Sub-issue creation completed!"
           echo ""
           echo "📋 Next steps:"
-          echo "   1. Refresh Linear to see the new sub-issues"
-          echo "   2. Begin Phase 3.2 contract tests (T002-T007)"
-          echo "   3. Follow the dependency order in tasks.md"
+          echo "   1. Go to Linear: https://linear.app/coding-mystery/issue/$PARENT_ID"
+          echo "   2. Refresh to see the new sub-issues"
+          echo "   3. Begin implementation following the dependency order"

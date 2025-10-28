@@ -116,13 +116,14 @@ async function getTeamAndStates() {
   return { teamId: issue.team.id, parentUUID: issue.id };
 }
 
-async function createSubIssue(title, teamId, parentId) {
+async function createSubIssue(title, teamId, parentId, inProgressStateId) {
   const mutation = `
-    mutation createIssue($title: String!, $teamId: String!, $parentId: String!) {
+    mutation createIssue($title: String!, $teamId: String!, $parentId: String!, $stateId: String) {
       issueCreate(input: {
         title: $title
         teamId: $teamId
         parentId: $parentId
+        stateId: $stateId
       }) {
         success
         issue {
@@ -140,13 +141,14 @@ async function createSubIssue(title, teamId, parentId) {
   const variables = {
     title,
     teamId,
-    parentId
+    parentId,
+    stateId: inProgressStateId
   };
   
   try {
     const result = await graphqlRequest(mutation, variables);
     if (result.issueCreate?.success) {
-      console.log(`  ✅ ${result.issueCreate.issue.identifier} - ${result.issueCreate.issue.title}`);
+      console.log(`  ✅ ${result.issueCreate.issue.identifier} - ${result.issueCreate.issue.title} [${result.issueCreate.issue.state.name}]`);
       return { success: true, identifier: result.issueCreate.issue.identifier };
     } else {
       console.log(`  ⚠️  ${title} - creation returned false`);
@@ -168,13 +170,36 @@ async function main() {
     // Get team and parent UUID
     const { teamId, parentUUID } = await getTeamAndStates();
     
+    // Get In Progress state ID
+    console.log('📍 Getting "In Progress" state...');
+    const statesQuery = `
+      query GetStates($teamId: String!) {
+        team(id: $teamId) {
+          states(first: 100) {
+            nodes { id name }
+          }
+        }
+      }
+    `;
+    const statesResult = await graphqlRequest(statesQuery, { teamId });
+    const inProgressState = statesResult.team?.states?.nodes?.find(s => 
+      s.name.toLowerCase() === 'in progress' || s.name.toLowerCase() === 'in-progress'
+    );
+    const inProgressStateId = inProgressState?.id;
+    
+    if (inProgressStateId) {
+      console.log(`✅ Found In Progress state: ${inProgressState.name}\n`);
+    } else {
+      console.log('⚠️  In Progress state not found, issues will use team default\n');
+    }
+    
     console.log(`\n📊 Creating ${SUB_ISSUES.length} sub-issues...\n`);
     
     let successful = 0;
     const results = [];
     
     for (const title of SUB_ISSUES) {
-      const result = await createSubIssue(title, teamId, parentUUID);
+      const result = await createSubIssue(title, teamId, parentUUID, inProgressStateId);
       if (result.success) {
         successful++;
         results.push({ taskId: title.split(':')[0], linearId: result.identifier });
@@ -187,7 +212,7 @@ async function main() {
     console.log(`\n✅ CREATION COMPLETE!\n`);
     console.log(`   Successfully created: ${successful}/${SUB_ISSUES.length}`);
     console.log(`   Parent issue: ${PARENT_ID}`);
-    console.log(`   Status: Default (Backlog)`);
+    console.log(`   Default status: In Progress`);
     console.log('\n📋 Task → Linear Issue Mapping:\n');
     
     results.forEach(r => {
