@@ -16,7 +16,7 @@ Implement a full-featured Stopwatch UI with Start/Stop/Reset/Lap controls, local
 **Testing**: Vitest (unit, ≥40% coverage), Playwright (smoke test: start → lap → stop → export flow)  
 **Target Platform**: Web browser (modern ES6+ support)  
 **Project Type**: Web application (frontend-only component; backend core logic in `src/stopwatch/core.js`)  
-**Performance Goals**: Real-time timer updates (smooth 60 FPS UI updates); 100ms debounce on Lap button  
+**Performance Goals**: Real-time timer updates that feel smooth and responsive without noticeable jank; 100ms debounce on Lap button  
 **Constraints**: PR ≤300 LOC per merge; no localStorage availability → graceful degradation; unlimited timer duration (format expansion for HH > 99)  
 **Scale/Scope**: Single UI feature + accessibility audit of 5 existing UIs; estimated 8-12 new tests; 2-3 PRs for full feature + accessibility polish
 

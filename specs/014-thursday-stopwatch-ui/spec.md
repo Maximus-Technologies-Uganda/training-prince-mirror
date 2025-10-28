@@ -49,7 +49,7 @@ A user wants to time their workout sessions and keep track of split times (laps)
 
 **Lap Tracking:**
 - **FR-005**: System MUST provide a Lap button that records the current elapsed time without stopping the timer.
-- **FR-006**: System MUST display a list of all recorded laps below the timer showing each lap's duration or time when recorded.
+- **FR-006**: System MUST display a list of all recorded laps below the timer showing both the total elapsed time when each lap was recorded and the duration of that specific lap.
 - **FR-007**: System MUST disable or ignore the Lap button when the timer is stopped (laps are only recordable while timer is actively running).
 - **FR-008**: System MUST implement debouncing on the Lap button to prevent accidental duplicate lap entries; any Lap clicks within 100ms of the previous lap recording are ignored.
 
@@ -60,7 +60,14 @@ A user wants to time their workout sessions and keep track of split times (laps)
 
 **Export to CSV:**
 - **FR-012**: System MUST provide an Export to CSV button that generates a CSV file containing all recorded laps.
-- **FR-013**: System MUST format the CSV export with appropriate headers and lap data in a human-readable format.
+- **FR-013**: System MUST format the CSV export with a header row and data rows containing the columns defined in FR-015 (Lap Number, Absolute Elapsed Time, Lap Duration). Times must be formatted as HH:MM:SS. For example:
+
+```
+Lap Number,Absolute Elapsed Time,Lap Duration
+1,00:01:00,00:01:00
+2,00:02:30,00:01:30
+```
+
 - **FR-014**: System MUST trigger a browser download of the CSV file with a timestamped or descriptive filename when the export button is clicked.
 - **FR-015**: System MUST include the following columns in the CSV export: Lap Number, Absolute Elapsed Time (HH:MM:SS), and Lap Duration/Split Time (time delta from previous lap in HH:MM:SS).
 
