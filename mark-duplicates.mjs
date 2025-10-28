@@ -127,23 +127,28 @@ async function findDuplicates() {
 }
 
 async function markAsDuplicate(issueId, duplicateOfId) {
+  // Use issueRelationCreate to create a duplicate relationship
   const mutation = `
-    mutation {
-      issueUpdate(id: "${issueId}", input: {
-        relationRelationId: "${duplicateOfId}"
+    mutation CreateDuplicateRelation($issueId: String!, $relatedIssueId: String!) {
+      issueRelationCreate(input: {
+        issueId: $issueId
+        relatedIssueId: $relatedIssueId
+        type: "duplicate_of"
       }) {
-        issue {
-          identifier
+        issueRelation {
+          id
+          type
         }
       }
     }
   `;
   
   try {
-    await graphqlRequest(mutation);
+    await graphqlRequest(mutation, { issueId, relatedIssueId: duplicateOfId });
     return true;
   } catch (err) {
-    console.error(`  ❌ Failed to mark duplicate: ${err.message}`);
+    // If duplicate_of doesn't work, try alternative approaches
+    console.error(`  ⚠️  Relation creation failed (${err.message.substring(0, 60)})`);
     return false;
   }
 }
