@@ -126,29 +126,25 @@ async function findDuplicates() {
   return { subIssues, duplicates };
 }
 
-async function markAsDuplicate(issueId, duplicateOfId) {
-  // Use issueRelationCreate to create a duplicate relationship
+async function deleteDuplicate(issueId) {
+  // Use issueDelete to delete a duplicate issue
   const mutation = `
-    mutation CreateDuplicateRelation($issueId: String!, $relatedIssueId: String!) {
-      issueRelationCreate(input: {
-        issueId: $issueId
-        relatedIssueId: $relatedIssueId
-        type: "duplicate_of"
-      }) {
-        issueRelation {
-          id
-          type
-        }
+    mutation DeleteIssue($issueId: String!) {
+      issueDelete(id: $issueId) {
+        success
       }
     }
   `;
   
   try {
-    await graphqlRequest(mutation, { issueId, relatedIssueId: duplicateOfId });
-    return true;
+    const result = await graphqlRequest(mutation, { issueId });
+    const success = result.issueDelete?.success || false;
+    if (!success) {
+      console.error(`  ⚠️  Deletion returned false`);
+    }
+    return success;
   } catch (err) {
-    // If duplicate_of doesn't work, try alternative approaches
-    console.error(`  ⚠️  Relation creation failed (${err.message.substring(0, 60)})`);
+    console.error(`  ⚠️  Deletion failed:\n     ${err.message}`);
     return false;
   }
 }
@@ -174,9 +170,9 @@ async function main() {
     });
     
     console.log('\n═'.repeat(70));
-    console.log(`\n📌 Marking ${duplicates.length} issues as duplicates...\n`);
+    console.log(`\n📌 Deleting ${duplicates.length} duplicate issues...\n`);
     
-    let marked = 0;
+    let deleted = 0;
     for (const dup of duplicates) {
       // Find the corresponding sub-issue to mark as duplicate of
       const masterIssue = subIssues.find(sub => 
@@ -184,18 +180,18 @@ async function main() {
       );
       
       if (masterIssue) {
-        console.log(`  Marking ${dup.identifier} as duplicate of ${masterIssue.identifier}`);
-        const success = await markAsDuplicate(dup.id, masterIssue.id);
-        if (success) marked++;
+        console.log(`  Deleting ${dup.identifier} (duplicate of ${masterIssue.identifier})`);
+        const success = await deleteDuplicate(dup.id);
+        if (success) deleted++;
       }
     }
     
     console.log('\n' + '═'.repeat(70));
-    console.log(`\n✅ Marked ${marked}/${duplicates.length} issues as duplicates\n`);
+    console.log(`\n✅ Deleted ${deleted}/${duplicates.length} duplicate issues\n`);
     console.log('📋 Next steps:');
     console.log(`  1. Go to Linear: https://linear.app/coding-mystery/issue/${PARENT_ID}`);
     console.log('  2. Verify all sub-issues are under parent');
-    console.log('  3. Duplicates should now be marked and consolidated\n');
+    console.log('  3. Duplicates should now be removed\n');
     
   } catch (err) {
     console.error('❌ Error:', err.message);
