@@ -417,7 +417,7 @@ Prepare final PR with spec, component inventory, and token list.
 
 After merge, create Linear sub-issues for tracking.
 
-- [ ] **T032** Create Linear sub-issues (optional, requires parent ID)
+- [x] **T032** Create Linear sub-issues (optional, requires parent ID)
   - Steps:
     1. **When**: After tasks.md is complete and branch ready
     2. **How**: Use GitHub Actions workflow "Create Linear Sub-Issues (Generic)"
