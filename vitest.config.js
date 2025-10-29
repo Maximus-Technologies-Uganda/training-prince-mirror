@@ -13,16 +13,27 @@ export default defineConfig({
     include: ['tests/**/*.test.js'],
     exclude: ['node_modules/**', 'frontend/**', 'coverage/**'],
     coverage: {
+      all: true,
       provider: 'v8',
-      reporter: ['text', 'json', 'lcov', 'html', 'text'],
+      reporter: ['text', 'json', 'lcov', 'html', 'text-summary'],
       reportsDirectory: 'coverage',
-      include: ['src/**/*.js'],
+      include: ['src/**/*.js', 'frontend/src/**/*.js'],
       exclude: [
-        'src/**/*.test.js',
-        'src/**/*.spec.js',
-        'node_modules/**',
-        'coverage/**'
-      ]
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/build/**',
+        '**/review-artifacts/**',
+        '**/*.test.js',
+        '**/*.spec.js',
+        '**/coverage/**',
+        '**/.git/**'
+      ],
+      thresholds: {
+        statements: 60,
+        branches: 50,
+        functions: 60,
+        lines: 60
+      }
     }
   }
 });

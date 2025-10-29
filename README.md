@@ -30,6 +30,19 @@
 ✅ **Review Packet**: Per-app HTML coverage structure implemented
 ✅ **Test Isolation**: All tests passing in full suite
 
+## Code Quality Gates
+
+🎯 **Code Coverage**: This project enforces **mandatory minimum coverage thresholds** to ensure code quality and test reliability.
+
+- **Statements**: 60% minimum
+- **Branches**: 50% minimum  
+- **Functions**: 60% minimum
+- **Lines**: 60% minimum
+
+All PRs must pass coverage checks in CI. See [CONTRIBUTING.md](./CONTRIBUTING.md#code-coverage-requirements) for details on running coverage locally and understanding the enforcement policy.
+
+---
+
 ## Frontend
 
 Modern web UI built with Vite, featuring reusable core logic, accessibility support, and comprehensive test coverage.

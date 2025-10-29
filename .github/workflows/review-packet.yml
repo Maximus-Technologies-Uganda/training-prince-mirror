@@ -115,3 +115,4 @@ jobs:
           path: |
             review.md
             review-artifacts/
+          retention-days: 60
