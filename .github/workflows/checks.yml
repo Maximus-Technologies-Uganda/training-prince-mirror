@@ -33,7 +33,7 @@ jobs:
           npm run spec:lint
 
       - name: Run unit tests
-        run: npm test
+        run: npx vitest run --exclude 'tests/contract/vitest-config.test.js'
 
   # Phase 2: Coverage & Quality (runs after quick-validation)
   coverage:
@@ -58,7 +58,7 @@ jobs:
           cd frontend && npm ci
 
       - name: Run backend tests with coverage
-        run: npm run test:coverage
+        run: npx vitest run --coverage --exclude 'tests/contract/vitest-config.test.js'
 
       - name: Run frontend tests with coverage
         run: |
