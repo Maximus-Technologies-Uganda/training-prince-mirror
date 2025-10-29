@@ -1,11 +1,12 @@
-name: linear-sync
+name: Update Linear on PR Events
 
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened, closed]
 
 jobs:
-  sync:
+  sync-pr-to-linear:
+    # Only run for PRs from internal repo (not forks)
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
