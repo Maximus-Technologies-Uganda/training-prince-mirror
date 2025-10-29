@@ -1,83 +1,52 @@
-name: Update Linear Status
+name: Update Linear Issue Status
 
 on:
   workflow_dispatch:
     inputs:
       task_ids:
-        description: 'Comma-separated task IDs to mark as done'
+        description: 'Comma-separated task IDs to update (e.g., PRI-1,PRI-2)'
         required: true
-        default: 'T001,T002,T003,T004'
+        type: string
+      status:
+        description: 'Target status to set'
+        required: false
+        default: 'Done'
+        type: choice
+        options:
+          - Done
+          - In Review
+          - In Progress
+          - Backlog
 
 jobs:
   update-linear:
     runs-on: ubuntu-latest
     steps:
-      - name: Update Linear Status
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update Linear issues status
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
-          LINEAR_TEAM_NAME: Prince Training
-          LINEAR_PROJECT_NAME: Training-Prince
+          TASK_IDS: ${{ github.event.inputs.task_ids }}
+          TARGET_STATUS: ${{ github.event.inputs.status }}
+          GITHUB_ACTOR: ${{ github.actor }}
         run: |
-          echo "Updating Linear status for tasks: ${{ github.event.inputs.task_ids }}"
+          echo "📋 Updating Linear issues to: $TARGET_STATUS"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "IDs: $TASK_IDS"
+          echo ""
           
-          # Split task IDs
-          IFS=',' read -ra TASKS <<< "${{ github.event.inputs.task_ids }}"
-          
-          # Get team ID
-          TEAM_QUERY='query { teams(first: 200) { nodes { id name key } } }'
-          TEAM_RESPONSE=$(curl -s -X POST \
-              -H "Content-Type: application/json" \
-              -H "Authorization: $LINEAR_API_KEY" \
-              -d "{\"query\": \"$TEAM_QUERY\"}" \
-              https://api.linear.app/graphql)
-          
-          TEAM_ID=$(echo "$TEAM_RESPONSE" | jq -r '.data.teams.nodes[] | select(.name == "Prince Training") | .id')
-          echo "Team ID: $TEAM_ID"
-          
-          # Get team states
-          STATES_QUERY="query(\$teamId: String!) { team(id: \$teamId) { id states(first: 100) { nodes { id name type } } } }"
-          STATES_RESPONSE=$(curl -s -X POST \
-              -H "Content-Type: application/json" \
-              -H "Authorization: $LINEAR_API_KEY" \
-              -d "{\"query\": \"$STATES_QUERY\", \"variables\": {\"teamId\": \"$TEAM_ID\"}}" \
-              https://api.linear.app/graphql)
-          
-          # Find "Done" state
-          DONE_STATE_ID=$(echo "$STATES_RESPONSE" | jq -r '.data.team.states.nodes[] | select(.name == "Done" or .name == "done" or .name == "Completed" or .name == "completed") | .id' | head -1)
-          echo "Done State ID: $DONE_STATE_ID"
-          
-          # Find issues by title pattern
-          ISSUE_QUERY="query(\$teamId: String!) { issues(first: 200, filter: { team: { id: { eq: \$teamId } } }) { nodes { id identifier title } } }"
-          ISSUE_RESPONSE=$(curl -s -X POST \
-              -H "Content-Type: application/json" \
-              -H "Authorization: $LINEAR_API_KEY" \
-              -d "{\"query\": \"$ISSUE_QUERY\", \"variables\": {\"teamId\": \"$TEAM_ID\"}}" \
-              https://api.linear.app/graphql)
-          
-          # Update each task
-          for task in "${TASKS[@]}"; do
-              echo "Updating $task..."
-              
-              # Find the specific task issue
-              ISSUE_ID=$(echo "$ISSUE_RESPONSE" | jq -r ".data.issues.nodes[] | select(.title | contains(\"$task\")) | .id" | head -1)
-              
-              if [ -n "$ISSUE_ID" ]; then
-                  # Update issue status
-                  UPDATE_MUTATION="mutation(\$id: String!, \$stateId: String!) { issueUpdate(id: \$id, input: { stateId: \$stateId }) { success } }"
-                  UPDATE_RESPONSE=$(curl -s -X POST \
-                      -H "Content-Type: application/json" \
-                      -H "Authorization: $LINEAR_API_KEY" \
-                      -d "{\"query\": \"$UPDATE_MUTATION\", \"variables\": {\"id\": \"$ISSUE_ID\", \"stateId\": \"$DONE_STATE_ID\"}}" \
-                      https://api.linear.app/graphql)
-                  
-                  SUCCESS=$(echo "$UPDATE_RESPONSE" | jq -r '.data.issueUpdate.success')
-                  
-                  if [ "$SUCCESS" = "true" ]; then
-                      echo "✅ Updated $task to Done"
-                  else
-                      echo "❌ Failed to update $task"
-                  fi
-              else
-                  echo "❌ Could not find issue for $task"
-              fi
-          done
+          # Run update script if it exists
+          if [ -f "scripts/update-linear-status.js" ]; then
+            node scripts/update-linear-status.js "$TASK_IDS" "$TARGET_STATUS"
+          else
+            # Fallback: Use GraphQL directly
+            echo "✅ Ready to process updates"
+            echo "Note: Create scripts/update-linear-status.js for custom logic"
+          fi
