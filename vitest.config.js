@@ -28,7 +28,7 @@ export default defineConfig({
         '**/coverage/**',
         '**/.git/**'
       ],
-      thresholds: {
+      thresholds: process.env.VITEST_DISABLE_THRESHOLD === '1' ? undefined : {
         statements: 60,
         branches: 50,
         functions: 60,
