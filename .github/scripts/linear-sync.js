@@ -59,10 +59,36 @@ async function graphqlFetch(query, variables) {
   return json.data;
 }
 
-async function ensureIssue(teamId, title) {
+// Query to find an issue by its identifier (e.g., PRI-1545)
+async function findIssueByIdentifier(identifier) {
   const data = await graphqlFetch(
-    `mutation CreateIssue($input: IssueCreateInput!) { issueCreate(input: $input) { success issue { id identifier } } }`,
-    { input: { teamId, title } }
+    `query FindIssue($filter: IssueFilter!) {
+      issues(filter: $filter, first: 1) {
+        nodes {
+          id
+          identifier
+          title
+          parentId
+        }
+      }
+    }`,
+    { filter: { identifier: { eq: identifier } } }
+  );
+  return data.issues?.nodes?.[0] || null;
+}
+
+async function ensureSubIssue(teamId, parentId, title) {
+  const data = await graphqlFetch(
+    `mutation CreateIssue($input: IssueCreateInput!) { 
+      issueCreate(input: $input) { 
+        success 
+        issue { 
+          id 
+          identifier 
+        } 
+      } 
+    }`,
+    { input: { teamId, title, parentId } }
   );
   return data.issueCreate.issue;
 }
@@ -108,9 +134,26 @@ async function run() {
   }
 
   for (const file of taskFiles) {
+    const specDir = path.dirname(file);
+    const linearParentFile = path.join(specDir, '.linear-parent');
+    
+    // Check for parent issue reference
+    let parentIssueId = null;
+    if (fs.existsSync(linearParentFile)) {
+      const parentIdentifier = fs.readFileSync(linearParentFile, 'utf8').trim();
+      console.log(`Found parent issue reference: ${parentIdentifier}`);
+      const parentIssue = await findIssueByIdentifier(parentIdentifier);
+      if (parentIssue) {
+        parentIssueId = parentIssue.id;
+        console.log(`Resolved parent issue ID: ${parentIssueId}`);
+      } else {
+        throw new Error(`Parent issue ${parentIdentifier} not found in Linear`);
+      }
+    }
+
     const markdown = fs.readFileSync(file, 'utf8');
     const tasks = parseTasksMarkdown(markdown);
-    const mapPath = path.join(path.dirname(file), 'linear-map.json');
+    const mapPath = path.join(specDir, 'linear-map.json');
     let map = {};
     if (fs.existsSync(mapPath)) {
       try { map = JSON.parse(fs.readFileSync(mapPath, 'utf8')); } catch {}
@@ -123,13 +166,20 @@ async function run() {
       }
       const existing = Object.entries(map).find(([, v]) => v.title === task.title);
       if (existing) continue;
-      const issue = await ensureIssue(teamId, task.title);
+      
+      // Create issue as sub-issue if parentIssueId exists, otherwise as standalone
+      const issue = parentIssueId 
+        ? await ensureSubIssue(teamId, parentIssueId, task.title)
+        : await ensureSubIssue(teamId, null, task.title);
+      
       map[issue.identifier] = { title: task.title };
       changed = true;
-      console.log(`Created Linear issue ${issue.identifier} for task: ${task.title}`);
+      const parentInfo = parentIssueId ? ` under parent ${linearParentFile}` : '';
+      console.log(`Created Linear issue ${issue.identifier} for task: ${task.title}${parentInfo}`);
     }
     if (changed) {
       fs.writeFileSync(mapPath, JSON.stringify(map, null, 2));
+      console.log(`Updated mapping file: ${mapPath}`);
     }
   }
 }
