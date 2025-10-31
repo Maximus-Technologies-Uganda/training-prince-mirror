@@ -17,6 +17,7 @@
   "scripts": {
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:ui:coverage": "cd frontend && npm run test:coverage",
     "start": "node src/hello/index.js",
     "dev": "node src/hello/index.js",
     "lint": "echo \"Linter not set up yet.\"",
