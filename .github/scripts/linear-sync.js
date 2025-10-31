@@ -59,14 +59,26 @@ async function graphqlFetch(query, variables) {
   return json.data;
 }
 
-// Query to find an issue by its identifier (e.g., PRI-1545)
-async function findIssueByIdentifier(identifier) {
+// Query to find an issue by its key (e.g., PRI-1545)
+// Parses the key to extract team and number, then queries Linear API
+async function findIssueByKey(issueKey) {
+  // Parse the key: "PRI-1545" -> teamKey="PRI", number=1545
+  const match = issueKey.match(/^([A-Z]+)-(\d+)$/);
+  if (!match) {
+    throw new Error(`Invalid issue key format: ${issueKey}`);
+  }
+  
+  const [, teamKey, numberStr] = match;
+  const number = parseInt(numberStr, 10);
+  
+  // Query for issues in the team
   const data = await graphqlFetch(
-    `query FindIssue($filter: IssueFilter!) {
-      issues(filter: $filter, first: 1) {
+    `query FindIssue($teamKey: String!) {
+      issues(filter: { team: { key: { eq: $teamKey } } }, first: 100) {
         nodes {
           id
           identifier
+          number
           title
           parent {
             id
@@ -75,9 +87,15 @@ async function findIssueByIdentifier(identifier) {
         }
       }
     }`,
-    { filter: { identifier: { eq: identifier } } }
+    { teamKey }
   );
-  return data.issues?.nodes?.[0] || null;
+  
+  // Filter by number in JavaScript
+  const issue = data.issues?.nodes?.find(issue => issue.number === number);
+  if (!issue) {
+    throw new Error(`Issue ${issueKey} not found in Linear`);
+  }
+  return issue;
 }
 
 async function ensureSubIssue(teamId, parentId, title) {
@@ -145,7 +163,7 @@ async function run() {
     if (fs.existsSync(linearParentFile)) {
       const parentIdentifier = fs.readFileSync(linearParentFile, 'utf8').trim();
       console.log(`Found parent issue reference: ${parentIdentifier}`);
-      const parentIssue = await findIssueByIdentifier(parentIdentifier);
+      const parentIssue = await findIssueByKey(parentIdentifier);
       if (parentIssue) {
         parentIssueId = parentIssue.id;
         console.log(`Resolved parent issue ID: ${parentIssueId}`);
