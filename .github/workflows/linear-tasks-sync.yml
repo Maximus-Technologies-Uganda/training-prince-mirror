@@ -9,12 +9,15 @@ on:
       - 'specs/*/.linear-parent'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  
 jobs:
   sync-tasks-to-linear:
-    # Only run for feature branches (e.g., feature/... or ...-feat-...)
+    # Only run for feature branches (e.g., feature/..., ...-feat-..., ###-feature-name)
     if: >-
       github.ref_type == 'branch' &&
-      (startsWith(github.ref_name, 'feature/') || contains(github.ref_name, '-feat-'))
+      (startsWith(github.ref_name, 'feature/') || contains(github.ref_name, '-feat-') || contains(github.ref_name, '-finisher') || contains(github.ref_name, '-week-'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -76,7 +79,7 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add "**/linear-map.json"
             git commit -m "chore(linear): update mapping from tasks.md"
-            git push
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
           fi
 
 
