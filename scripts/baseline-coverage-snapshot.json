@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-10-29T10:44:02.442Z",
+  "branch": "baseline-before-enforcement",
+  "projectRoot": "/Users/prnceb/Desktop/WORK/hello-world",
+  "metrics": {
+    "fileCount": 19,
+    "statements": {
+      "total": 1617,
+      "covered": 1046,
+      "percentage": 65
+    },
+    "branches": {
+      "total": 311,
+      "covered": 252,
+      "percentage": 81
+    },
+    "functions": {
+      "total": 101,
+      "covered": 49,
+      "percentage": 49
+    },
+    "lines": {
+      "total": 0,
+      "covered": 0,
+      "percentage": 100
+    }
+  },
+  "gaps": {
+    "statements": {
+      "current": 65,
+      "target": 60,
+      "gap": 0,
+      "status": "✅ PASS"
+    },
+    "branches": {
+      "current": 81,
+      "target": 50,
+      "gap": 0,
+      "status": "✅ PASS"
+    },
+    "functions": {
+      "current": 49,
+      "target": 60,
+      "gap": 11,
+      "status": "❌ FAIL"
+    },
+    "lines": {
+      "current": 100,
+      "target": 60,
+      "gap": 0,
+      "status": "✅ PASS"
+    }
+  }
+}

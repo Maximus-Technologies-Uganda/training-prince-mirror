@@ -1,0 +1,31 @@
+name: Cleanup Duplicate Linear Issues
+
+on:
+  workflow_dispatch:
+    inputs:
+      parent_id:
+        description: 'Parent Linear Issue ID (e.g., PRI-1447)'
+        required: true
+        default: 'PRI-1447'
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: development
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Mark duplicate issues
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          PARENT_ID: ${{ github.event.inputs.parent_id }}
+        run: |
+          echo "🚀 Cleaning up duplicate issues for $PARENT_ID"
+          node mark-duplicates.mjs
+

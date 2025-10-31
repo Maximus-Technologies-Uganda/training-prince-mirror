@@ -1,0 +1,506 @@
+{
+  "format_version": "1.0",
+  "source": "Figma Design Library",
+  "exported_date": "2025-10-28",
+  "description": "Canonical design tokens extracted from Figma design library. These tokens serve as the single source of truth for all visual design decisions across the five applications. CSS implementations must match these values.",
+  "tokens": {
+    "colors": [
+      {
+        "id": "color-text-primary",
+        "token_name": "color/text/primary",
+        "category": "colors",
+        "value": "#333333",
+        "figma_path": "Colors/Text/Primary",
+        "css_variable": "--color-text-primary",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Primary text color for headings and body copy",
+        "description": "Canonical primary text color used throughout all applications for readability",
+        "aliases": [
+          "--primary-text",
+          "primary-text-color"
+        ],
+        "status": "active"
+      },
+      {
+        "id": "color-text-secondary",
+        "token_name": "color/text/secondary",
+        "category": "colors",
+        "value": "#666666",
+        "figma_path": "Colors/Text/Secondary",
+        "css_variable": "--color-text-secondary",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Secondary text color for labels, hints, and metadata",
+        "description": "Secondary text color for de-emphasized content",
+        "status": "active"
+      },
+      {
+        "id": "color-bg-primary",
+        "token_name": "color/background/primary",
+        "category": "colors",
+        "value": "#ffffff",
+        "figma_path": "Colors/Background/Primary",
+        "css_variable": "--color-background-primary",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Primary background color for main content areas",
+        "description": "White background for main content",
+        "status": "active"
+      },
+      {
+        "id": "color-bg-secondary",
+        "token_name": "color/background/secondary",
+        "category": "colors",
+        "value": "#f5f5f5",
+        "figma_path": "Colors/Background/Secondary",
+        "css_variable": "--color-background-secondary",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "usage_context": "Secondary background for subtle differentiation",
+        "description": "Light gray background for secondary content areas",
+        "status": "active"
+      },
+      {
+        "id": "color-border-primary",
+        "token_name": "color/border/primary",
+        "category": "colors",
+        "value": "#e0e0e0",
+        "figma_path": "Colors/Border/Primary",
+        "css_variable": "--color-border-primary",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Primary border color for form inputs and cards",
+        "description": "Light gray border for form controls and containers",
+        "status": "active"
+      },
+      {
+        "id": "color-success",
+        "token_name": "color/status/success",
+        "category": "colors",
+        "value": "#10b981",
+        "figma_path": "Colors/Status/Success",
+        "css_variable": "--color-status-success",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Indicates successful completion or valid state",
+        "description": "Green color for success messages and positive states",
+        "status": "active"
+      },
+      {
+        "id": "color-error",
+        "token_name": "color/status/error",
+        "category": "colors",
+        "value": "#ef4444",
+        "figma_path": "Colors/Status/Error",
+        "css_variable": "--color-status-error",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Indicates errors or negative states",
+        "description": "Red color for error messages and validation failures",
+        "status": "active"
+      },
+      {
+        "id": "color-warning",
+        "token_name": "color/status/warning",
+        "category": "colors",
+        "value": "#f59e0b",
+        "figma_path": "Colors/Status/Warning",
+        "css_variable": "--color-status-warning",
+        "applications": [
+          "Quote",
+          "Expense Tracker"
+        ],
+        "usage_context": "Indicates warnings or cautions",
+        "description": "Orange color for warning messages and alerts",
+        "status": "active"
+      },
+      {
+        "id": "color-info",
+        "token_name": "color/status/info",
+        "category": "colors",
+        "value": "#3b82f6",
+        "figma_path": "Colors/Status/Info",
+        "css_variable": "--color-status-info",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Indicates informational messages",
+        "description": "Blue color for info messages and neutral alerts",
+        "status": "active"
+      }
+    ],
+    "spacing": [
+      {
+        "id": "spacing-xs",
+        "token_name": "spacing/xs",
+        "category": "spacing",
+        "value": "4px",
+        "figma_path": "Spacing/XS",
+        "css_variable": "--spacing-xs",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Extra small gaps between tightly related elements",
+        "description": "4px spacing for minimal gaps",
+        "status": "active"
+      },
+      {
+        "id": "spacing-sm",
+        "token_name": "spacing/sm",
+        "category": "spacing",
+        "value": "8px",
+        "figma_path": "Spacing/SM",
+        "css_variable": "--spacing-sm",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Small gaps between related elements",
+        "description": "8px spacing for small spacing needs",
+        "status": "active"
+      },
+      {
+        "id": "spacing-md",
+        "token_name": "spacing/md",
+        "category": "spacing",
+        "value": "16px",
+        "figma_path": "Spacing/MD",
+        "css_variable": "--spacing-md",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Medium gaps between components and sections",
+        "description": "16px spacing for standard component spacing",
+        "status": "active"
+      },
+      {
+        "id": "spacing-lg",
+        "token_name": "spacing/lg",
+        "category": "spacing",
+        "value": "24px",
+        "figma_path": "Spacing/LG",
+        "css_variable": "--spacing-lg",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "usage_context": "Large gaps between major sections",
+        "description": "24px spacing for significant section separation",
+        "status": "active"
+      },
+      {
+        "id": "spacing-xl",
+        "token_name": "spacing/xl",
+        "category": "spacing",
+        "value": "32px",
+        "figma_path": "Spacing/XL",
+        "css_variable": "--spacing-xl",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Stopwatch"
+        ],
+        "usage_context": "Extra large gaps between major content areas",
+        "description": "32px spacing for significant vertical spacing",
+        "status": "active"
+      },
+      {
+        "id": "spacing-xxl",
+        "token_name": "spacing/xxl",
+        "category": "spacing",
+        "value": "48px",
+        "figma_path": "Spacing/XXL",
+        "css_variable": "--spacing-xxl",
+        "applications": [
+          "Quote"
+        ],
+        "usage_context": "Extra extra large gaps for page-level spacing",
+        "description": "48px spacing for page/screen-level separation",
+        "status": "active"
+      }
+    ],
+    "typography": [
+      {
+        "id": "typo-h1",
+        "token_name": "typography/heading/h1",
+        "category": "typography",
+        "value": "32px, font-weight: 700, line-height: 1.2",
+        "figma_path": "Typography/Heading/H1",
+        "css_variable": "--typography-h1",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "usage_context": "Large page headings and major titles",
+        "description": "32px bold for primary page headings",
+        "status": "active"
+      },
+      {
+        "id": "typo-h2",
+        "token_name": "typography/heading/h2",
+        "category": "typography",
+        "value": "24px, font-weight: 700, line-height: 1.3",
+        "figma_path": "Typography/Heading/H2",
+        "css_variable": "--typography-h2",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Secondary headings and section titles",
+        "description": "24px bold for secondary headings",
+        "status": "active"
+      },
+      {
+        "id": "typo-h3",
+        "token_name": "typography/heading/h3",
+        "category": "typography",
+        "value": "18px, font-weight: 600, line-height: 1.4",
+        "figma_path": "Typography/Heading/H3",
+        "css_variable": "--typography-h3",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List",
+          "Temperature Converter"
+        ],
+        "usage_context": "Tertiary headings and subsection titles",
+        "description": "18px semi-bold for tertiary headings",
+        "status": "active"
+      },
+      {
+        "id": "typo-body",
+        "token_name": "typography/body",
+        "category": "typography",
+        "value": "14px, font-weight: 400, line-height: 1.5",
+        "figma_path": "Typography/Body",
+        "css_variable": "--typography-body",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Body text and regular content",
+        "description": "14px regular for body text",
+        "status": "active"
+      },
+      {
+        "id": "typo-body-sm",
+        "token_name": "typography/body/small",
+        "category": "typography",
+        "value": "12px, font-weight: 400, line-height: 1.5",
+        "figma_path": "Typography/Body/Small",
+        "css_variable": "--typography-body-small",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "usage_context": "Small body text for secondary content",
+        "description": "12px regular for smaller text",
+        "status": "active"
+      },
+      {
+        "id": "typo-button",
+        "token_name": "typography/button",
+        "category": "typography",
+        "value": "14px, font-weight: 600, line-height: 1.4",
+        "figma_path": "Typography/Button",
+        "css_variable": "--typography-button",
+        "applications": [
+          "Quote",
+          "Temperature Converter",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Button and call-to-action text",
+        "description": "14px semi-bold for button text",
+        "status": "active"
+      },
+      {
+        "id": "typo-caption",
+        "token_name": "typography/caption",
+        "category": "typography",
+        "value": "11px, font-weight: 400, line-height: 1.4",
+        "figma_path": "Typography/Caption",
+        "css_variable": "--typography-caption",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "Temperature Converter"
+        ],
+        "usage_context": "Captions and small text labels",
+        "description": "11px regular for captions and labels",
+        "status": "active"
+      }
+    ],
+    "shadows": [
+      {
+        "id": "shadow-sm",
+        "token_name": "shadow/sm",
+        "category": "shadows",
+        "value": "0 1px 2px rgba(0, 0, 0, 0.05)",
+        "figma_path": "Shadows/SM",
+        "css_variable": "--shadow-sm",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "usage_context": "Subtle shadows for slight elevation",
+        "description": "Small shadow for subtle depth",
+        "status": "active"
+      },
+      {
+        "id": "shadow-md",
+        "token_name": "shadow/md",
+        "category": "shadows",
+        "value": "0 4px 6px rgba(0, 0, 0, 0.1)",
+        "figma_path": "Shadows/MD",
+        "css_variable": "--shadow-md",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Medium shadows for normal elevation",
+        "description": "Medium shadow for card elevation",
+        "status": "active"
+      },
+      {
+        "id": "shadow-lg",
+        "token_name": "shadow/lg",
+        "category": "shadows",
+        "value": "0 10px 15px rgba(0, 0, 0, 0.1)",
+        "figma_path": "Shadows/LG",
+        "css_variable": "--shadow-lg",
+        "applications": [
+          "Quote",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Large shadows for prominent elevation",
+        "description": "Large shadow for modal and overlay elevation",
+        "status": "active"
+      }
+    ],
+    "borders": [
+      {
+        "id": "border-radius-sm",
+        "token_name": "border/radius/sm",
+        "category": "borders",
+        "value": "4px",
+        "figma_path": "Borders/Radius/SM",
+        "css_variable": "--border-radius-sm",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List",
+          "Temperature Converter"
+        ],
+        "usage_context": "Small border radius for subtle rounding",
+        "description": "4px border radius for slight rounding",
+        "status": "active"
+      },
+      {
+        "id": "border-radius-md",
+        "token_name": "border/radius/md",
+        "category": "borders",
+        "value": "8px",
+        "figma_path": "Borders/Radius/MD",
+        "css_variable": "--border-radius-md",
+        "applications": [
+          "Quote",
+          "Expense Tracker",
+          "To-Do List",
+          "Stopwatch"
+        ],
+        "usage_context": "Medium border radius for standard rounding",
+        "description": "8px border radius for standard rounding",
+        "status": "active"
+      },
+      {
+        "id": "border-radius-lg",
+        "token_name": "border/radius/lg",
+        "category": "borders",
+        "value": "16px",
+        "figma_path": "Borders/Radius/LG",
+        "css_variable": "--border-radius-lg",
+        "applications": [
+          "Expense Tracker",
+          "To-Do List"
+        ],
+        "usage_context": "Large border radius for prominent rounding",
+        "description": "16px border radius for significant rounding",
+        "status": "active"
+      }
+    ]
+  },
+  "summary": {
+    "total_tokens": 33,
+    "tokens_by_category": {
+      "colors": 9,
+      "spacing": 6,
+      "typography": 7,
+      "shadows": 3,
+      "borders": 3,
+      "other": 5
+    }
+  },
+  "notes": "This is an example token set extracted from a hypothetical Figma design library. The actual exported tokens will be populated during Phase 2 when the Figma design library is accessed. All CSS implementations must use these canonical values to ensure visual consistency across all applications. Any token drift should be corrected to match these authoritative values."
+}

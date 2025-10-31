@@ -1,0 +1,246 @@
+import https from 'https';
+
+const API_KEY = process.env.LINEAR_API_KEY;
+const PARENT_ISSUE_ID = 'PRI-289';
+
+if (!API_KEY) {
+  console.error('❌ LINEAR_API_KEY not set');
+  process.exit(1);
+}
+
+async function graphqlRequest(query, variables = {}) {
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify({ query, variables });
+    const req = https.request({
+      method: 'POST',
+      hostname: 'api.linear.app',
+      path: '/graphql',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body),
+        'Authorization': API_KEY
+      }
+    }, (res) => {
+      let data = '';
+      res.on('data', (chunk) => (data += chunk));
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          if (json.errors) {
+            const errorMsg = json.errors.map(e => {
+              if (e.message) return e.message;
+              return JSON.stringify(e);
+            }).join('; ');
+            console.error('GraphQL Errors:', errorMsg);
+            reject(new Error(errorMsg));
+          } else {
+            resolve(json.data);
+          }
+        } catch (e) {
+          console.error('Parse error:', e.message);
+          reject(e);
+        }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
+async function getSubIssues() {
+  console.log('🔍 Fetching sub-issues of PRI-289...\n');
+  
+  const query = `
+    query GetSubIssues($id: String!) {
+      issue(id: $id) {
+        id
+        identifier
+        children(first: 100) {
+          nodes {
+            id
+            identifier
+            title
+            state {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  `;
+  
+  const result = await graphqlRequest(query, { id: PARENT_ISSUE_ID });
+  return result.issue.children.nodes;
+}
+
+function findDuplicates(issues) {
+  const titleMap = {};
+  const duplicates = [];
+  const keep = [];
+  
+  for (const issue of issues) {
+    if (!titleMap[issue.title]) {
+      titleMap[issue.title] = [];
+    }
+    titleMap[issue.title].push(issue);
+  }
+  
+  for (const title in titleMap) {
+    if (titleMap[title].length > 1) {
+      console.log(`\n⚠️  DUPLICATE FOUND: "${title}"`);
+      titleMap[title].forEach((issue, idx) => {
+        console.log(`   [${idx}] ${issue.identifier} - ${issue.state.name}`);
+      });
+      
+      // Keep first, mark rest for deletion
+      keep.push(titleMap[title][0]);
+      for (let i = 1; i < titleMap[title].length; i++) {
+        duplicates.push(titleMap[title][i]);
+      }
+    } else {
+      keep.push(titleMap[title][0]);
+    }
+  }
+  
+  return { keep, duplicates };
+}
+
+async function deleteIssue(issueId) {
+  const query = `
+    mutation DeleteIssue($id: String!) {
+      issueDelete(id: $id)
+    }
+  `;
+  
+  try {
+    const result = await graphqlRequest(query, { id: issueId });
+    return result.issueDelete === true;
+  } catch (err) {
+    console.error(`  ❌ Error deleting ${issueId}:`, err.message);
+    return false;
+  }
+}
+
+async function updateIssueStatus(issueId, issueIdentifier, statusName) {
+  // Get team states
+  const stateQuery = `
+    query GetTeamStates($teamId: String!) {
+      team(id: $teamId) {
+        states(first: 100) {
+          nodes {
+            id
+            name
+          }
+        }
+      }
+    }
+  `;
+
+  const issueQuery = `
+    query GetIssue($id: String!) {
+      issue(id: $id) {
+        id
+        team {
+          id
+        }
+        state {
+          name
+        }
+      }
+    }
+  `;
+
+  try {
+    const issueResult = await graphqlRequest(issueQuery, { id: issueId });
+    const issue = issueResult.issue;
+
+    const statesResult = await graphqlRequest(stateQuery, { teamId: issue.team.id });
+    const targetState = statesResult.team.states.nodes.find(
+      s => s.name.toLowerCase() === statusName.toLowerCase()
+    );
+
+    if (!targetState) {
+      console.log(`  ⚠️  Status "${statusName}" not found for team`);
+      return false;
+    }
+
+    if (issue.state.name.toLowerCase() === statusName.toLowerCase()) {
+      console.log(`  ✅ ${issueIdentifier} already in "${statusName}" state`);
+      return true;
+    }
+
+    const updateQuery = `
+      mutation UpdateIssue($id: String!, $input: IssueUpdateInput!) {
+        issueUpdate(id: $id, input: $input) {
+          success
+          issue {
+            id
+            identifier
+            state {
+              name
+            }
+          }
+        }
+      }
+    `;
+
+    const updateResult = await graphqlRequest(updateQuery, {
+      id: issue.id,
+      input: { stateId: targetState.id }
+    });
+
+    if (updateResult.issueUpdate.success) {
+      console.log(`  ✅ ${issueIdentifier} → ${updateResult.issueUpdate.issue.state.name}`);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error(`  ❌ Error updating ${issueIdentifier}:`, err.message);
+    return false;
+  }
+}
+
+async function main() {
+  try {
+    // Step 1: Get all sub-issues
+    const subIssues = await getSubIssues();
+    console.log(`Found ${subIssues.length} sub-issues\n`);
+
+    // Step 2: Find duplicates
+    const { keep, duplicates } = findDuplicates(subIssues);
+    
+    console.log(`\n📊 ANALYSIS:`);
+    console.log(`   Unique issues: ${keep.length}`);
+    console.log(`   Duplicates to remove: ${duplicates.length}\n`);
+
+    if (duplicates.length > 0) {
+      console.log('🗑️  REMOVING DUPLICATES:\n');
+      for (const dup of duplicates) {
+        console.log(`  Deleting ${dup.identifier}: "${dup.title}"...`);
+        const deleted = await deleteIssue(dup.id);
+        if (deleted) {
+          console.log(`    ✅ Deleted`);
+        }
+      }
+    }
+
+    // Step 3: Update statuses of kept issues
+    console.log(`\n📝 UPDATING STATUSES:\n`);
+    for (const issue of keep) {
+      console.log(`  Updating ${issue.identifier}: "${issue.title}"...`);
+      await updateIssueStatus(issue.id, issue.identifier, 'Done');
+    }
+
+    console.log(`\n✅ Linear sync fix complete!`);
+    console.log(`   - Removed ${duplicates.length} duplicate(s)`);
+    console.log(`   - Updated ${keep.length} issue(s) to "Done"`);
+    
+  } catch (err) {
+    console.error('❌ Error:', err.message);
+    process.exit(1);
+  }
+}
+
+main();

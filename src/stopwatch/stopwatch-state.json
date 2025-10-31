@@ -1,0 +1,12 @@
+{
+  "isRunning": false,
+  "startTime": null,
+  "elapsedTime": 0,
+  "laps": [],
+  "lastReset": "2024-01-15T10:00:00.000Z",
+  "settings": {
+    "autoSave": true,
+    "soundEnabled": true,
+    "theme": "light"
+  }
+}

@@ -1,0 +1,106 @@
+
+> frontend@0.0.0 test:e2e
+> playwright test
+
+
+Running 36 tests using 4 workers
+
+[1A[2K(node:99693) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:99692) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:99695) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:99694) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:99692) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:99693) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:99695) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:99694) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/36] e2e/expense.smoke.spec.ts:4:3 › Expense Application Smoke Test › should add expense and verify calculation
+[1A[2K[2/36] e2e/expense-filter.spec.ts:31:3 › Expense Filtering E2E Tests › User selects category filter → list updates with matching items
+[1A[2K[3/36] e2e/quote.smoke.spec.ts:4:3 › Quote Application Smoke Test › should display quote interface and allow interaction
+[1A[2K[4/36] e2e/quote.spec.js:5:1 › filters quotes by author name
+[1A[2K[5/36] e2e/stopwatch.smoke.spec.ts:4:3 › Stopwatch Application Smoke Test › should start timer and verify time display
+[1A[2K[6/36] e2e/expense.smoke.spec.ts:53:3 › Expense Application Smoke Test › should handle expense deletion
+[1A[2K[7/36] e2e/quote.smoke.spec.ts:44:3 › Quote Application Smoke Test › should handle empty filter gracefully
+[1A[2K[8/36] e2e/expense.smoke.spec.ts:74:3 › Expense Application Smoke Test › should validate expense input
+[1A[2K[9/36] e2e/quote.smoke.spec.ts:55:3 › Quote Application Smoke Test › should handle invalid filter gracefully
+[1A[2K[10/36] e2e/stopwatch.smoke.spec.ts:33:3 › Stopwatch Application Smoke Test › should pause and resume timer
+[1A[2K[11/36] e2e/expense-filter.spec.ts:54:3 › Expense Filtering E2E Tests › User selects month filter → list updates with matching items
+[1A[2K[12/36] e2e/temp.smoke.spec.ts:4:3 › Temperature Converter Smoke Test › should convert temperature between Celsius and Fahrenheit
+[1A[2K[13/36] e2e/todo-filter.spec.ts:41:3 › To-Do Filtering E2E Tests › User clicks status filter (Pending) → list updates with pending tasks
+[1A[2K[14/36] e2e/temp.smoke.spec.ts:49:3 › Temperature Converter Smoke Test › should handle invalid input gracefully
+[1A[2K[15/36] e2e/stopwatch.smoke.spec.ts:68:3 › Stopwatch Application Smoke Test › should reset timer
+[1A[2K[16/36] e2e/expense-filter.spec.ts:71:3 › Expense Filtering E2E Tests › User applies both filters → AND logic applied correctly
+[1A[2K[17/36] e2e/temp.smoke.spec.ts:77:3 › Temperature Converter Smoke Test › should clear inputs
+[1A[2K[18/36] e2e/stopwatch.smoke.spec.ts:88:3 › Stopwatch Application Smoke Test › should add and display laps
+[1A[2K[19/36] e2e/temp.smoke.spec.ts:97:3 › Temperature Converter Smoke Test › should show conversion history
+[1A[2K[20/36] e2e/expense-filter.spec.ts:97:3 › Expense Filtering E2E Tests › Empty state displays when no matches exist
+[1A[2K[21/36] e2e/stopwatch.smoke.spec.ts:115:3 › Stopwatch Application Smoke Test › should clear laps
+[1A[2K[22/36] e2e/todo.smoke.spec.ts:4:3 › Todo Application Smoke Test › should add task and mark as complete
+[1A[2K[23/36] e2e/todo-filter.spec.ts:64:3 › To-Do Filtering E2E Tests › User clicks status filter (Completed) → list updates with completed tasks
+[1A[2K[24/36] e2e/todo.smoke.spec.ts:47:3 › Todo Application Smoke Test › should delete completed tasks
+[1A[2K[25/36] e2e/stopwatch.smoke.spec.ts:137:3 › Stopwatch Application Smoke Test › should persist state in localStorage
+[1A[2K[26/36] e2e/todo.smoke.spec.ts:66:3 › Todo Application Smoke Test › should filter tasks by status
+[1A[2K[27/36] e2e/expense-filter.spec.ts:120:3 › Expense Filtering E2E Tests › Clear filters button resets state and shows full list
+[1A[2K[28/36] e2e/stopwatch.smoke.spec.ts:158:3 › Stopwatch Application Smoke Test › T023: Comprehensive smoke test - Start → Lap → Stop → Export → Reload
+[1A[2K[29/36] e2e/todo.smoke.spec.ts:110:3 › Todo Application Smoke Test › should handle empty task input
+[1A[2K[30/36] e2e/todo.smoke.spec.ts:120:3 › Todo Application Smoke Test › should persist tasks in localStorage
+[1A[2K[31/36] e2e/expense-filter.spec.ts:145:3 › Expense Filtering E2E Tests › Filter update completes within 300ms performance target
+[1A[2Ke2e/stopwatch.smoke.spec.ts:158:3 › Stopwatch Application Smoke Test › T023: Comprehensive smoke test - Start → Lap → Stop → Export → Reload
+✓ Timer running after 1.2s: 00:00:01
+
+[1A[2K✓ First lap recorded
+
+[1A[2K✓ Second lap recorded, 2 laps total
+
+[1A[2K✓ Lap 1 content: Lap 1: 00:00:01
+
+[1A[2K✓ Lap 2 content: Lap 2: 00:00:02
+
+[1A[2K✓ Timer stopped/frozen at: 00:00:02
+
+[1A[2K⚠ Download prompt may have been handled by browser, continuing...
+
+[1A[2KTime before reload: 00:00:02
+
+[1A[2KTime after reload: 00:00:00
+
+[1A[2K✓ State persisted after reload: 2 laps restored
+
+[1A[2K✓ Resume button visible (timer was paused)
+
+[1A[2K✅ T023 Comprehensive Smoke Test: PASSED
+
+[1A[2K[32/36] e2e/todo-filter.spec.ts:80:3 › To-Do Filtering E2E Tests › User selects priority filter → list updates with matching items
+[1A[2K[33/36] e2e/todo-filter.spec.ts:103:3 › To-Do Filtering E2E Tests › User applies both filters (status + priority) → AND logic applied correctly
+[1A[2K[34/36] e2e/todo-filter.spec.ts:126:3 › To-Do Filtering E2E Tests › Empty state displays when no matches exist
+[1A[2K[35/36] e2e/todo-filter.spec.ts:153:3 › To-Do Filtering E2E Tests › Clear filters button resets state and shows full list
+[1A[2K[36/36] e2e/todo-filter.spec.ts:186:3 › To-Do Filtering E2E Tests › Filter update completes within 300ms performance target
+[1A[2K  36 passed (1.1m)
+
+To open last HTML report run:
+
+  npx playwright show-report
+

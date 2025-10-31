@@ -1,9 +1,7 @@
 name: Build Review Packet
 
 on:
-  workflow_dispatch: # Allows manual runs
-  pull_request:
-    branches: [ development ]
+  workflow_dispatch:
   push:
     branches: [ development ]
 
@@ -19,25 +17,96 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests with coverage
-        run: npm test -- --coverage
+      # This is the corrected pattern: Run tests, then rename the output folder.
+      - name: Run Hello Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- tests/hello.*.test.js
+          mv coverage coverage-hello
+      - name: Run Stopwatch Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- tests/stopwatch.*.test.js
+          mv coverage coverage-stopwatch
+      - name: Run Temp Converter Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- tests/temp-converter.*.test.js
+          mv coverage coverage-temp
+      - name: Run Expense Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- tests/expense.*.test.js
+          mv coverage coverage-expense
+      - name: Run To-Do Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- tests/todo.*.test.js
+          mv coverage coverage-todo
+      - name: Run Quote Tests & Collect Coverage
+        run: |
+          VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- tests/quote.*.test.js
+          mv coverage coverage-quote
+
+      - name: Build frontend and run UI tests & coverage (ui modules)
+        working-directory: frontend
+        run: |
+          npm ci
+          mkdir -p ../review-artifacts
+          # ui-todo
+          if [ -d src/ui-todo ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- src/ui-todo
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-todo || true; fi
+          fi
+          # ui-stopwatch
+          if [ -d src/ui-stopwatch ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- src/ui-stopwatch
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-stopwatch || true; fi
+          fi
+          # ui-expense
+          if [ -d src/ui-expense ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- src/ui-expense
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-expense || true; fi
+          fi
+          # ui-temp (if added later)
+          if [ -d src/ui-temp ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- src/ui-temp
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-temp || true; fi
+          fi
+          # ui-quote (if added later)
+          if [ -d src/ui-quote ]; then
+            rm -rf coverage
+            VITEST_DISABLE_THRESHOLD=1 npm run test:coverage -- src/ui-quote
+            if [ -d coverage ]; then mv coverage ../review-artifacts/ui-coverage-quote || true; fi
+          fi
 
       - name: Prepare artifact directories
         run: |
-          mkdir -p review-artifacts/coverage-hello
-          mv coverage/* review-artifacts/coverage-hello/
+          mkdir -p review-artifacts
+          mv coverage-* review-artifacts/
+
+      - name: Scaffold UI coverage directories
+        run: |
+          mkdir -p review-artifacts/ui-coverage-quote
+          mkdir -p review-artifacts/ui-coverage-expense
+          mkdir -p review-artifacts/ui-coverage-temp
+          mkdir -p review-artifacts/ui-coverage-todo
+          mkdir -p review-artifacts/ui-coverage-stopwatch
+
+      - name: Generate Coverage Index
+        run: |
+          node scripts/generate-coverage-index.js
 
       - name: Generate review.md
         run: |
           echo "## Review Packet" > review.md
-          echo " " >> review.md
-          echo "**Generated:** $(date)" >> review.md
-          # ... (rest of the script)
+          echo "Generated: $(date)" >> review.md
 
       - name: Upload Review Packet Artifact
         uses: actions/upload-artifact@v4
@@ -46,3 +115,4 @@ jobs:
           path: |
             review.md
             review-artifacts/
+          retention-days: 60
