@@ -9,6 +9,9 @@ on:
       - 'specs/*/.linear-parent'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  
 jobs:
   sync-tasks-to-linear:
     # Only run for feature branches (e.g., feature/..., ...-feat-..., ###-feature-name)
@@ -76,7 +79,7 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add "**/linear-map.json"
             git commit -m "chore(linear): update mapping from tasks.md"
-            git push
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
           fi
 
 
