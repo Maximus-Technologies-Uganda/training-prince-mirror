@@ -68,7 +68,10 @@ async function findIssueByIdentifier(identifier) {
           id
           identifier
           title
-          parentId
+          parent {
+            id
+            identifier
+          }
         }
       }
     }`,
