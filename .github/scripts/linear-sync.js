@@ -60,21 +60,25 @@ async function graphqlFetch(query, variables) {
 }
 
 // Query to find an issue by its key (e.g., PRI-1545)
-// Parses the key to extract team and number, then queries Linear API
+// Uses team and number which are valid Linear API filters
 async function findIssueByKey(issueKey) {
+  console.log(`Looking up issue: ${issueKey}`);
+  
   // Parse the key: "PRI-1545" -> teamKey="PRI", number=1545
   const match = issueKey.match(/^([A-Z]+)-(\d+)$/);
   if (!match) {
-    throw new Error(`Invalid issue key format: ${issueKey}`);
+    throw new Error(`Invalid issue key format: ${issueKey}. Expected format: TEAM-NUMBER (e.g., PRI-1545)`);
   }
   
   const [, teamKey, numberStr] = match;
   const number = parseInt(numberStr, 10);
+  console.log(`Parsed issue key: team=${teamKey}, number=${number}`);
   
-  // Query for issues in the team
+  // Query for issues in the team by team key
+  // Note: identifier/key filters are not available, so we fetch a batch and filter in JS
   const data = await graphqlFetch(
-    `query FindIssue($teamKey: String!) {
-      issues(filter: { team: { key: { eq: $teamKey } } }, first: 100) {
+    `query FindIssueByNumber($teamKey: String!) {
+      issues(filter: { team: { key: { eq: $teamKey } } }, first: 150) {
         nodes {
           id
           identifier
@@ -91,10 +95,16 @@ async function findIssueByKey(issueKey) {
   );
   
   // Filter by number in JavaScript
-  const issue = data.issues?.nodes?.find(issue => issue.number === number);
+  const issues = data.issues?.nodes || [];
+  console.log(`Found ${issues.length} issues in team ${teamKey}`);
+  
+  const issue = issues.find(issue => issue.number === number);
   if (!issue) {
-    throw new Error(`Issue ${issueKey} not found in Linear`);
+    const availableNumbers = issues.map(i => i.identifier).slice(0, 5).join(', ');
+    throw new Error(`Issue ${issueKey} not found in Linear. Team ${teamKey} has these issues: ${availableNumbers}...`);
   }
+  
+  console.log(`✓ Found issue: ${issue.identifier} (${issue.title})`);
   return issue;
 }
 
