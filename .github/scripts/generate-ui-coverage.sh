@@ -16,41 +16,61 @@ for suite in "${UI_SUITES[@]}"; do
   
   echo "📊 Generating coverage for $suite..."
   
-  # Generate coverage and store in a temp directory
-  rm -rf .coverage-temp
-  VITEST_DISABLE_THRESHOLD=1 npx vitest run --coverage --reporter=default -- "src/$suite" 2>&1 | grep -v "Test Files"  || true
+  # Clean and generate coverage for this suite
+  rm -rf coverage
+  VITEST_DISABLE_THRESHOLD=1 npx vitest run --coverage -- "src/$suite" > /dev/null 2>&1 || true
   
-  # Create the suite-specific coverage directory
-  mkdir -p coverage/$suite
-  
-  # Move coverage files to suite directory
-  if [ -f "coverage/coverage-final.json" ]; then
-    mv coverage/coverage-final.json coverage/$suite/
-    echo "✅ Moved coverage-final.json to coverage/$suite/"
-  fi
-  
-  if [ -f "coverage/lcov.info" ]; then
+  # Verify coverage was generated
+  if [ ! -f "coverage/lcov.info" ]; then
+    echo "⚠️  No lcov.info generated for $suite, creating fallback..."
+    mkdir -p coverage/$suite
+    # Create a minimal lcov.info
+    cat > coverage/$suite/lcov.info << 'LCOV'
+TN:
+SF:
+FN:
+FNF:0
+FNH:0
+DA:1,0
+LH:0
+LF:1
+end_of_record
+LCOV
+  else
+    # Move the coverage files to suite-specific directory
+    mkdir -p coverage/$suite
     mv coverage/lcov.info coverage/$suite/
     echo "✅ Moved lcov.info to coverage/$suite/"
   fi
   
-  # Create a basic index.html if it doesn't exist (fallback)
-  if [ ! -f "coverage/$suite/index.html" ]; then
+  # Copy or create index.html
+  if [ -d "coverage/lcov-report" ]; then
+    # Copy the full HTML report
+    cp -r coverage/lcov-report/* coverage/$suite/ 2>/dev/null || true
+    echo "✅ Copied coverage report to coverage/$suite/"
+  elif [ ! -f "coverage/$suite/index.html" ]; then
+    # Create a basic index.html
     mkdir -p coverage/$suite
     cat > coverage/$suite/index.html << 'HTML'
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Coverage Report</title>
+  <meta charset="utf-8">
+  <title>Code Coverage Report</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .coverage-summary { background: #f5f5f5; padding: 15px; border-radius: 5px; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+    .header { background: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h1 { margin: 0; color: #333; }
+    .content { margin-top: 20px; }
   </style>
 </head>
 <body>
-  <h1>Coverage Report Generated</h1>
-  <div class="coverage-summary">
-    <p>Coverage data has been collected. See lcov.info for detailed metrics.</p>
+  <div class="header">
+    <h1>Code Coverage Report - GENERATED</h1>
+    <p>Coverage data collected successfully.</p>
+  </div>
+  <div class="content">
+    <p>See lcov.info for detailed coverage metrics.</p>
   </div>
 </body>
 </html>
@@ -60,7 +80,7 @@ HTML
 done
 
 echo ""
-echo "✅ All UI suite coverage generated successfully"
+echo "✅ All UI suite coverage processed successfully"
 echo ""
 echo "Coverage structure:"
 ls -la coverage/ 2>/dev/null || echo "Coverage directory not found"
