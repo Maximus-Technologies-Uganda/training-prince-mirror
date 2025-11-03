@@ -1,0 +1,204 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║           GITHUB ACTIONS ERROR INVESTIGATION & RESOLUTION FLOWCHART             ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+PROBLEM ENCOUNTERED:
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                │
+│  PR Template Validation Workflow fails with:                                   │
+│  ❌ Error: Resource not accessible by integration (HTTP 403)                   │
+│  ❌ When:  Attempting to post comment on PR #1571                              │
+│  ❌ Log:   RequestError [HttpError] at .../actions/github-script/v7/...        │
+│                                                                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+INVESTIGATION TREE:
+┌─ Initial Error Analysis
+│  ├─ HTTP Status: 403 Forbidden
+│  ├─ Endpoint: POST /repos/{owner}/{repo}/issues/{issue}/comments
+│  ├─ Message: "Resource not accessible by integration"
+│  │
+│  └─ Response Headers Include:
+│     └─ 'x-accepted-github-permissions': 'issues=write; pull_requests=write'
+│        ^ This tells us exactly what permissions are needed!
+│
+├─ Root Cause #1: Missing Permissions Block (PRIMARY)
+│  ├─ Workflow File: .github/workflows/validate-pr-template.yml
+│  ├─ Issue: No "permissions:" block defined
+│  ├─ Result: GitHub Actions token runs with minimal/default permissions
+│  ├─ Needed: Explicit declaration of required permissions
+│  │
+│  └─ Solution:
+│     ├─ Add permissions: block AFTER "on:" section
+│     ├─ Grant: pull-requests: write
+│     ├─ Grant: issues: write
+│     └─ Grant: contents: read
+│
+├─ Root Cause #2: No Error Handling (SECONDARY)
+│  ├─ Workflow Code: Lines calling github.rest.issues.createComment()
+│  ├─ Issue: No try-catch wrapper
+│  ├─ Result: Permission error crashes entire workflow
+│  ├─ Impact: Users see cryptic "Unhandled error" instead of validation message
+│  │
+│  └─ Solution:
+│     ├─ Wrap API call in try-catch block
+│     ├─ Log warning if comment posting fails
+│     └─ Continue to fail validation check (don't silently pass)
+│
+└─ Root Cause #3: Missing PR Fields (TERTIARY)
+   ├─ PR File: #1571 Description
+   ├─ Issue: "## Spec URL" section missing
+   ├─ Issue: "## Figma Dev Mode Link" section missing
+   ├─ Result: Validation fails → attempt to post comment → 403 error
+   │
+   └─ Solution:
+      └─ User must update PR body with required fields
+
+RESOLUTION TIMELINE:
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  STEP 1: Identify Root Cause (Did This) ✅                                   │
+│  ├─ Read GitHub error message and response headers                           │
+│ │─ Identified: Missing permissions + No error handling + Missing PR fields │
+│  └─ Time: ~10 minutes                                                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│  STEP 2: Fix Workflow File (Did This) ✅                                     │
+│  ├─ Added permissions: block with pull-requests:write, issues:write         │
+│  ├─ Wrapped createComment() in try-catch                                     │
+│  ├─ Added console.log() for debugging                                        │
+│  └─ Time: ~5 minutes                                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│  STEP 3: Document Solution (Did This) ✅                                     │
+│  ├─ Created PR_TEMPLATE_VALIDATION_FIX.md                                    │
+│  ├─ Created GITHUB_ACTIONS_PERMISSIONS_BEST_PRACTICES.md                     │
+│  ├─ Created GITHUB_ACTIONS_ERROR_RESOLUTION_SUMMARY.txt                      │
+│  └─ Time: ~15 minutes                                                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│  STEP 4: User Updates PR (USER ACTION) ⏳                                     │
+│  ├─ Update PR #1571 description with Spec URL section                       │
+│  ├─ Update PR #1571 description with Figma Dev Mode Link                    │
+│  └─ Time: ~5 minutes                                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│  STEP 5: Test & Verify (USER ACTION) ⏳                                      │
+│  ├─ Trigger workflow on updated PR                                           │
+│  ├─ Check Actions tab for successful run                                     │
+│  ├─ Verify comment posted (or log shows graceful error handling)            │
+│  └─ Time: ~5 minutes                                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│  STEP 6: Configure Branch Protection (OPTIONAL) ⏳                           │
+│  ├─ Go to: Repository Settings → Branches                                    │
+│  ├─ Add rule for "development" branch                                        │
+│  ├─ Enable: "Require status checks to pass"                                  │
+│  ├─ Select: validate-pr-template / validate                                  │
+│  └─ Time: ~10 minutes                                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+BEFORE vs AFTER COMPARISON:
+┌────────────────────────────────────────────────────────────────────────────┐
+│                          ❌ BEFORE (Broken)                                │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  1. Workflow runs on PR open/update                                       │
+│     ↓                                                                      │
+│  2. Validates Spec URL and Figma fields                                   │
+│     ↓                                                                      │
+│  3. Finds validation errors                                               │
+│     ↓                                                                      │
+│  4. Tries to post comment on PR                                           │
+│     ↓                                                                      │
+│  5. 💥 HTTP 403: Token lacks permissions                                  │
+│     ↓                                                                      │
+│  6. 💥 No error handling → entire workflow crashes                        │
+│     ↓                                                                      │
+│  7. 💥 User sees: "Unhandled error: HttpError"                            │
+│     ↓                                                                      │
+│  8. 💥 PR stays in broken state, merge blocked, no clear guidance         │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│                          ✅ AFTER (Fixed)                                 │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  1. Workflow runs on PR open/update                                       │
+│     ↓                                                                      │
+│  2. ✅ Token has proper permissions (pull-requests:write, issues:write)   │
+│     ↓                                                                      │
+│  3. Validates Spec URL and Figma fields                                   │
+│     ↓                                                                      │
+│  4. Finds validation errors                                               │
+│     ↓                                                                      │
+│  5. Attempts to post comment on PR                                        │
+│     ├─ ✅ Success: Comment posted with error details                      │
+│     └─ ✅ Graceful Failure: If permission issue, logs warning & continues │
+│     ↓                                                                      │
+│  6. ✅ Fails validation check (merge blocked)                             │
+│     ↓                                                                      │
+│  7. ✅ User sees: Clear error message + comment on PR                     │
+│     ↓                                                                      │
+│  8. ✅ User updates PR with correct fields                                │
+│     ↓                                                                      │
+│  9. ✅ Workflow reruns and passes                                         │
+│     ↓                                                                      │
+│  10. ✅ Merge now allowed                                                 │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+VALIDATION REGEX PATTERNS:
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Spec URL Pattern: /^(https?:\/\/.+|PRI-\d+)$/                           │
+│  ├─ Match:   "https://github.com/..."      ✅                             │
+│  ├─ Match:   "http://example.com"          ✅                             │
+│  ├─ Match:   "PRI-1234"                    ✅                             │
+│  ├─ Reject:  "" (empty)                    ❌                             │
+│  ├─ Reject:  "example.com" (no protocol)   ❌                             │
+│  └─ Reject:  "PRI-abc" (invalid format)    ❌                             │
+│                                                                            │
+│  Figma URL Pattern: /^https?:\/\/.+figma\.com\/.+$/                       │
+│  ├─ Match:   "https://www.figma.com/design/abc123/..."  ✅                │
+│  ├─ Reject:  "https://example.com"                      ❌                │
+│  └─ Reject:  "" (empty)                                 ❌                │
+│                                                                            │
+│  Figma N/A Pattern: /^(N\/A|n\/a|\[N\/A\])(\s*-\s*.+)?$/                  │
+│  ├─ Match:   "N/A"                         ✅                             │
+│  ├─ Match:   "n/a"                         ✅                             │
+│  ├─ Match:   "[N/A]"                       ✅                             │
+│  ├─ Match:   "N/A - Backend only"          ✅                             │
+│  ├─ Reject:  "" (empty)                    ❌                             │
+│  ├─ Reject:  "none"                        ❌                             │
+│  └─ Reject:  "NA" (missing slash)          ❌                             │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+FILES CHANGED:
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Modified (2):                                                             │
+│  ✏️  .github/workflows/validate-pr-template.yml                            │
+│     ├─ Added: permissions block (lines 7-10)                              │
+│     └─ Updated: error handling (lines 44-55)                              │
+│                                                                            │
+│  Created (3):                                                              │
+│  📄 PR_TEMPLATE_VALIDATION_FIX.md                                          │
+│  📄 GITHUB_ACTIONS_PERMISSIONS_BEST_PRACTICES.md                           │
+│  📄 GITHUB_ACTIONS_ERROR_RESOLUTION_SUMMARY.txt                            │
+│                                                                            │
+│  Referenced (2):                                                           │
+│  📋 .github/pull_request_template.md (unchanged - already correct)         │
+│  📋 specs/020-title-week-4/tasks.md (unchanged - requirements in place)   │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+SUCCESS CRITERIA:
+┌────────────────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  ✅ Workflow runs without 403 errors                                      │
+│  ✅ Validation comments post successfully on PRs                          │
+│  ✅ Invalid PRs are blocked from merging                                  │
+│  ✅ Valid PRs (with Spec URL + Figma field) are allowed to merge          │
+│  ✅ N/A Figma fields with justification are accepted as valid             │
+│  ✅ Error messages are clear and actionable                               │
+│  ✅ Developers know how to fix validation failures                        │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+

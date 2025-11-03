@@ -4,6 +4,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -36,15 +41,20 @@ jobs:
 
             // Report results
             if (errors.length > 0) {
-              core.setFailed('PR Template Validation Failed:\n' + errors.join('\n'));
+              // Try to post comment, but don't crash if it fails
+              try {
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: '⚠️ **PR Template Validation Failed**\n\n' + errors.join('\n') + '\n\nPlease update your PR description and try again.'
+                });
+              } catch (err) {
+                console.log('Warning: Could not post comment:', err.message);
+                // Continue to fail the check even if comment posting fails
+              }
               
-              // Post comment on PR
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: '⚠️ **PR Template Validation Failed**\n\n' + errors.join('\n') + '\n\nPlease update your PR description and try again.'
-              });
+              core.setFailed('PR Template Validation Failed:\n' + errors.join('\n'));
             } else {
               core.info('✅ PR Template Validation Passed');
             }
