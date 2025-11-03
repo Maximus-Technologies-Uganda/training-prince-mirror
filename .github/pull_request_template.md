@@ -1,45 +1,28 @@
-### Context
-- Why this change? Which CLI/area?
+# Pull Request Description
 
-### How I tested
-```bash
-npm test -- --coverage
-```
+## Spec URL
+Link to the specification (required):
+- GitHub: https://github.com/.../specs/XXX/spec.md
+- Linear: PRI-XXXX
 
-### Review Packet & Coverage
-- Artifact: [Actions run → review-packet](PASTE_ACTIONS_RUN_URL_HERE)
+**Example**: https://github.com/prnceb/hello-world/blob/development/specs/020-title-week-4/spec.md
 
-### Design (Figma)
-- **Dev Mode Link:** [INSERT_YOUR_FIGMA_DEV_MODE_LINK_HERE]
+## Figma Dev Mode Link
+Link to Figma design or N/A explanation (required):
+- Design: https://www.figma.com/design/...
+- N/A: N/A - Backend API update (no UI changes)
 
-### Spec
-- Spec: <paste link to Linear doc or external spec>
+**Note**: This field must always be filled. Provide either a Figma link or explain why no design is needed.
 
-### Spec
-- Link: [/.specify/ui-<app>.spec.md](/.specify/ui-<app>.spec.md)
+## Acceptance Checklist
+- [ ] I have ticked all acceptance boxes in my spec.md
+- [ ] I have reviewed the Figma design (or marked N/A with reason)
+- [ ] My PR description matches my specification
+- [ ] I am ready for review
 
-#### Acceptance Checklist (Spec)
-- [ ] All acceptance boxes in linked spec are checked
+## Change Summary
+[Describe your changes here]
 
-| App | Statements | Branches | Functions | Lines |
-|-----|------------|----------|-----------|-------|
-| hello |  |  |  |  |
-| stopwatch |  |  |  |  |
-| temp-converter |  |  |  |  |
-| expense |  |  |  |  |
-| todo |  |  |  |  |
-| quote |  |  |  |  |
-
-### Acceptance
-- [ ] Spec linked and all boxes ticked
-- [ ] Screenshots added
-- [ ] Artifact & Coverage Index verified
-- [ ] Coverage targets met
-
-### Acceptance checklist
-- [ ] Negative tests added (where applicable)
-- [ ] Non‑zero exits on invalid input
-- [ ] README examples updated
-- [ ] Coverage thresholds met
-- [ ] CI green and `review-packet` artifact attached
- - [ ] PR title starts with Linear key (e.g., DEV-123)
+## Related Issues
+- Linear: [Link to parent issue]
+- GitHub: [Link to related GitHub issues if any]

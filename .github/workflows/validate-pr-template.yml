@@ -1,0 +1,60 @@
+name: Validate PR Template
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const errors = [];
+
+            // Validate Spec URL
+            const specUrlMatch = body.match(/^## Spec URL\s*\n+(.+?)(?=^##|\Z)/ms);
+            const specUrlValue = specUrlMatch ? specUrlMatch[1].trim() : '';
+            const specUrlPattern = /^(https?:\/\/.+|PRI-\d+)$/;
+            
+            if (!specUrlValue || !specUrlPattern.test(specUrlValue)) {
+              errors.push('❌ Spec URL is required (URL or PRI-XXXX format)');
+            }
+
+            // Validate Figma Link
+            const figmaMatch = body.match(/^## Figma Dev Mode Link\s*\n+(.+?)(?=^##|\Z)/ms);
+            const figmaValue = figmaMatch ? figmaMatch[1].trim() : '';
+            const figmaUrlPattern = /^https?:\/\/.+figma\.com\/.+$/;
+            const figmaNAPattern = /^(N\/A|n\/a|\[N\/A\])(\s*-\s*.+)?$/;
+            const isFigmaValid = figmaUrlPattern.test(figmaValue) || figmaNAPattern.test(figmaValue);
+            
+            if (!figmaValue || !isFigmaValid) {
+              errors.push('❌ Figma link is required (URL or N/A with reason)');
+            }
+
+            // Report results
+            if (errors.length > 0) {
+              // Try to post comment, but don't crash if it fails
+              try {
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: '⚠️ **PR Template Validation Failed**\n\n' + errors.join('\n') + '\n\nPlease update your PR description and try again.'
+                });
+              } catch (err) {
+                console.log('Warning: Could not post comment:', err.message);
+                // Continue to fail the check even if comment posting fails
+              }
+              
+              core.setFailed('PR Template Validation Failed:\n' + errors.join('\n'));
+            } else {
+              core.info('✅ PR Template Validation Passed');
+            }
