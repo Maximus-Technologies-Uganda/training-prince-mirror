@@ -17,8 +17,10 @@
   "scripts": {
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:ui:coverage": "cd frontend && npm run test:coverage",
     "start": "node src/hello/index.js",
-    "dev": "node src/hello/index.js",
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
     "lint": "echo \"Linter not set up yet.\"",
     "hello": "node src/hello/index.js",
     "temp": "node src/temp-converter/index.js",
@@ -26,7 +28,9 @@
     "quote": "node src/quote/index.js",
     "linear:sync": "node scripts/linear-sync.js",
     "spec:lint": "node scripts/spec-lint.js",
-    "test:e2e": "npx playwright test frontend/e2e"
+    "test:e2e": "npx playwright test frontend/e2e",
+    "test:e2e:smoke": "playwright test tests/e2e/smoke/",
+    "test:e2e:smoke:debug": "playwright test tests/e2e/smoke/ --debug"
   },
   "repository": {
     "type": "git",

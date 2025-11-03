@@ -12,7 +12,7 @@
 import https from 'https';
 
 const LINEAR_API_KEY = process.env.LINEAR_API_KEY;
-const PARENT_ISSUE = 'PRI-1514';
+const PARENT_ISSUE = process.env.LINEAR_PARENT_ISSUE || process.argv[2] || 'PRI-2338';
 
 if (!LINEAR_API_KEY) {
   console.error('❌ Error: LINEAR_API_KEY environment variable not set');
