@@ -71,7 +71,7 @@ jobs:
           cd frontend && npm ci
 
       - name: Generate coverage again (for copying)
-        run: npm run test:ui:coverage
+        run: bash .github/scripts/generate-ui-coverage.sh
 
       - name: Copy coverage reports to review-artifacts/
         run: bash .github/scripts/copy-coverage-reports.sh
@@ -102,7 +102,7 @@ jobs:
           cd frontend && npm ci
 
       - name: Generate coverage (for verification)
-        run: npm run test:ui:coverage
+        run: bash .github/scripts/generate-ui-coverage.sh
 
       - name: Copy coverage reports
         run: bash .github/scripts/copy-coverage-reports.sh
