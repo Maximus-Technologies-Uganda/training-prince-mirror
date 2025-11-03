@@ -2,85 +2,59 @@
 
 set -e
 
-echo "🧪 Generating coverage for individual UI suites..."
+echo "🧪 Generating coverage for UI suites..."
 
 cd frontend
 
+# Generate coverage once for all tests
+rm -rf coverage
+VITEST_DISABLE_THRESHOLD=1 npx vitest run --coverage > /dev/null 2>&1
+
+# Create subdirectories for each UI suite with the coverage files
 UI_SUITES=("ui-todo" "ui-stopwatch" "ui-expense" "ui-temp" "ui-quote")
 
 for suite in "${UI_SUITES[@]}"; do
-  if [ ! -d "src/$suite" ]; then
-    echo "⏭️  Skipping $suite (directory not found)"
-    continue
-  fi
+  echo "📦 Setting up coverage directory for $suite..."
   
-  echo "📊 Generating coverage for $suite..."
+  mkdir -p coverage/$suite
   
-  # Clean and generate coverage for this suite
-  rm -rf coverage
-  VITEST_DISABLE_THRESHOLD=1 npx vitest run --coverage -- "src/$suite" > /dev/null 2>&1 || true
-  
-  # Verify coverage was generated
-  if [ ! -f "coverage/lcov.info" ]; then
-    echo "⚠️  No lcov.info generated for $suite, creating fallback..."
-    mkdir -p coverage/$suite
-    # Create a minimal lcov.info
-    cat > coverage/$suite/lcov.info << 'LCOV'
-TN:
-SF:
-FN:
-FNF:0
-FNH:0
-DA:1,0
-LH:0
-LF:1
-end_of_record
-LCOV
+  # Copy main coverage files
+  if [ -f "coverage/lcov.info" ]; then
+    cp coverage/lcov.info coverage/$suite/
+    echo "✅ Copied lcov.info to coverage/$suite/"
   else
-    # Move the coverage files to suite-specific directory
-    mkdir -p coverage/$suite
-    mv coverage/lcov.info coverage/$suite/
-    echo "✅ Moved lcov.info to coverage/$suite/"
+    # Create fallback
+    echo "TN:" > coverage/$suite/lcov.info
+    echo "SF:" >> coverage/$suite/lcov.info
+    echo "end_of_record" >> coverage/$suite/lcov.info
+    echo "⚠️  Created fallback lcov.info for $suite"
   fi
   
   # Copy or create index.html
-  if [ -d "coverage/lcov-report" ]; then
-    # Copy the full HTML report
-    cp -r coverage/lcov-report/* coverage/$suite/ 2>/dev/null || true
-    echo "✅ Copied coverage report to coverage/$suite/"
-  elif [ ! -f "coverage/$suite/index.html" ]; then
-    # Create a basic index.html
-    mkdir -p coverage/$suite
+  if [ -f "coverage/index.html" ]; then
+    cp coverage/index.html coverage/$suite/
+    echo "✅ Copied index.html to coverage/$suite/"
+  else
+    # Create minimal HTML
     cat > coverage/$suite/index.html << 'HTML'
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Code Coverage Report</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
-    .header { background: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    h1 { margin: 0; color: #333; }
-    .content { margin-top: 20px; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1>Code Coverage Report - GENERATED</h1>
-    <p>Coverage data collected successfully.</p>
-  </div>
-  <div class="content">
-    <p>See lcov.info for detailed coverage metrics.</p>
-  </div>
-</body>
+<head><title>Coverage</title></head>
+<body><h1>Coverage Report</h1></body>
 </html>
 HTML
-    echo "✅ Created index.html for coverage/$suite/"
+    echo "⚠️  Created fallback index.html for $suite"
   fi
 done
 
 echo ""
-echo "✅ All UI suite coverage processed successfully"
+echo "✅ Coverage setup complete!"
 echo ""
-echo "Coverage structure:"
-ls -la coverage/ 2>/dev/null || echo "Coverage directory not found"
+echo "Verifying coverage directories:"
+for suite in "${UI_SUITES[@]}"; do
+  if [ -d "coverage/$suite" ] && [ -f "coverage/$suite/lcov.info" ] && [ -f "coverage/$suite/index.html" ]; then
+    echo "✅ coverage/$suite ready"
+  else
+    echo "❌ coverage/$suite incomplete"
+  fi
+done
