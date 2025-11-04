@@ -2,7 +2,12 @@ name: Validate PR Template
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
 
 permissions:
   pull-requests: write
