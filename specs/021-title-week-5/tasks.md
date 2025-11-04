@@ -62,7 +62,7 @@
 - [X] T024 [P] Verify `npm run lint` executes successfully in `api/` directory
 - [X] T025 [P] Verify `npm run dev` starts development server successfully
 - [X] T026 Verify CI workflow `.github/workflows/api-checks.yml` executes successfully and generates `review-packet-api` artifact
-- [ ] T027 Verify no security middleware (e.g., CORS, rate-limiting) was implemented, confirming security remains out of scope for Day-0 (verifies FR-010-NOTE)
+- [X] T027 Verify no security middleware (e.g., CORS, rate-limiting) was implemented, confirming security remains out of scope for Day-0 (verifies FR-010-NOTE)
 
 ---
 
