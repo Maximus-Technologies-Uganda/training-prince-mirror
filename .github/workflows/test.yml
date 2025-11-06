@@ -1,0 +1,146 @@
+name: Test & Coverage - Five UI Suites
+
+on:
+  push:
+    branches: [ development ]
+  pull_request:
+    branches: [ development ]
+
+jobs:
+  # Phase 1: Generate coverage for all five UI test suites
+  coverage-generation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd frontend && npm ci
+
+      - name: Generate coverage for each UI suite
+        run: bash .github/scripts/generate-ui-coverage.sh
+
+      - name: Verify coverage generated for all five suites
+        run: |
+          echo "📊 Verifying coverage generation..."
+          for suite in ui-expense ui-stopwatch ui-temp ui-todo ui-quote; do
+            if [ ! -d "frontend/coverage/$suite" ]; then
+              echo "❌ Coverage directory missing for $suite"
+              exit 1
+            fi
+            if [ ! -f "frontend/coverage/$suite/lcov.info" ]; then
+              echo "❌ lcov.info missing for $suite"
+              exit 1
+            fi
+            if [ ! -f "frontend/coverage/$suite/index.html" ]; then
+              echo "❌ index.html missing for $suite"
+              exit 1
+            fi
+            echo "✅ $suite coverage verified"
+          done
+
+  # Phase 2: Copy coverage reports to review-artifacts/
+  coverage-copying:
+    runs-on: ubuntu-latest
+    needs: coverage-generation
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd frontend && npm ci
+
+      - name: Generate coverage again (for copying)
+        run: bash .github/scripts/generate-ui-coverage.sh
+
+      - name: Copy coverage reports to review-artifacts/
+        run: bash .github/scripts/copy-coverage-reports.sh
+
+      - name: Verify copy operation
+        run: |
+          echo "✅ Coverage reports copied successfully"
+          ls -la review-artifacts/
+
+  # Phase 3: Verify all coverage reports before artifact packaging
+  coverage-verification:
+    runs-on: ubuntu-latest
+    needs: coverage-copying
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd frontend && npm ci
+
+      - name: Generate coverage (for verification)
+        run: bash .github/scripts/generate-ui-coverage.sh
+
+      - name: Copy coverage reports
+        run: bash .github/scripts/copy-coverage-reports.sh
+
+      - name: Verify all coverage reports exist
+        run: bash .github/scripts/verify-coverage-reports.sh
+
+      - name: Upload coverage reports artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-packet
+          path: review-artifacts/
+          retention-days: 90
+
+  # Phase 4: Summary
+  test-summary:
+    runs-on: ubuntu-latest
+    needs: [ coverage-generation, coverage-copying, coverage-verification ]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print summary
+        run: |
+          echo "========================================="
+          echo "Test & Coverage Pipeline Summary"
+          echo "========================================="
+          echo "Coverage Generation: ${{ needs.coverage-generation.result }}"
+          echo "Coverage Copying: ${{ needs.coverage-copying.result }}"
+          echo "Coverage Verification: ${{ needs.coverage-verification.result }}"
+          echo ""
+          if [ "${{ needs.coverage-verification.result }}" = "success" ]; then
+            echo "✅ All five UI test suites coverage verified successfully"
+            echo "✅ Review-packet artifact uploaded to GitHub Actions"
+          else
+            echo "❌ Pipeline failed - Check logs for details"
+            exit 1
+          fi

@@ -11,16 +11,26 @@
   "bin": {
     "hello-cli": "src/hello/index.js",
     "temp-cli": "src/temp-converter/index.js",
-    "stopwatch-cli": "src/stopwatch/index.js"
+    "stopwatch-cli": "src/stopwatch/index.js",
+    "quote-cli": "src/quote/index.js"
   },
   "scripts": {
     "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui:coverage": "cd frontend && npm run test:coverage",
     "start": "node src/hello/index.js",
-    "dev": "node src/hello/index.js",
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
     "lint": "echo \"Linter not set up yet.\"",
     "hello": "node src/hello/index.js",
     "temp": "node src/temp-converter/index.js",
-    "stopwatch": "node src/stopwatch/index.js"
+    "stopwatch": "node src/stopwatch/index.js",
+    "quote": "node src/quote/index.js",
+    "linear:sync": "node scripts/linear-sync.js",
+    "spec:lint": "node scripts/spec-lint.js",
+    "test:e2e": "npx playwright test frontend/e2e",
+    "test:e2e:smoke": "playwright test tests/e2e/smoke/",
+    "test:e2e:smoke:debug": "playwright test tests/e2e/smoke/ --debug"
   },
   "repository": {
     "type": "git",
@@ -34,7 +44,9 @@
   },
   "homepage": "https://github.com/Maximus-Technologies-Uganda/training-prince#readme",
   "devDependencies": {
+    "@playwright/test": "^1.48.2",
     "@vitest/coverage-v8": "^3.2.4",
+    "playwright": "^1.48.2",
     "vitest": "^3.2.4"
   },
   "dependencies": {
@@ -50,6 +62,7 @@
     "expect-type": "^1.2.2",
     "fdir": "^6.5.0",
     "js-tokens": "^9.0.1",
+    "jsdom": "^27.0.0",
     "loupe": "^3.2.1",
     "magic-string": "^0.30.19",
     "ms": "^2.1.3",

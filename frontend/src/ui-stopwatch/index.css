@@ -1,0 +1,390 @@
+/**
+ * Stopwatch UI Styles
+ * Layout: Flexbox column with timer display on top, buttons in row, lap list below
+ * Accessibility: WCAG AA contrast (4.5:1 normal text, 3:1 large text), focus indicators
+ * Font size: ≥14px for body text compliance
+ */
+
+.stopwatch-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  background-color: rgba(32, 32, 32, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  gap: 24px;
+}
+
+/* Timer Display - Large Text (3:1 contrast ratio) */
+.timer-display {
+  font-size: 48px;
+  font-weight: 700;
+  text-align: center;
+  color: #f0f0f0;
+  margin: 0;
+  padding: 20px;
+  font-family: 'Courier New', monospace;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 15, 15, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.05em;
+  /* Accessibility: Announce time to screen readers */
+  aria-live: 'polite';
+  aria-label: 'Elapsed time';
+}
+
+/* Controls Container - Flexbox Row */
+.controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  role: 'group';
+  aria-label: 'Stopwatch controls';
+}
+
+/* Button Base Styles - All Buttons */
+.start-btn,
+.pause-btn,
+.resume-btn,
+.stop-btn,
+.lap-btn,
+.clear-laps-btn,
+.export-btn {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  line-height: 1.4;
+  /* Ensure minimum font size for accessibility */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Button Hover State */
+.start-btn:hover:not(:disabled),
+.pause-btn:hover:not(:disabled),
+.resume-btn:hover:not(:disabled),
+.stop-btn:hover:not(:disabled),
+.lap-btn:hover:not(:disabled),
+.clear-laps-btn:hover:not(:disabled),
+.export-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.35);
+}
+
+/* Button Active State */
+.start-btn:active:not(:disabled),
+.pause-btn:active:not(:disabled),
+.resume-btn:active:not(:disabled),
+.stop-btn:active:not(:disabled),
+.lap-btn:active:not(:disabled),
+.clear-laps-btn:active:not(:disabled),
+.export-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.25);
+}
+
+/* Focus Indicator for Keyboard Navigation - WCAG AA compliant */
+.start-btn:focus-visible,
+.pause-btn:focus-visible,
+.resume-btn:focus-visible,
+.stop-btn:focus-visible,
+.lap-btn:focus-visible,
+.clear-laps-btn:focus-visible,
+.export-btn:focus-visible {
+  outline: 3px solid #f97316;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.3);
+}
+
+/* Disabled Button State */
+.start-btn:disabled,
+.pause-btn:disabled,
+.resume-btn:disabled,
+.stop-btn:disabled,
+.lap-btn:disabled,
+.clear-laps-btn:disabled,
+.export-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #888888, #666666);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Lap List Container */
+.laps-display {
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(15, 15, 15, 0.5);
+  role: 'region';
+  aria-label: 'Recorded lap times';
+  aria-live: 'polite';
+}
+
+/* Empty State for Lap List */
+.laps-display:empty::after {
+  content: 'No laps recorded yet';
+  display: block;
+  padding: 20px;
+  text-align: center;
+  color: rgba(240, 240, 240, 0.6);
+  font-size: 14px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Lap Item Container */
+.lap-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: rgba(240, 240, 240, 0.9);
+  border-radius: 0;
+}
+
+.lap-item:last-child {
+  border-bottom: none;
+}
+
+.lap-item:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.lap-item:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Lap Number - High contrast */
+.lap-number {
+  font-weight: 700;
+  color: #f97316;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Lap Info Container */
+.lap-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Lap Time Display */
+.lap-time {
+  font-size: 13px;
+  color: rgba(240, 240, 240, 0.8);
+  font-family: 'Courier New', monospace;
+  line-height: 1.4;
+}
+
+/* Lap Duration Display */
+.lap-duration {
+  font-size: 13px;
+  color: rgba(240, 240, 240, 0.7);
+  font-family: 'Courier New', monospace;
+  line-height: 1.4;
+}
+
+/* Session Status Message */
+#session-status {
+  display: none;
+  padding: 14px 16px;
+  margin-bottom: 15px;
+  background-color: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+#session-status.show {
+  display: block;
+}
+
+/* Responsive Design - Tablets and Mobile */
+@media (max-width: 768px) {
+  .stopwatch-container {
+    max-width: 100%;
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .timer-display {
+    font-size: 40px;
+    min-height: 70px;
+    padding: 16px;
+  }
+
+  .controls {
+    gap: 10px;
+  }
+
+  .start-btn,
+  .pause-btn,
+  .resume-btn,
+  .stop-btn,
+  .lap-btn,
+  .clear-laps-btn,
+  .export-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-width: 90px;
+    min-height: 40px;
+  }
+
+  .lap-item {
+    padding: 12px 14px;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .lap-number {
+    font-size: 13px;
+  }
+
+  .lap-time {
+    font-size: 12px;
+  }
+
+  .lap-duration {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stopwatch-container {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .timer-display {
+    font-size: 32px;
+    min-height: 60px;
+    padding: 12px;
+  }
+
+  .controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .start-btn,
+  .pause-btn,
+  .resume-btn,
+  .stop-btn,
+  .lap-btn,
+  .clear-laps-btn,
+  .export-btn {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 14px;
+    min-width: unset;
+  }
+
+  .lap-item {
+    padding: 12px;
+    gap: 6px;
+  }
+
+  .laps-display {
+    max-height: 300px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .controls {
+    display: none;
+  }
+
+  .stopwatch-container {
+    box-shadow: none;
+    border: 1px solid #333;
+  }
+
+  .timer-display {
+    background: transparent;
+    border: none;
+  }
+}
+
+/* Accessibility: High Contrast Mode Support */
+@media (prefers-contrast: more) {
+  .timer-display {
+    border: 2px solid #f0f0f0;
+  }
+
+  .laps-display {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .start-btn:focus-visible,
+  .pause-btn:focus-visible,
+  .resume-btn:focus-visible,
+  .stop-btn:focus-visible,
+  .lap-btn:focus-visible,
+  .clear-laps-btn:focus-visible,
+  .export-btn:focus-visible {
+    outline: 4px solid #f97316;
+    outline-offset: 3px;
+  }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .start-btn,
+  .pause-btn,
+  .resume-btn,
+  .stop-btn,
+  .lap-btn,
+  .clear-laps-btn,
+  .export-btn,
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .start-btn:hover:not(:disabled),
+  .pause-btn:hover:not(:disabled),
+  .resume-btn:hover:not(:disabled),
+  .stop-btn:hover:not(:disabled),
+  .lap-btn:hover:not(:disabled),
+  .clear-laps-btn:hover:not(:disabled),
+  .export-btn:hover:not(:disabled) {
+    transform: none;
+  }
+}

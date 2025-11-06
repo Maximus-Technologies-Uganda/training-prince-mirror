@@ -1,3 +1,7 @@
+import fs from 'fs';
+const DB_FILE = 'data/stopwatch.json';
+
+
 /**
  * A pure function to format milliseconds into mm:ss.ms format.
  * @param {number} ms - The total number of milliseconds.
@@ -45,4 +49,21 @@ export function createStopwatch() {
       laps.push({ time: lapTime });
     },
   };
+}
+
+export function saveState(state) {
+  // Ensure data directory exists to prevent ENOENT on fresh clones
+  try { fs.mkdirSync('data', { recursive: true }); } catch (_) {}
+  const data = JSON.stringify(state, null, 2);
+  fs.writeFileSync(DB_FILE, data);
+}
+
+export function loadState() {
+  try {
+    const data = fs.readFileSync(DB_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    // If no file, return a default state
+    return { startTime: 0, laps: [] };
+  }
 }
