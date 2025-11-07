@@ -1,27 +1,16 @@
 ---
-name: Feature Request
-about: Suggest a new feature for this project
-title: "[FEATURE] "
-labels: feature
----
-
-## Description
-Brief description of what you want to see added.
-
-## Problem Statement
-What problem does this feature solve?
-
-## Proposed Solution
-How would you like this feature to be implemented?
-
-## Acceptance Criteria
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] Criterion 3
-
-## Related Links
-Link to specification, existing issues, or discussions.
-
-## Additional Context
-Screenshots, mockups, or any other relevant information.
-
+name: Feature
+labels: [feature]
+body:
+  - type: input
+    id: spec
+    attributes:
+      label: Spec URL
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks (SpecKit/tasks export allowed)
