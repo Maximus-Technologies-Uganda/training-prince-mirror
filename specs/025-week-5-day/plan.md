@@ -27,9 +27,9 @@
 **Testing**: Vitest (unit/coverage), Playwright (e2e), Contract tests (via GitHub Actions)  
 **Target Platform**: Linux (CI runners), macOS/Windows (local development)  
 **Project Type**: Web application (frontend + backend/api)  
-**Performance Goals**: CI checks must complete within 15 minutes; branch protection must not delay legitimate merges  
+**Performance Goals**: Individual CI checks must complete within 15 minutes; total D0 execution including manual UI tasks and merge estimated 2.5-3 hours with parallelization; branch protection must not delay legitimate merges  
 **Constraints**: All checks must be deterministic; no flaky tests; coverage thresholds must be enforceable  
-**Scale/Scope**: Multi-suite testing (5 UI suites), code coverage across UI and API
+**Scale/Scope**: Multi-suite testing (5 UI suites), code coverage across UI and API, 6 distinct infrastructure subsystems (branch setup, CI rules, artifact generation, GitHub Projects, issue templates, PR template)
 
 ---
 

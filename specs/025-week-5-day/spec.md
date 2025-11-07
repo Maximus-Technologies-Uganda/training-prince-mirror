@@ -31,6 +31,8 @@ This ensures reviewers have a professional, well-documented repository experienc
 - What if the main branch already has protection rules? → Rules must be updated (not replaced) to add missing checks
 - What if a repository uses an older GitHub Projects format? → Migrate to GitHub Projects (new) for consistency
 - What if there are stray files on main that weren't in development? → Identify and remove them before squash merge
+- What if GitHub Project custom field creation fails midway? → (1) Archive the incomplete project via Settings, (2) Create a fresh project named "Week 5 Day-0", (3) Reconfigure all 5 custom fields from scratch, (4) Re-enable automation rules
+- What if the review packet (review-artifacts/index.html) is incomplete when D0 completes? → All artifact files MUST be generated and linked before squash merge; incomplete packet blocks deployment to main
 
 ---
 
@@ -39,8 +41,8 @@ This ensures reviewers have a professional, well-documented repository experienc
 ### Functional Requirements
 
 #### D0.1: Branch Hygiene & Merge to main
-- **FR-001**: System MUST update main branch README.md to point to Week 5 specification paths and the review-packet artifact
-- **FR-002**: System MUST identify and remove all stray/deprecated files from main branch. Stray files are defined as files matching: `*.tmp`, `*.log`, `debug.*`, `hello.js..js`, `*.bak`, or incomplete test stubs not referenced in package.json or documentation
+- **FR-001**: System MUST update main branch README.md to point to Week 5 specification paths and the review-packet artifact. Week 5 paths include: spec.md, plan.md, data-model.md, research.md, contracts/, and quickstart.md
+- **FR-002**: System MUST identify and remove all stray/deprecated files from main branch. Stray files are defined as files matching: `*.tmp`, `*.log`, `debug.*`, `*.bak`, or incomplete test stubs. Incomplete test stubs are identified by: files matching `*.stub.js` or `*.incomplete.ts`, OR files >100 lines with TODO/FIXME in the first 10 lines, OR files referenced in git diff but not in package.json or documentation
 - **FR-003**: System MUST perform a squash merge of development into main only after all other D0 tasks are confirmed complete and development is green (all tests passing)
 - **FR-004**: System MUST create a git tag named `week5-day0` on the squashed commit to main for release tracking
 - **FR-005**: System MUST ensure main branch README clearly links to current week's documentation and development guidelines
@@ -70,7 +72,7 @@ This ensures reviewers have a professional, well-documented repository experienc
   - Status (Todo, In Progress, In Review, Done)
   - Priority (P0/Critical, P1/High, P2/Medium, P3/Low)
   - Size (XS, S, M, L, XL)
-  - Spec URL (link to spec documentation)
+  - Spec URL (text field for HTTPS URL linking to spec.md within the repository, e.g., `https://github.com/{owner}/{repo}/blob/main/specs/025-week-5-day/spec.md`)
   - Sprint/Week (W1-W5, Week 5 Day-0, etc.)
 - **FR-019**: System MUST auto-add new Issues to the GitHub Project upon creation
 - **FR-020**: System MUST auto-add new PRs to the GitHub Project upon creation
@@ -120,21 +122,24 @@ This ensures reviewers have a professional, well-documented repository experienc
 
 All of the following must be satisfied before D0 is considered complete:
 
-- [ ] Main branch README.md updated with Week 5 paths and review-packet links
+- [ ] Main branch README.md updated with Week 5 paths (spec.md, plan.md, data-model.md, research.md, contracts/, quickstart.md) and review-packet links
 - [ ] Stray files removed from main branch (validated via git diff)
 - [ ] Development branch merged to main via squash commit (verified via git log)
 - [ ] `week5-day0` tag created on main branch (verified via git tag -l)
 - [ ] Branch protection rules on main configured to require all 5 status checks (verified in repo settings)
 - [ ] Vitest config enforces 60% thresholds with correct include/exclude paths (verified via vitest.config.js)
-- [ ] review-artifacts/index.html includes coverage table, Playwright report link, OpenAPI link, changelog link
-- [ ] GitHub Project created with all custom fields configured (Status, Priority, Size, Spec URL, Sprint/Week)
-- [ ] GitHub Project automation configured (auto-add issues/PRs, PR opened→In Review, PR merged→Done)
-- [ ] `.github/ISSUE_TEMPLATE/feature.md` created and validates against template structure
-- [ ] `.github/ISSUE_TEMPLATE/bug.md` created and validates against template structure
-- [ ] `.github/pull_request_template.md` created with all required sections
+- [ ] **review-artifacts/index.html GENERATED with**: coverage table (statements/branches/functions/lines per suite), Playwright report link, OpenAPI documentation link, CHANGELOG link, all links verified functional
+- [ ] GitHub Project created with all custom fields configured (Status, Priority, Size, Spec URL, Sprint/Week) with correct options and defaults
+- [ ] GitHub Project automation configured (auto-add issues/PRs, PR opened→In Review, PR merged→Done) and rules verified active
+- [ ] `.github/ISSUE_TEMPLATE/feature.md` created and validates against template structure (with YAML frontmatter and required sections)
+- [ ] `.github/ISSUE_TEMPLATE/bug.md` created and validates against template structure (with YAML frontmatter and required sections)
+- [ ] `.github/pull_request_template.md` created with all required sections (Spec URL, Contract Tests, Changes Made, Checks, CHANGELOG Updated, Breaking Changes, Related Issues)
+- [ ] PR template auto-fill verified on GitHub UI (create test PR and confirm template loads)
+- [ ] Contract tests passing: all 6 test files (branch-protection, github-project, vitest-coverage, review-packet, issue-templates, pr-template) with 45+ assertions all green
 - [ ] All team members notified that Linear has been decommissioned and GitHub Projects is the source of truth
 - [ ] Development workflow is fully operational on GitHub platform
 - [ ] Main branch is the target for all incoming PRs (no more development branch PRs)
+- [ ] Backup branch `backup/week5-dev` created and pushed to origin
 
 ---
 

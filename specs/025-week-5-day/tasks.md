@@ -14,13 +14,19 @@ Week 5 Day-0 focuses on repository hygiene and transitioning from Linear to GitH
 
 1. **Phase A (Preparation)**: Branch cleanup, documentation updates
 2. **Phase B (Configuration, Parallel)**: Branch protection, GitHub Project setup, templates
-3. **Phase C (Verification)**: Artifact generation, coverage validation, contract test verification
+3. **Phase C (Verification)**: Review packet generation, coverage validation, contract test verification
 4. **Phase D (Finalization)**: Squash merge, tagging, deployment readiness
 
 **Total Tasks**: 25 sequentially numbered (T001-T025)  
 **Parallel Groups**: 3 major parallel execution windows  
-**Estimated Duration**: 2-3 hours for full execution  
-**Exit Criteria**: All checks passing, production-ready main branch, team migrated to GitHub Projects
+**Estimated Duration**: 2-3 hours for full execution (includes manual UI setup and merge operations)
+**Exit Criteria**: All checks passing, production-ready main branch, team migrated to GitHub Projects, review packet generated and linked
+
+**Key Changes from Initial Draft**:
+- T013 upgraded from verification-only to active generation of review-artifacts/index.html with coverage data
+- Removed T026 (GitHub Pages deployment) as out-of-scope for Day-0 (can be addressed in future spec)
+- Added edge case recovery procedures for GitHub Project failures
+- Clarified effort estimates and environment variable requirements
 
 ---
 
@@ -213,8 +219,8 @@ echo "✓ All 5 custom fields configured and sortable"
 ### T007 Configure GitHub Project automation rules
 **Location**: GitHub Projects Automation Settings  
 **Purpose**: Auto-add issues/PRs and update status on events  
-**Prerequisites**: T005 and T006 must complete (project and custom fields must exist before configuring automation)  
-**Sequential Marker**: This task MUST run sequentially after T005 (project creation). Cannot run in parallel because project must exist before automation rules can be created.  
+**Prerequisites**: T005 (project must exist) AND T006 (custom fields must exist before automation rules can reference them) must both complete before this task can begin  
+**Sequential Marker**: This task MUST run sequentially after T005 and T006 (both project creation and custom field definitions must be complete). Cannot run in parallel because automation rules reference the custom fields configured in T006.  
 **Steps**:
 1. In project, click "Settings" → "Automation"
 2. Enable or create these rules:
@@ -405,8 +411,20 @@ Closes #[issue number]
 **Validation**:
 ```bash
 [ -f ".github/pull_request_template.md" ] && echo "✓ PR template created"
-# Verify in GitHub UI: Create PR → template should auto-fill
 ```
+
+**Manual Verification** (Required):
+1. Go to repository → "Pull requests" tab
+2. Click "New pull request" button
+3. Select any two branches (e.g., main ← develop)
+4. Click "Create pull request"
+5. **VERIFY**: The PR description field should auto-populate with the template contents
+6. If template does NOT auto-fill:
+   - Check file encoding: `file -b .github/pull_request_template.md` should output "UTF-8 Unicode text"
+   - Check for trailing whitespace after YAML frontmatter: `cat -A .github/pull_request_template.md | head -5`
+   - Clear browser cache (Cmd+Shift+Delete on macOS, Ctrl+Shift+Delete on Windows/Linux)
+   - Retry after 30 seconds (GitHub caches template files)
+7. If still not working, verify the template file is correctly formatted per GitHub documentation
 
 **Parallel with**: T004-T009 (different files, no conflicts)
 
@@ -493,49 +511,109 @@ npm run test:coverage 2>&1 | grep -q "Coverage thresholds met" && echo "✓ Cove
 
 ---
 
-### T013 Verify review-artifacts directory contains all required files
-**File**: `review-artifacts/` (verification task)  
-**Purpose**: Ensure all linked artifacts exist before packaging  
+### T013 Generate and validate review-artifacts/index.html
+**File**: `review-artifacts/index.html` (new/updated)  
+**Purpose**: Create the primary review packet entry point with all coverage, test results, API docs, and changelog links  
+**Prerequisites**: T012 must complete (coverage reports must exist before artifact can be generated)  
 **Steps**:
-1. Verify directory structure:
-```bash
-ls -la review-artifacts/
-# Should contain:
-# - index.html
-# - coverage/ (with coverage reports from T012)
-# - playwright-report/ (with test results)
-# - openapi.html (API docs)
-# - CHANGELOG.md (or link)
+1. Create or update `review-artifacts/index.html` with the following structure:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 5 Day-0 Review Packet</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 40px; line-height: 1.6; }
+    h1 { color: #333; border-bottom: 3px solid #0969da; padding-bottom: 10px; }
+    .section { margin: 30px 0; padding: 20px; background: #f6f8fa; border-left: 4px solid #0969da; }
+    .section h2 { margin-top: 0; color: #0969da; }
+    a { color: #0969da; text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #d0d7de; }
+    th { background: #f3f4f6; font-weight: 600; }
+    .status-pass { color: #28a745; font-weight: bold; }
+    .status-warning { color: #ffc107; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>📦 Week 5 Day-0 Review Packet</h1>
+  <p><strong>Generated:</strong> {{ GENERATION_DATE }}</p>
+  <p><strong>Status:</strong> <span class="status-pass">✅ Production Ready</span></p>
+  
+  <div class="section">
+    <h2>📊 Code Coverage Summary</h2>
+    <p><a href="./coverage/index.html">View Full Coverage Report →</a></p>
+    <table>
+      <tr>
+        <th>Suite</th>
+        <th>Statements</th>
+        <th>Branches</th>
+        <th>Functions</th>
+        <th>Lines</th>
+      </tr>
+      <!-- Coverage data inserted from coverage.json -->
+    </table>
+  </div>
+  
+  <div class="section">
+    <h2>🧪 End-to-End Test Results</h2>
+    <p><a href="./playwright-report/index.html">View Playwright Test Report →</a></p>
+    <p>Smoke tests for all 5 UI suites (Expense, Stopwatch, Temperature, Todo, Quote)</p>
+  </div>
+  
+  <div class="section">
+    <h2>📚 API Documentation</h2>
+    <p><a href="./openapi.html">View OpenAPI Documentation →</a></p>
+    <p>Complete API schema and endpoint reference</p>
+  </div>
+  
+  <div class="section">
+    <h2>📝 Release Notes</h2>
+    <p><a href="./CHANGELOG.md">View CHANGELOG →</a></p>
+    <p>User-facing changes for Week 5 Day-0 release</p>
+  </div>
+  
+  <hr>
+  <p><small>This review packet is the primary artifact of record per project constitution (Principle III: Reviewability is Paramount)</small></p>
+</body>
+</html>
 ```
 
-2. Verify all required files exist:
+2. Parse `coverage/coverage.json` and populate coverage table with actual metrics
+3. Verify all linked files exist:
 ```bash
-test -f review-artifacts/index.html && echo "✓ index.html exists"
 test -f review-artifacts/coverage/index.html && echo "✓ coverage/index.html exists"
 test -f review-artifacts/playwright-report/index.html && echo "✓ playwright-report/index.html exists"
 test -f review-artifacts/openapi.html && echo "✓ openapi.html exists"
-test -f review-artifacts/CHANGELOG.md && echo "✓ CHANGELOG.md exists"
-```
-
-3. Verify index.html contains links to all sections:
-```bash
-grep -q "coverage/index.html" review-artifacts/index.html && echo "✓ Coverage link"
-grep -q "playwright-report/index.html" review-artifacts/index.html && echo "✓ Playwright link"
-grep -q "openapi.html" review-artifacts/index.html && echo "✓ OpenAPI link"
-grep -q "CHANGELOG.md" review-artifacts/index.html && echo "✓ CHANGELOG link"
+test -f CHANGELOG.md && echo "✓ CHANGELOG.md exists (link via ./CHANGELOG.md)"
 ```
 
 4. Test all links by opening index.html in browser and clicking each link
-
-**Validation**:
+5. Verify artifact size < 50MB and file count > 10:
 ```bash
 cd review-artifacts/
 du -sh . # Should be < 50MB
 find . -type f | wc -l # Should have > 10 files
+```
+
+6. Commit: `git add review-artifacts/index.html && git commit -m "docs: generate Week 5 Day-0 review packet with coverage, test results, API docs, changelog"`
+
+**Validation**:
+```bash
+[ -f "review-artifacts/index.html" ] && echo "✓ index.html generated"
+grep -q "coverage/index.html" review-artifacts/index.html && echo "✓ Coverage link present"
+grep -q "playwright-report" review-artifacts/index.html && echo "✓ Playwright link present"
+grep -q "openapi" review-artifacts/index.html && echo "✓ OpenAPI link present"
+grep -q "CHANGELOG" review-artifacts/index.html && echo "✓ CHANGELOG link present"
 echo "✓ Review packet complete and ready for distribution"
 ```
 
-**Requires**: T012 (coverage reports must exist)
+**Requires**: T012 (coverage reports must exist before generating artifact)
+
+**Blocks**: T020 (artifact must be verified before running contract tests)
 
 **Related to Contract**: Review Packet Artifact Generation
 
@@ -544,6 +622,13 @@ echo "✓ Review packet complete and ready for distribution"
 ### T014 [P] Write contract test: branch-protection-setup
 **File**: `specs/025-week-5-day/contracts/branch-protection-setup.test.ts` (new)  
 **Purpose**: Verify branch protection rule configured with all 5 required checks  
+**Environment Setup**: This test requires `GITHUB_TOKEN` and `GITHUB_REPOSITORY` environment variables. In CI runners, these are pre-set by GitHub Actions. For local testing, set manually:
+```bash
+export GITHUB_TOKEN=<your-gh-token>
+export GITHUB_REPOSITORY=<owner>/<repo>
+```
+If running in local environment without GitHub API access, skip this test or mock the API responses.
+
 **Content** (TypeScript/Node.js with GitHub API):
 ```typescript
 import { describe, it, expect, beforeAll } from "vitest";
@@ -1275,9 +1360,13 @@ git log --oneline -1 | grep -q "Week 5 Day-0" && echo "PASS" || echo "FAIL"
 echo -n "✓ Check 4: Tag week5-day0 created... "
 git tag -l | grep -q "week5-day0" && echo "PASS" || echo "FAIL"
 
-# Check 5: Branch protection configured
+# Check 5: Branch protection configured (requires GitHub CLI + auth)
 echo -n "✓ Check 5: Branch protection rules configured... "
-gh api repos/{owner}/{repo}/branches/main/protection 2>/dev/null | grep -q "spec-check" && echo "PASS" || echo "FAIL (manual verification required)"
+if command -v gh >/dev/null && [ -n "$GITHUB_TOKEN" ]; then
+  gh api repos/{owner}/{repo}/branches/main/protection 2>/dev/null | grep -q "spec-check" && echo "PASS" || echo "FAIL (manual verification required)"
+else
+  echo "SKIP (GitHub CLI not installed or GITHUB_TOKEN not set - manual verification required via GitHub UI)"
+fi
 
 # Check 6: Coverage thresholds
 echo -n "✓ Check 6: Vitest coverage thresholds verified... "
@@ -1331,60 +1420,6 @@ bash validate-d0.sh
 - ✅ No breaking changes introduced
 - ✅ All team members notified of Linear decommissioning
 - ✅ All stakeholders can access GitHub Projects
-
----
-
-### T026 [Sequential, Requires: T025] Configure GitHub Pages deployment via GitHub Actions workflow
-
-**File**: `.github/workflows/pages-deploy.yml` (new)  
-**Purpose**: Deploy frontend/dist/ to GitHub Pages automatically on push to main (referenced in spec.md L61-62)  
-**Steps**:
-1. Create new workflow file: `.github/workflows/pages-deploy.yml`
-2. Add workflow that triggers on push to `main`:
-```yaml
-name: Deploy to GitHub Pages
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci && npm run build
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'frontend/dist/'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-```
-3. Verify GitHub Pages is enabled in repository Settings → Pages
-4. Verify GitHub Pages environment is configured to deploy from GitHub Actions
-5. Commit: `git add .github/workflows/pages-deploy.yml && git commit -m "ci: add GitHub Pages deployment workflow"`
-
-**Validation**:
-```bash
-[ -f ".github/workflows/pages-deploy.yml" ] && echo "✓ Pages deployment workflow created"
-# Verify in GitHub UI: Settings → Pages should show GitHub Actions as source
-# After merge to main, check Actions tab to confirm successful deployment
-echo "✓ GitHub Pages deployment ready for production"
-```
-
-**Requires**: T025 (final validation must pass before deployment is enabled)
-
-**Related to**: FR-005, spec.md L61-62 (production deployment requirement)
 
 ---
 
@@ -1473,17 +1508,17 @@ T011 → T012 → T013 → T014-T019 (parallel) → T020 → T021 → T022 → T
 
 ## Success Metrics
 
-After completing all 26 tasks, the following should be true:
+After completing all 25 tasks, the following should be true:
 
-1. ✅ **Production-Ready Main Branch**: All tests passing, no stray files, README updated
-2. ✅ **Branch Protection Enforced**: 5 required CI checks block merges until passing
-3. ✅ **GitHub Projects Active**: Project created with 5 custom fields and automation rules
-4. ✅ **Contributor Onboarding**: Issue/PR templates guide new contributors
-5. ✅ **Release Artifact Ready**: review-artifacts/index.html links to all deliverables
-6. ✅ **Infrastructure Verified**: All 45+ contract tests passing
-7. ✅ **Team Migrated**: Linear decommissioned, all work in GitHub Projects
-8. ✅ **Release Tagged**: week5-day0 tag marks milestone on main branch
-9. ✅ **GitHub Pages Deployed**: frontend/dist/ automatically deployed to GitHub Pages on push to main
+1. ✅ **Production-Ready Main Branch**: All tests passing, no stray files, README updated with Week 5 paths
+2. ✅ **Branch Protection Enforced**: 5 required CI checks (spec-check, Test & Coverage - API, Playwright Smoke, CodeQL, Dependency Review) block merges until passing
+3. ✅ **GitHub Projects Active**: Project created with 5 custom fields (Status, Priority, Size, Spec URL, Sprint/Week) and automation rules (auto-add issues/PRs, PR status updates)
+4. ✅ **Contributor Onboarding**: Issue/PR templates guide new contributors with structured sections and default labels
+5. ✅ **Review Packet Generated**: review-artifacts/index.html created and linked from README with coverage tables, Playwright reports, OpenAPI docs, CHANGELOG
+6. ✅ **Infrastructure Verified**: All 45+ contract tests passing (6 test files: branch-protection, github-project, vitest-coverage, review-packet, issue-templates, pr-template)
+7. ✅ **Team Migrated**: Linear decommissioned, all work tracked in GitHub Projects
+8. ✅ **Release Tagged**: week5-day0 tag marks milestone on main branch with backup branch created
+9. ✅ **Backup & Rollback Ready**: backup/week5-dev branch created and pushed for recovery if needed
 
 ---
 
