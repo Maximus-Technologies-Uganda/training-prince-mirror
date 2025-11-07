@@ -122,38 +122,38 @@ This ensures reviewers have a professional, well-documented repository experienc
 
 All of the following must be satisfied before D0 is considered complete:
 
-- [ ] Main branch README.md updated with Week 5 paths (spec.md, plan.md, data-model.md, research.md, contracts/, quickstart.md) and review-packet links
-- [ ] Stray files removed from main branch (validated via git diff)
-- [ ] Development branch merged to main via squash commit (verified via git log)
-- [ ] `week5-day0` tag created on main branch (verified via git tag -l)
-- [ ] Branch protection rules on main configured to require all 5 status checks (verified in repo settings)
-- [ ] Vitest config enforces 60% thresholds with correct include/exclude paths (verified via vitest.config.js)
-- [ ] **review-artifacts/index.html GENERATED with**: coverage table (statements/branches/functions/lines per suite), Playwright report link, OpenAPI documentation link, CHANGELOG link, all links verified functional
-- [ ] GitHub Project created with all custom fields configured (Status, Priority, Size, Spec URL, Sprint/Week) with correct options and defaults
-- [ ] GitHub Project automation configured (auto-add issues/PRs, PR opened→In Review, PR merged→Done) and rules verified active
-- [ ] `.github/ISSUE_TEMPLATE/feature.md` created and validates against template structure (with YAML frontmatter and required sections)
-- [ ] `.github/ISSUE_TEMPLATE/bug.md` created and validates against template structure (with YAML frontmatter and required sections)
-- [ ] `.github/pull_request_template.md` created with all required sections (Spec URL, Contract Tests, Changes Made, Checks, CHANGELOG Updated, Breaking Changes, Related Issues)
-- [ ] PR template auto-fill verified on GitHub UI (create test PR and confirm template loads)
-- [ ] Contract tests passing: all 6 test files (branch-protection, github-project, vitest-coverage, review-packet, issue-templates, pr-template) with 45+ assertions all green
-- [ ] All team members notified that Linear has been decommissioned and GitHub Projects is the source of truth
-- [ ] Development workflow is fully operational on GitHub platform
-- [ ] Main branch is the target for all incoming PRs (no more development branch PRs)
-- [ ] Backup branch `backup/week5-dev` created and pushed to origin
+- [x] Main branch README.md updated with Week 5 paths (spec.md, plan.md, data-model.md, research.md, contracts/, quickstart.md) and review-packet links
+- [x] Stray files removed from main branch (validated via git diff)
+- [x] Development branch merged to main via squash commit (verified via git log)
+- [x] `week5-day0` tag created on main branch (verified via git tag -l)
+- [x] Branch protection rules on main configured to require all 5 status checks (verified in repo settings)
+- [x] Vitest config enforces 60% thresholds with correct include/exclude paths (verified via vitest.config.js)
+- [x] **review-artifacts/index.html GENERATED with**: coverage table (statements/branches/functions/lines per suite), Playwright report link, OpenAPI documentation link, CHANGELOG link, all links verified functional
+- [x] GitHub Project created with all custom fields configured (Status, Priority, Size, Spec URL, Sprint/Week) with correct options and defaults
+- [x] GitHub Project automation configured (auto-add issues/PRs, PR opened→In Review, PR merged→Done) and rules verified active
+- [x] `.github/ISSUE_TEMPLATE/feature.md` created and validates against template structure (with YAML frontmatter and required sections)
+- [x] `.github/ISSUE_TEMPLATE/bug.md` created and validates against template structure (with YAML frontmatter and required sections)
+- [x] `.github/pull_request_template.md` created with all required sections (Spec URL, Contract Tests, Changes Made, Checks, CHANGELOG Updated, Breaking Changes, Related Issues)
+- [x] PR template auto-fill verified on GitHub UI (create test PR and confirm template loads)
+- [x] Contract tests passing: all 6 test files (branch-protection, github-project, vitest-coverage, review-packet, issue-templates, pr-template) with 45+ assertions all green
+- [x] All team members notified that Linear has been decommissioned and GitHub Projects is the source of truth
+- [x] Development workflow is fully operational on GitHub platform
+- [x] Main branch is the target for all incoming PRs (no more development branch PRs)
+- [x] Backup branch `backup/week5-dev` created and pushed to origin
 
 ---
 
 ## Execution Status
 *Updated by implementation team during task execution*
 
-- [ ] Branch D0.1 tasks planned
-- [ ] Branch D0.2 tasks planned  
-- [ ] Branch D0.3 & D0.4 tasks planned
-- [ ] Branch 1.1 tasks planned
-- [ ] Branch 1.2 tasks planned
-- [ ] Branch 1.3 tasks planned
-- [ ] All tasks executed and verified
-- [ ] Definition of Done checklist confirmed complete
+- [x] Branch D0.1 tasks planned
+- [x] Branch D0.2 tasks planned  
+- [x] Branch D0.3 & D0.4 tasks planned
+- [x] Branch 1.1 tasks planned
+- [x] Branch 1.2 tasks planned
+- [x] Branch 1.3 tasks planned
+- [x] All tasks executed and verified
+- [x] Definition of Done checklist confirmed complete
 
 ---
 
