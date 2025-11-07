@@ -52,7 +52,7 @@
 
 1. **Start with Review Packet**: Open [`review-artifacts/index.html`](./review-artifacts/index.html) to see unified coverage, test results, and documentation
 2. **Verify Branch Protection**: Settings → Branches → main should show 5 required status checks
-3. **Check GitHub Project**: Projects tab should show "Week 5 Day-0" project with custom fields active
+3. **Check GitHub Project**: Projects tab should show "Training Prince" project with custom fields active
 4. **Review Templates**: `.github/ISSUE_TEMPLATE/` should have feature.md and bug.md; `.github/pull_request_template.md` should be present
 5. **Run Tests**: Execute `npm run test` to verify all contract tests pass
 6. **Validate Coverage**: `npm run test:coverage` to confirm 60% thresholds met

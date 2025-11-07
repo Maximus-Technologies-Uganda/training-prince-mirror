@@ -17,8 +17,8 @@
 - ✅ Status automatically set to "Todo" when items are added
 
 **Evidence**:
-- Issue #1703 timeline shows: "github-project-automation added this to Week 5 Day-0 now"
-- Issue #1703 timeline shows: "github-project-automation moved this to Todo in Week 5 Day-0 now"
+- Issue #1703 timeline shows: "github-project-automation added this to Training Prince now"
+- Issue #1703 timeline shows: "github-project-automation moved this to Todo in Training Prince now"
 - Both issues (#1702 and #1703) appear in the project board
 
 ---
@@ -65,7 +65,7 @@
 ## 🎯 WHAT'S WORKING NOW
 
 ### ✅ **GitHub Project Automation**
-- New issues automatically added to "Week 5 Day-0" project
+- New issues automatically added to "Training Prince" project
 - Status automatically set to "Todo"
 - Works for both issues and pull requests (when created)
 
