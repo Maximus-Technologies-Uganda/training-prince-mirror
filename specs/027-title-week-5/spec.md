@@ -148,26 +148,26 @@ This ensures the API contract from Day 1 is now implemented and functional, enab
 
 All of the following must be satisfied before this feature is considered complete:
 
-- [ ] All contract tests for GET /expenses endpoint are passing
-- [ ] All contract tests for POST /expenses endpoint are passing
-- [ ] All contract tests for GET /expenses/summary endpoint are passing
-- [ ] OpenAPI specification updated to include pagination metadata structure (wrapped object with `data` and `pagination`) for GET /expenses endpoint
-- [ ] GET /expenses endpoint implemented and returns paginated expense records with metadata in response body
-- [ ] POST /expenses endpoint implemented and creates expense records with validation
-- [ ] GET /expenses/summary endpoint implemented and returns aggregated summaries
-- [ ] In-memory data repository implemented with createExpense, findExpenses, and getSummary functions
-- [ ] Input validation implemented for all request bodies (validates against OpenAPI schema)
-- [ ] Validation errors return 400 Bad Request with error envelope containing validation details
-- [ ] Central error handling middleware implemented and catches all errors
-- [ ] Error middleware maps errors to standard error envelope format (code, message, details)
-- [ ] Error responses include appropriate HTTP status codes (400, 404, 422, 429, 500)
-- [ ] Request-id header is echoed in error responses when provided
-- [ ] Unit tests written for validation logic
-- [ ] Unit tests written for data mappers (if applicable)
-- [ ] Test & Coverage - API CI job passes with ≥60% coverage (lines/functions/branches)
-- [ ] spec-check CI job passes (OpenAPI spec validation)
-- [ ] CodeQL CI job passes (code quality and security)
-- [ ] Pull Request opened with all changes
+- [x] All contract tests for GET /expenses endpoint are passing
+- [x] All contract tests for POST /expenses endpoint are passing
+- [x] All contract tests for GET /expenses/summary endpoint are passing
+- [x] OpenAPI specification updated to include pagination metadata structure (wrapped object with `data` and `pagination`) for GET /expenses endpoint
+- [x] GET /expenses endpoint implemented and returns paginated expense records with metadata in response body
+- [x] POST /expenses endpoint implemented and creates expense records with validation
+- [x] GET /expenses/summary endpoint implemented and returns aggregated summaries
+- [x] In-memory data repository implemented with createExpense, findExpenses, and getSummary functions
+- [x] Input validation implemented for all request bodies (validates against OpenAPI schema)
+- [x] Validation errors return 400 Bad Request with error envelope containing validation details
+- [x] Central error handling middleware implemented and catches all errors
+- [x] Error middleware maps errors to standard error envelope format (code, message, details)
+- [x] Error responses include appropriate HTTP status codes (400, 404, 422, 429, 500)
+- [x] Request-id header is echoed in error responses when provided
+- [x] Unit tests written for validation logic
+- [x] Unit tests written for data mappers (if applicable)
+- [x] Test & Coverage - API CI job passes with ≥60% coverage (lines/functions/branches)
+- [x] spec-check CI job passes (OpenAPI spec validation)
+- [x] CodeQL CI job passes (code quality and security)
+- [x] Pull Request opened with all changes
 - [ ] PR reviewed and approved
 - [ ] PR merged to target branch
 
