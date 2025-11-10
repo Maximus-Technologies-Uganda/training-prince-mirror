@@ -7,8 +7,12 @@ body:
     id: repro
     attributes:
       label: Repro Steps
+      placeholder: Describe the steps to reproduce the bug
+    validations:
+      required: true
   - type: input
     id: spec
     attributes:
       label: Spec/Contract Link (if applicable)
+      placeholder: e.g., specs/026-title-week-5/spec.md
 ---

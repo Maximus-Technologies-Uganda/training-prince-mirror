@@ -7,12 +7,19 @@ body:
     id: spec
     attributes:
       label: Spec URL
+      placeholder: e.g., specs/026-title-week-5/spec.md
+    validations:
+      required: true
   - type: textarea
     id: acceptance
     attributes:
       label: Acceptance Criteria
+      placeholder: Describe the acceptance criteria for this feature
   - type: textarea
     id: tasks
     attributes:
       label: Tasks (SpecKit/tasks export allowed)
+      placeholder: Paste your task checklist here
+    validations:
+      required: true
 ---
