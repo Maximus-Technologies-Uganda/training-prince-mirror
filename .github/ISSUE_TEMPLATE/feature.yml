@@ -1,5 +1,6 @@
 ---
 name: Feature
+description: Create a feature request for a new API endpoint or enhancement
 labels: [feature]
 body:
   - type: input
