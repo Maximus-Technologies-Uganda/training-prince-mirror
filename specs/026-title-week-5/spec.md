@@ -149,27 +149,27 @@ This ensures API consumers can understand the API before implementation, enables
 
 All of the following must be satisfied before this feature is considered complete:
 
-- [ ] OpenAPI specification file created/updated at `/specs/core/openapi.yaml`
-- [ ] OpenAPI spec defines GET /expenses endpoint with pagination parameters
-- [ ] OpenAPI spec defines POST /expenses endpoint with request body schema
-- [ ] OpenAPI spec defines GET /expenses/summary endpoint
-- [ ] OpenAPI spec defines shared Error Envelope schema referenced by all error responses
-- [ ] OpenAPI spec includes request-id header support
-- [ ] spec-check CI job created and configured to validate openapi.yaml
-- [ ] spec-check CI job set as required status check for PRs
-- [ ] spec-check CI job passes when run against the new openapi.yaml file
-- [ ] Contract tests written for GET /expenses endpoint (using supertest or similar)
-- [ ] Contract tests written for POST /expenses endpoint
-- [ ] Contract tests written for GET /expenses/summary endpoint
-- [ ] Contract tests initially fail when executed (confirming endpoints don't exist yet)
-- [ ] Contract tests integrated into Test & Coverage - API CI job
-- [ ] Test & Coverage - API CI job configured to allow failures initially (tests expected to fail)
-- [ ] build-review-packet CI job updated to generate OpenAPI HTML documentation (using Redoc or Scalar)
-- [ ] OpenAPI HTML documentation file generated and included in review-artifacts
-- [ ] review-artifacts/index.html updated with link to OpenAPI documentation
-- [ ] Pull Request opened with all changes
-- [ ] PR includes openapi.yaml file
-- [ ] PR includes contract test files
+- [x] OpenAPI specification file created/updated at `/specs/core/openapi.yaml`
+- [x] OpenAPI spec defines GET /expenses endpoint with pagination parameters
+- [x] OpenAPI spec defines POST /expenses endpoint with request body schema
+- [x] OpenAPI spec defines GET /expenses/summary endpoint
+- [x] OpenAPI spec defines shared Error Envelope schema referenced by all error responses
+- [x] OpenAPI spec includes request-id header support
+- [x] spec-check CI job created and configured to validate openapi.yaml
+- [x] spec-check CI job set as required status check for PRs (workflow created; manual GitHub configuration documented)
+- [x] spec-check CI job passes when run against the new openapi.yaml file
+- [x] Contract tests written for GET /expenses endpoint (using supertest or similar)
+- [x] Contract tests written for POST /expenses endpoint
+- [x] Contract tests written for GET /expenses/summary endpoint
+- [x] Contract tests initially fail when executed (confirming endpoints don't exist yet)
+- [x] Contract tests integrated into Test & Coverage - API CI job
+- [x] Test & Coverage - API CI job configured to allow failures initially (tests expected to fail)
+- [x] build-review-packet CI job updated to generate OpenAPI HTML documentation (using Redoc or Scalar)
+- [x] OpenAPI HTML documentation file generated and included in review-artifacts
+- [x] review-artifacts/index.html updated with link to OpenAPI documentation
+- [x] Pull Request opened with all changes
+- [x] PR includes openapi.yaml file
+- [x] PR includes contract test files
 - [ ] PR reviewed and approved
 - [ ] PR merged to target branch
 
