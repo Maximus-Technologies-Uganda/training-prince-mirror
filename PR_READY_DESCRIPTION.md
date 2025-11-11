@@ -5,6 +5,14 @@
 **Tests**: ✅ All 103 passing  
 **Coverage**: ✅ 70% threshold enforced
 
+## Spec URL
+
+PRI-2576
+
+## Figma Dev Mode Link
+
+N/A - Backend API feature, no UI design required
+
 ---
 
 ## 📋 Summary
