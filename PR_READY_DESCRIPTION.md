@@ -7,7 +7,7 @@
 
 ## Spec URL
 
-PRI-2576
+Spec: https://linear.app/maximus-technologies/issue/PRI-2576
 
 ## Figma Dev Mode Link
 
