@@ -34,17 +34,28 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      - name: Start frontend server
-        run: cd frontend && npm run serve &
-        timeout-minutes: 1
+      - name: Start frontend server in background
+        run: cd frontend && npm run serve > server.log 2>&1 &
+        shell: bash
 
-      - name: Wait for server to start
+      - name: Wait for server to be ready
         run: |
-          timeout 30 bash -c 'until curl -f http://127.0.0.1:5173 2>/dev/null; do sleep 1; done'
+          for i in {1..30}; do
+            if curl -s http://127.0.0.1:5173 > /dev/null 2>&1; then
+              echo "Server is ready"
+              exit 0
+            fi
+            echo "Waiting for server... attempt $i/30"
+            sleep 1
+          done
+          echo "Server failed to start"
+          cat frontend/server.log || true
+          exit 1
+        shell: bash
 
       - name: Run Playwright smoke tests
-        run: cd frontend && npx playwright test
-        if: always()
+        run: cd frontend && npx playwright test --reporter=html,json
+        timeout-minutes: 5
 
       - name: Upload test results
         if: always()
