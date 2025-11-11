@@ -5,14 +5,12 @@ on:
     branches: [main, development, 018-title-week-4]
   pull_request:
     branches: [development]
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/playwright-e2e-smoke.yml'
 
 jobs:
   smoke-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    if: ${{ !contains(github.head_ref, 'coverage-hardening') && !contains(github.head_ref, 'backend') && !contains(github.head_ref, 'api') }}
 
     steps:
       - name: Checkout code
