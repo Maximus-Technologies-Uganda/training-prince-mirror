@@ -1,0 +1,157 @@
+================================================================================
+QUICK START: Create Linear Sub-Issues for 022-title-week-5 (Week 5 API Endpoints)
+================================================================================
+
+⚡ TL;DR - Run this in your terminal:
+
+  1. export LINEAR_API_KEY="your-api-key-from-linear.app/settings/api"
+  2. cd /Users/prnceb/Desktop/WORK/hello-world
+  3. node create-linear-sub-issues-022.mjs
+
+================================================================================
+WHAT THIS DOES
+================================================================================
+
+✅ Creates 27 sub-issues under parent issue PRI-2472 in Linear
+✅ Each sub-issue maps to a task in specs/022-title-week-5/tasks.md
+✅ Sub-issues are ready to assign and track progress
+✅ Includes all API endpoint implementation tasks:
+   - Contract tests (TDD-first)
+   - Type definitions & validation schemas
+   - OpenAPI spec updates
+   - Route implementation (healthz + convert)
+   - Integration & unit tests
+   - Verification & CI/CD validation
+
+================================================================================
+STEP-BY-STEP INSTRUCTIONS
+================================================================================
+
+Step 1: Get Your Linear API Key
+  → Go to: https://linear.app/settings/api
+  → Click "Create API Key"
+  → Copy the key (looks like: lin_sk_abc123...)
+
+Step 2: Set Environment Variable in Terminal
+  $ export LINEAR_API_KEY="lin_sk_your-key-here"
+
+Step 3: Run the Script
+  $ cd /Users/prnceb/Desktop/WORK/hello-world
+  $ node create-linear-sub-issues-022.mjs
+
+Step 4: Watch It Work
+  Script will:
+  ✓ Validate your API key
+  ✓ Look up parent issue PRI-2472
+  ✓ Create 27 sub-issues (one per task)
+  ✓ Show you a summary
+
+Step 5: View Results
+  → Go to: https://linear.app/issue/PRI-2472
+  → You'll see all 27 sub-issues created and linked
+
+================================================================================
+SUB-ISSUES THAT WILL BE CREATED
+================================================================================
+
+Phase 1: Specification & Contracts (TDD Foundation)
+  T001-T003: Contract tests for GET /healthz and POST /convert
+  
+Phase 2: Types & Schemas
+  T004-T006: TypeScript types, Zod schemas, validation middleware
+
+Phase 3: OpenAPI Specification
+  T007-T009: Define both endpoints in OpenAPI spec
+
+Phase 4: Core Implementation
+  T010-T013: Converter service, GET/POST routes, server registration
+
+Phase 5: Integration & Unit Tests
+  T014-T018: Supertest + Vitest coverage for all scenarios
+
+Phase 6: Verification
+  T019-T027: Run tests, verify coverage, CI workflow, quickstart validation
+
+================================================================================
+DOCUMENTATION
+================================================================================
+
+For detailed instructions and troubleshooting:
+  → Read: GUIDE_CREATE_LINEAR_SUB_ISSUES_022.md
+
+For task execution and dependencies:
+  → Read: specs/022-title-week-5/tasks.md
+
+For feature specification:
+  → Read: specs/022-title-week-5/spec.md
+
+For data model details:
+  → Read: specs/022-title-week-5/data-model.md
+
+For testing the endpoints:
+  → Read: specs/022-title-week-5/quickstart.md
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+❌ "LINEAR_API_KEY environment variable not set"
+  → Run: export LINEAR_API_KEY="your-key"
+  → Make sure to do this in the SAME terminal session
+
+❌ "Could not find parent issue: PRI-2472"
+  → Verify PRI-2472 exists in Linear
+  → Verify you have permission to access it
+  → Check your API key is correct
+
+❌ Script runs but creates 0 sub-issues
+  → Check error messages carefully
+  → Verify your API key has appropriate permissions
+  → Try creating a test issue manually in Linear
+
+❌ Rate limiting or "too many requests" error
+  → Wait 30 seconds and retry
+  → The script has delays built in, but Linear has rate limits
+
+================================================================================
+WHAT HAPPENS NEXT
+================================================================================
+
+After creating sub-issues:
+
+1. View the issues at: https://linear.app/issue/PRI-2472
+2. Assign tasks to team members
+3. Start implementation following specs/022-title-week-5/tasks.md
+4. Update Linear status as work progresses
+5. Complete all 27 tasks to finish the feature
+
+Estimated time for full feature:
+  - Contract tests & schemas: ~1 hour
+  - Route implementation: ~1 hour  
+  - Integration tests: ~2 hours
+  - Unit tests & verification: ~1 hour
+  - CI/CD & review: ~30 minutes
+  → Total: ~5.5 hours for entire feature
+
+================================================================================
+QUESTIONS? NEED HELP?
+================================================================================
+
+1. Read the detailed guide: GUIDE_CREATE_LINEAR_SUB_ISSUES_022.md
+2. Check the script output for specific error messages
+3. Verify your API key at: https://linear.app/settings/api
+4. View created issues at: https://linear.app/issue/PRI-2472
+
+================================================================================
+READY TO GO?
+
+Run this command now:
+
+  export LINEAR_API_KEY="your-api-key" && \
+  cd /Users/prnceb/Desktop/WORK/hello-world && \
+  node create-linear-sub-issues-022.mjs
+
+Good luck! 🚀
+
+================================================================================
+

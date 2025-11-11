@@ -1,0 +1,41 @@
+COPY AND PASTE THIS COMMAND TO CREATE ALL 25 SUB-ISSUES:
+
+export LINEAR_API_KEY="your-api-key-from-linear.app/settings/api" && cd /Users/prnceb/Desktop/WORK/hello-world && node create-linear-sub-issues-025.mjs
+
+---
+
+Steps:
+1. Go to https://linear.app/settings/api and copy your API key
+2. Replace "your-api-key-from-linear.app/settings/api" with your actual key
+3. Paste the full command into your terminal
+4. Hit Enter
+
+Example (DO NOT USE THIS KEY):
+export LINEAR_API_KEY="lin_api_1234567890abcdefghijklmnopqrstuv" && cd /Users/prnceb/Desktop/WORK/hello-world && node create-linear-sub-issues-025.mjs
+
+---
+
+Expected output:
+🚀 Creating 25 Linear sub-issues
+
+Parent Issue: PRI-2545
+Title: Week 5 Day-0: Final Hygiene & Migration to GitHub Projects
+Spec: 025-week-5-day
+
+🔍 Fetching team ID from parent issue...
+✅ Team ID: ENG
+
+📋 Phase A: Preparation & Branch Cleanup (T001-T003)
+  ✅ PRI-2546: T001 - Update main branch README with Week 5 paths
+  ✅ PRI-2547: T002 - Identify and remove stray files from main branch
+  ✅ PRI-2548: T003 - Document exact CI status check names from existing workflows
+
+⚙️  Phase B: Configuration (T004-T010)
+  ✅ PRI-2549: T004 - Configure branch protection rule for main branch
+  ... (and so on for all 25 tasks)
+
+📊 Summary: Successfully created 25/25 sub-issues
+
+✨ All 25 sub-issues created under PRI-2545
+
+

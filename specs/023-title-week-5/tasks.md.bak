@@ -1,0 +1,395 @@
+# Tasks: Week 5: Implement MVP API Endpoints (Expenses)
+
+**Input**: Design documents from `specs/023-title-week-5/`  
+**Feature**: Week 5: Implement MVP API Endpoints (Expenses)  
+**Branch**: `023-title-week-5`  
+**Status**: Ready for execution  
+**Parent Issue**: PRI-2501 (Linear)
+
+---
+
+## Overview
+
+This task specification implements the POST /expenses and GET /expenses/summary MVP endpoints with validation, aggregation, and filtering capabilities. Tasks are ordered by dependency following TDD principles: specification → contracts → types → services → implementation → integration → documentation.
+
+**Total Tasks**: 27 primary tasks + 5 polish tasks  
+**Estimated Duration**: 8-10 hours  
+**Test Coverage Target**: ≥80% unit, ≥70% integration
+
+---
+
+## Phase 4.1: Specification & Contract Tests (TDD Foundation)
+
+**CRITICAL: Specification-first workflow - contracts define behavior**
+
+- [X] T001 [P] Create contract test `api/tests/contract/expenses.contract.test.ts` validating POST `/expenses` request schema matches spec (amount > 0, category string, date ISO 8601) with Zod error assertions; must fail initially (no implementation)
+
+- [X] T002 [P] Create contract test `api/tests/contract/expenses.contract.test.ts` - POST `/expenses` response schema validation: response includes `id` (UUID), `amount`, `category`, `date` fields; must pass when expense created successfully
+
+- [X] T003 [P] Create contract test `api/tests/contract/expenses.contract.test.ts` - validation error cases: missing required fields, negative amount, zero amount, invalid date format; each returns HTTP 400 with error schema
+
+- [X] T004 [P] Create contract test `api/tests/contract/expenses.contract.test.ts` - GET `/expenses/summary` response schema validation: returns object with `total` (number), `count` (number), `filters` (object); must pass when summary retrieved
+
+- [X] T005 [P] Create contract test `api/tests/contract/expenses.contract.test.ts` - GET `/expenses/summary` query parameter validation: category filter (string), month filter (YYYY-MM format), both filters simultaneously all result in correct schema responses
+
+---
+
+## Phase 4.2: Type Definitions & Validation Schemas
+
+**All types must be defined before implementation**
+
+- [X] T006 [P] Create `api/src/types/index.ts` with TypeScript interfaces:
+  - `Expense` (id: string, amount: number, category: string, date: string)
+  - `ExpenseSummary` (total: number, count: number, filters: object)
+  - `CreateExpenseRequest` (amount, category, date)
+  - `GetExpenseSummaryQuery` (category?, month?)
+  - `ValidationErrorResponse` (errors array with field and message)
+
+- [ ] T007 [P] Create `api/src/schemas/index.ts` with Zod validation schemas:
+  - `CreateExpenseSchema` with `amount.positive()` (reject ≤0), `category.min(1)` (non-empty), `date.regex(/^\d{4}-\d{2}-\d{2}$/)` with custom error messages showing expected format and received value
+  - Custom refine for date to validate actual date exists (e.g., 2025-02-30 invalid)
+  - Export formatted error responses that match API error schema
+
+- [ ] T008 [P] Create `api/src/middleware/validation.ts` - enhance existing or create `validateBody` middleware:
+  - Catches Zod validation errors
+  - Extracts field name and message
+  - Returns HTTP 400 with standardized error format: `{ errors: [{ field, message }] }`
+  - Includes descriptive messages: "amount must be greater than 0", "date must be in YYYY-MM-DD format (received: {value})"
+
+---
+
+## Phase 4.3: OpenAPI Specification Update
+
+**Specification must be committed before implementation**
+
+- [ ] T009 Update `/api/spec/openapi.yaml` with POST `/expenses` endpoint:
+  - Request body schema with amount (positive number), category (string), date (ISO 8601)
+  - Response schema 201 Created: id (UUID), amount, category, date
+  - Response schema 400 Bad Request: errors array with field/message structure
+  - Example payloads for both success and error cases
+
+- [ ] T010 Update `/api/spec/openapi.yaml` with GET `/expenses/summary` endpoint:
+  - Query parameters: category (optional string), month (optional YYYY-MM format)
+  - Response schema 200: total (number), count (number), filters (object)
+  - Example responses: no filters, category only, month only, both filters, empty result
+
+- [ ] T011 Update `/api/spec/openapi.yaml` with complete error response schema for both endpoints
+
+---
+
+## Phase 4.4: Expense Service & Storage Layer
+
+**Business logic and persistence abstraction**
+
+- [ ] T012 [P] Create `api/src/services/expenses.ts` with `ExpenseStore` class:
+  - Private in-memory array: `private expenses: Expense[] = []`
+  - Method `create(request: CreateExpenseRequest): Expense`
+    - Generate UUID via `crypto.randomUUID()`
+    - Create object with id, amount, category, date
+    - Add to array and return
+  - Method `getAll(): Expense[]` - return copy of array
+  - Method `filter(category?: string, month?: string): Expense[]`
+    - If category: filter expenses where category matches (case-sensitive per spec)
+    - If month: filter where date starts with YYYY-MM
+    - Support both filters applied together (AND logic)
+    - Return filtered array
+
+- [ ] T013 [P] Create `api/src/services/expenses.ts` continuation - `ExpenseStore` aggregation:
+  - Method `summarize(filters?: { category?: string, month?: string }): ExpenseSummary`
+    - Call filter() with provided filters (or empty object)
+    - Calculate `total = sum of filtered amounts`, `count = length of filtered array`
+    - Return object: `{ total, count, filters: filters || {} }`
+    - Return `{ total: 0, count: 0, filters: {...} }` if no matches
+
+- [ ] T014 [P] Create singleton export in `api/src/services/expenses.ts`:
+  - Export instance: `export const expenseStore = new ExpenseStore()`
+  - This allows tests to reset state if needed and routes to access shared store
+
+---
+
+## Phase 4.5: Core Route Implementation (Make Contracts Pass)
+
+**Routes must pass contract tests - implementation driven by specs**
+
+- [ ] T015 Implement POST `/expenses` route handler in `api/src/routes/expenses.ts`:
+  - Accept validated request body via middleware (T008)
+  - Call `expenseStore.create(request)` from service
+  - Return response with 201 status code: `{ id, amount, category, date }`
+  - Validation errors automatically handled by middleware → 400
+
+- [ ] T016 Implement GET `/expenses/summary` route handler in `api/src/routes/expenses.ts`:
+  - Extract query parameters: `category`, `month` (both optional)
+  - Call `expenseStore.summarize({ category, month })` from service
+  - Return response with 200 status code: `{ total, count, filters }`
+  - Always return 200 even if no expenses match (per spec)
+
+- [ ] T017 Register routes in `api/src/server.ts`:
+  - Import `expenses` router from `api/src/routes/expenses.ts`
+  - Mount at `/expenses` path using `app.use('/expenses', expensesRouter)`
+  - Verify routes accessible at POST `/expenses` and GET `/expenses/summary`
+  - Ensure validation middleware applied to POST requests
+
+---
+
+## Phase 4.6: Integration Tests (Full Endpoint Behavior)
+
+**Test all acceptance scenarios and error cases**
+
+- [ ] T018 [P] Create `api/tests/integration/expenses.test.ts` - POST /expenses success cases (Supertest):
+  - POST with `{ amount: 25.50, category: "food", date: "2025-11-05" }` returns 201 with all fields including UUID in id
+  - POST with `{ amount: 100, category: "transport", date: "2025-11-01" }` returns 201
+  - Response id field is valid UUID v4 format
+  - Amount and category echo correctly in response
+
+- [ ] T019 [P] Create `api/tests/integration/expenses.test.ts` - POST /expenses validation error cases:
+  - Missing `amount` returns 400 with error field "amount"
+  - Missing `category` returns 400 with error field "category"
+  - Missing `date` returns 400 with error field "date"
+  - Negative amount returns 400 with field "amount" and message "amount must be greater than 0"
+  - Zero amount returns 400 with same message
+  - Non-numeric amount returns 400
+  - Empty string category returns 400
+  - Whitespace-only category returns 400
+  - Invalid date format (e.g., "11/05/2025") returns 400 with message showing expected format and received value
+  - Invalid calendar date (e.g., "2025-13-01") returns 400
+
+- [ ] T020 [P] Create `api/tests/integration/expenses.test.ts` - GET /expenses/summary no filters:
+  - After creating expenses: food 20, transport 30, food 15 across different dates
+  - GET `/expenses/summary` returns 200 with total 65, count 3, filters: {}
+  - Response structure verified
+
+- [ ] T021 [P] Create `api/tests/integration/expenses.test.ts` - GET /expenses/summary with category filter:
+  - GET `/expenses/summary?category=food` returns 200 with total 35 (20+15), count 2, filters: { category: "food" }
+  - GET `/expenses/summary?category=transport` returns total 30, count 1
+  - GET `/expenses/summary?category=nonexistent` returns total 0, count 0, filters: { category: "nonexistent" }
+
+- [ ] T022 [P] Create `api/tests/integration/expenses.test.ts` - GET /expenses/summary with month filter:
+  - Create expenses across months: 2025-10-15 (100), 2025-11-01 (20), 2025-11-15 (45)
+  - GET `/expenses/summary?month=2025-11` returns total 65 (20+45), count 2, filters: { month: "2025-11" }
+  - GET `/expenses/summary?month=2025-10` returns total 100, count 1
+  - GET `/expenses/summary?month=2025-12` returns total 0, count 0, filters: { month: "2025-12" }
+
+- [ ] T023 [P] Create `api/tests/integration/expenses.test.ts` - GET /expenses/summary with both filters:
+  - GET `/expenses/summary?category=food&month=2025-11` returns correct aggregation with both filters applied (AND logic)
+  - filters object includes both category and month keys
+  - Verify filters applied independently in combinations
+
+---
+
+## Phase 4.7: Unit Tests (Core Logic)
+
+**Business logic verification with high coverage target**
+
+- [ ] T024 [P] Create `api/tests/unit/expenses.test.ts` - ExpenseStore.create():
+  - Creates expense with provided fields
+  - Assigns UUID to id field
+  - Returns object matching Expense interface
+  - Multiple calls generate different IDs
+  - Test with various amounts (1, 0.01, 999.99)
+  - Test with various categories (single char, long string, special chars)
+
+- [ ] T025 [P] Create `api/tests/unit/expenses.test.ts` - ExpenseStore.filter():
+  - Filter by category returns only matching expenses
+  - Filter by month returns only matching expenses (date.startsWith(month))
+  - Filter by both returns intersection (AND logic)
+  - Empty array when no matches
+  - Original array unchanged (returns new array)
+
+- [ ] T026 [P] Create `api/tests/unit/expenses.test.ts` - ExpenseStore.summarize():
+  - No filter: total = sum of all amounts, count = total expenses
+  - Category filter: correct subset aggregation
+  - Month filter: correct subset aggregation
+  - Both filters: correct AND logic aggregation
+  - Empty expenses: returns { total: 0, count: 0, filters: {} }
+  - Decimal amounts aggregated correctly (e.g., 10.5 + 20.75 = 31.25)
+  - No matching expenses: returns empty summary with filters preserved
+
+---
+
+## Phase 4.8: Coverage Verification
+
+**Ensure test coverage meets or exceeds requirements**
+
+- [ ] T027 [P] Run `npm run test:coverage` in `api/` directory and verify:
+  - Unit test coverage ≥80% statements for `api/src/services/expenses.ts`
+  - Unit test coverage ≥80% statements for `api/src/schemas/index.ts`
+  - Integration test coverage ≥70% overall for expense endpoints
+  - Generate coverage report and document in PR
+
+---
+
+## Phase 4.9: Documentation & Manual Testing
+
+**Specification validation and docs**
+
+- [ ] T028 Update `api/README.md` or create endpoint documentation:
+  - Link to OpenAPI spec for `/expenses` and `/expenses/summary`
+  - Quick reference for curl examples from quickstart.md
+  - Environment setup instructions
+
+- [ ] T029 Execute quickstart.md acceptance scenarios manually:
+  - Run API server: `npm run dev` from `api/` directory
+  - Execute Scenario 1-9 from quickstart.md with curl or Postman
+  - Verify each scenario passes with expected responses
+  - Document any issues or clarifications needed
+
+- [ ] T030 Verify no console errors or warnings:
+  - Run tests with `npm run test` in `api/`
+  - Run server with `npm run dev` and make sample requests
+  - Check for TypeScript type errors: `npm run typecheck` (if available)
+  - Ensure linting passes: `npm run lint` (if available)
+
+---
+
+## Phase 5: Polish & Final Validation
+
+**Optional enhancements (deferred if not in scope)**
+
+- [ ] T031 [POLISH] Add JSDoc comments to all exported functions in service/routes
+- [ ] T032 [POLISH] Add error handler middleware for 500 errors (if not present)
+- [ ] T033 [POLISH] Validate OpenAPI spec with `npm run validate:openapi` (if available)
+- [ ] T034 [POLISH] Create Postman collection from OpenAPI spec for team sharing
+- [ ] T035 [POLISH] Add request/response logging via Pino logger
+
+---
+
+## Dependency Graph
+
+```
+Phase 4.1: Contract Tests
+  ↓ (define spec behavior)
+Phase 4.2: Types & Schemas (T006-T008)
+  ├→ [P] Can run in parallel with Phase 4.3
+  ↓
+Phase 4.3: OpenAPI Spec (T009-T011)
+  ↓
+Phase 4.4: Service Layer (T012-T014) 
+  ├→ [P] Can start once schemas defined
+  ↓
+Phase 4.5: Routes (T015-T017)
+  ├→ [P] Depends on Service Layer ready
+  ↓
+Phase 4.6: Integration Tests (T018-T023)
+  ├→ [P] All tests can run in parallel
+  ├→ Depends on Routes implemented
+  ↓
+Phase 4.7: Unit Tests (T024-T026)
+  ├→ [P] All tests can run in parallel
+  ├→ Depends on Service Layer implemented
+  ↓
+Phase 4.8: Coverage (T027)
+  ├→ Depends on all tests passing
+  ↓
+Phase 4.9: Docs & Manual Testing (T028-T030)
+  ↓
+Phase 5: Polish [OPTIONAL] (T031-T035)
+```
+
+---
+
+## Parallel Execution Groups
+
+**Tasks that can run in parallel** [P]:
+
+**Group 1** (Specification & contracts - no dependencies):
+- T001, T002, T003, T004, T005
+
+**Group 2** (Types & schemas - independent):
+- T006, T007, T008
+
+**Group 3** (Service implementation - can start after schemas):
+- T012, T013, T014
+
+**Group 4** (Integration tests - all independent):
+- T018, T019, T020, T021, T022, T023
+
+**Group 5** (Unit tests - all independent):
+- T024, T025, T026
+
+---
+
+## Quick Task Reference
+
+| Task | File | Dependencies | Est. Time |
+|------|------|--------------|-----------|
+| T001-T005 | `api/tests/contract/expenses.contract.test.ts` | None | 1-2h |
+| T006 | `api/src/types/index.ts` | None | 30min |
+| T007 | `api/src/schemas/index.ts` | T006 | 1h |
+| T008 | `api/src/middleware/validation.ts` | T007 | 30min |
+| T009-T011 | `api/spec/openapi.yaml` | None | 1h |
+| T012-T014 | `api/src/services/expenses.ts` | T007 | 1-1.5h |
+| T015-T017 | `api/src/routes/expenses.ts` + `server.ts` | T012, T008 | 1h |
+| T018-T023 | `api/tests/integration/expenses.test.ts` | T015 | 2h |
+| T024-T026 | `api/tests/unit/expenses.test.ts` | T012 | 1.5h |
+| T027 | Coverage verification | All tests | 30min |
+| T028-T030 | Docs & manual testing | T015, T029 | 1h |
+| T031-T035 | Polish tasks | All | 1h [optional] |
+
+**Total Estimated**: 10-12 hours
+
+---
+
+## Execution Instructions
+
+### To start on a single task:
+```bash
+# Example: Start on T006 (types definition)
+task run T006
+```
+
+### To run tests in batch:
+```bash
+# Run contract tests first
+npm run test -- api/tests/contract/expenses.contract.test.ts
+
+# Run integration tests
+npm run test -- api/tests/integration/expenses.test.ts
+
+# Run unit tests
+npm run test -- api/tests/unit/expenses.test.ts
+
+# Run all with coverage
+npm run test:coverage
+```
+
+### To verify routes working:
+```bash
+cd api
+npm run dev
+
+# In another terminal
+curl -X POST http://localhost:3000/expenses \
+  -H "Content-Type: application/json" \
+  -d '{ "amount": 25.50, "category": "food", "date": "2025-11-05" }'
+
+curl http://localhost:3000/expenses/summary
+```
+
+---
+
+## Constitutional Principles Compliance
+
+- **Principle I (No Logic Duplication)**: Business logic isolated in ExpenseStore service; routes only handle HTTP layer
+- **Principle II (Test Coverage Mandate)**: ≥80% unit tests (services), ≥70% integration tests required per spec
+- **Principle III (Reviewability)**: Contract tests define spec; clear separation of concerns
+- **Principle IV (PR Craft)**: Single focused PR with ~300-400 LOC for implementation, ~800+ LOC for tests
+- **Principle V (Simplicity)**: Uses existing stack (Express, Zod, Vitest, Supertest); no new tools required
+
+---
+
+## Success Criteria
+
+✅ All 27 tasks completed  
+✅ All contract tests passing (0 failures)  
+✅ All integration tests passing (10+ tests)  
+✅ All unit tests passing (15+ tests)  
+✅ Coverage ≥80% unit, ≥70% integration  
+✅ OpenAPI spec updated with both endpoints  
+✅ Quickstart.md scenarios validated manually  
+✅ Code review ready: no console errors/warnings  
+✅ Ready for merge to `development` branch
+
+---
+
+*Generated for spec 023-title-week-5 | Ready for Linear sub-issue automation*
+
