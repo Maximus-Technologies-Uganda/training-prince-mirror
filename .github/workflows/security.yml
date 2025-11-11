@@ -11,9 +11,6 @@ permissions:
   security-events: write
   pull-requests: read
 
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   # CodeQL Analysis Job
   analyze:
@@ -31,10 +28,12 @@ jobs:
         # CodeQL supports: [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
 
     steps:
+      steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ github.token }}
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -88,6 +87,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ github.token }}
 
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
