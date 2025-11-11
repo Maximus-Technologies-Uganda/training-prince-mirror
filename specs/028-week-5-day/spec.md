@@ -72,14 +72,14 @@ The pull request is reviewed and merged."
 As a reviewer or API consumer, I need:
 1. Access to live, published API documentation that is automatically generated from the OpenAPI specification
 2. A review packet that includes all necessary artifacts (coverage, test reports, and API documentation) in one accessible location
-3. Confidence that the UI and API are properly integrated through automated smoke tests that validate end-to-end workflows
+3. Confidence that the Expense UI and API are properly integrated through automated smoke tests that validate end-to-end workflows
 
 This ensures reviewers can access complete documentation, API consumers can discover and understand the API, and the development team can verify UI-API integration before deployment.
 
 ### Acceptance Scenarios
 1. **Given** an OpenAPI specification exists, **When** a CI workflow runs, **Then** an HTML documentation file is generated and published to GitHub Pages, making it accessible to all users
 2. **Given** the review packet is generated, **When** a reviewer accesses review-artifacts/index.html, **Then** they can navigate to the live API documentation via a link, view coverage reports, and access Playwright test results
-3. **Given** a Playwright smoke test is executed, **When** the test performs a UI action that triggers an API call, **Then** the test validates that the UI updates correctly after the API call completes (e.g., new item appears, summary updates)
+3. **Given** a Playwright smoke test is executed, **When** the test performs a UI action (creating an expense) that triggers an API call, **Then** the test validates that the UI updates correctly after the API call completes (e.g., new expense appears, summary updates)
 4. **Given** the Playwright Smoke CI job runs, **When** all smoke tests execute, **Then** the UI-API integration is validated and the job passes, confirming the system works end-to-end
 5. **Given** API documentation is published to GitHub Pages, **When** a user accesses the documentation URL, **Then** they can view the complete API specification in an interactive format
 
@@ -98,7 +98,7 @@ This ensures reviewers can access complete documentation, API consumers can disc
 ### Functional Requirements
 
 #### API Documentation Generation and Publishing
-- **FR-001**: System MUST generate an HTML documentation file from the openapi.yaml specification file using a documentation generation tool (e.g., Redoc or Scalar)
+- **FR-001**: System MUST generate an HTML documentation file from the openapi.yaml specification file using Redoc
 - **FR-002**: System MUST execute the documentation generation step as part of a CI workflow (either as a new step or within an existing workflow)
 - **FR-003**: System MUST publish the generated HTML documentation file to GitHub Pages at the path docs/api.html
 - **FR-004**: System MUST configure the deploy-pages workflow (or equivalent) to include the documentation generation and publishing steps
@@ -115,19 +115,20 @@ This ensures reviewers can access complete documentation, API consumers can disc
 
 #### Playwright UI + API Smoke Test
 - **FR-013**: System MUST provide a Playwright smoke test that validates UI and API integration
-- **FR-014**: System MUST ensure the smoke test loads a UI component (Expense or To-Do interface)
-- **FR-015**: System MUST ensure the smoke test performs a user action that triggers an API call (e.g., creating an expense, adding a task)
+- **FR-014**: System MUST ensure the smoke test loads the Expense UI component
+- **FR-015**: System MUST ensure the smoke test performs a user action that triggers an API call (e.g., creating an expense)
 - **FR-016**: System MUST ensure the smoke test waits for the API call to complete before making assertions
-- **FR-017**: System MUST ensure the smoke test asserts that the UI updates correctly after the API call (e.g., new item appears in the list, summary total changes, form resets)
-- **FR-018**: System MUST integrate the new smoke test into the Playwright Smoke CI job
+- **FR-017**: System MUST ensure the smoke test asserts both that: (a) the API request succeeded (HTTP 200 response), AND (b) the UI updated correctly to display the new expense data (item appears in list, summary total changes)
+- **FR-018**: System MUST ensure the smoke test asserts that the API response was successfully received and processed
 - **FR-019**: System MUST ensure the Playwright Smoke CI job is configured as a required status check for pull requests
 - **FR-020**: System MUST ensure the smoke test provides clear failure messages if UI-API integration fails
-- **FR-021**: System MUST ensure the smoke test handles API errors gracefully and reports them appropriately
+- **FR-021**: System MUST ensure the smoke test fails if any API errors occur, with detailed error information including HTTP status code, response body, and error message for debugging purposes
 
 #### CI/CD Integration
 - **FR-022**: System MUST ensure all CI checks (spec-check, Test & Coverage - API, Playwright Smoke) pass before allowing merge
 - **FR-023**: System MUST ensure the Playwright Smoke CI job runs on every pull request
-- **FR-024**: System MUST ensure documentation generation and publishing workflows run on appropriate triggers (e.g., merge to main branch, or on PR)
+- **FR-024**: System MUST ensure API documentation is published to GitHub Pages on merge to main branch only
+- **FR-025**: System MUST generate validation/preview documentation on pull requests for verification purposes
 
 ### Key Entities
 
@@ -201,7 +202,7 @@ All of the following must be satisfied before this feature is considered complet
 
 ## Clarifications
 
-### Session 2025-01-27
+### Session 2025-01-27 (Prior)
 - Q: Which documentation tool should be used (Redoc vs Scalar)? → A: Either tool is acceptable; choose based on team preference and CI environment compatibility
 - Q: Should the smoke test cover both Expense and To-Do UIs, or just one? → A: At least one UI must be tested; covering both is preferred but one is sufficient to prove integration
 - Q: What specific API endpoints should the smoke test call? → A: The test should call endpoints that create or modify data (e.g., POST /expenses, POST /todos) to validate UI updates
@@ -209,6 +210,13 @@ All of the following must be satisfied before this feature is considered complet
 - Q: What happens if GitHub Pages is not available or configured? → A: The deploy-pages workflow should fail clearly, and documentation generation should be validated before publishing
 - Q: Should the smoke test run against a local API or deployed API? → A: The test should run against the API environment available in CI (typically local/test environment)
 - Q: What UI update assertions are required? → A: At minimum, the test must verify that data created via API appears in the UI (e.g., new item in list, updated summary). Additional assertions (form reset, error handling) are beneficial but not strictly required
+
+### Session 2025-11-11
+- Q: Which documentation tool should be used (Redoc vs Scalar)? → A: Redoc (mature, widely-adopted, excellent OpenAPI support, generates standalone HTML)
+- Q: Should the smoke test cover both Expense and To-Do UIs, or focus on one? → A: Expense only (focused scope, reduced maintenance burden)
+- Q: On which branch should API documentation be published to GitHub Pages? → A: Main branch only (production docs); optional preview on PRs
+- Q: What assertions should the smoke test validate? → A: Both visible data changes (new expense in list, updated total) AND verify API response success
+- Q: How should the smoke test handle API errors? → A: Fail with clear error details (status code, response body, error message)
 
 ---
 
