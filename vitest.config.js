@@ -9,9 +9,13 @@ export default defineConfig({
         singleFork: true
       }
     },
-    environment: 'jsdom',
+    environment: 'node',
     include: ['tests/**/*.test.js'],
     exclude: ['node_modules/**', 'frontend/**', 'coverage/**'],
+    environmentMatchGlobs: [
+      ['tests/stopwatch-ui-*.test.js', 'jsdom'],
+      ['tests/temp-converter.table.test.js', 'jsdom']
+    ],
     coverage: {
       all: true,
       provider: 'v8',

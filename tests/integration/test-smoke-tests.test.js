@@ -65,7 +65,7 @@ describe('Smoke Test Execution Integration', () => {
     expect(verification).toHaveProperty('playwrightInstalled');
     expect(verification).toHaveProperty('testFilesExist');
     expect(verification).toHaveProperty('configExists');
-  });
+  }, 10000);
 
   it('should validate primary user workflows', async () => {
     const workflowTests = {

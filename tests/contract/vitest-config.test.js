@@ -27,20 +27,20 @@ describe('Vitest Configuration Contract', () => {
       expect(coverage.thresholds).toBeDefined();
     });
 
-    it('should have statements threshold at 60%', () => {
-      expect(coverage.thresholds?.statements).toBe(60);
+    it('should have statements threshold at 70%', () => {
+      expect(coverage.thresholds?.statements).toBe(70);
     });
 
-    it('should have branches threshold at 50%', () => {
-      expect(coverage.thresholds?.branches).toBe(50);
+    it('should have branches threshold at 70%', () => {
+      expect(coverage.thresholds?.branches).toBe(70);
     });
 
-    it('should have functions threshold at 60%', () => {
-      expect(coverage.thresholds?.functions).toBe(60);
+    it('should have functions threshold at 70%', () => {
+      expect(coverage.thresholds?.functions).toBe(70);
     });
 
-    it('should have lines threshold at 60%', () => {
-      expect(coverage.thresholds?.lines).toBe(60);
+    it('should have lines threshold at 70%', () => {
+      expect(coverage.thresholds?.lines).toBe(70);
     });
   });
 
