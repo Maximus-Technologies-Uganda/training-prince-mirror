@@ -99,6 +99,12 @@ jobs:
           mkdir -p review-artifacts/ui-coverage-todo
           mkdir -p review-artifacts/ui-coverage-stopwatch
 
+      - name: Generate OpenAPI HTML Documentation
+        run: |
+          npm install -g @redocly/cli
+          redocly build-docs api/spec/openapi.yaml -o review-artifacts/openapi.html
+          echo "✅ OpenAPI HTML documentation generated"
+
       - name: Generate Coverage Index
         run: |
           node scripts/generate-coverage-index.js

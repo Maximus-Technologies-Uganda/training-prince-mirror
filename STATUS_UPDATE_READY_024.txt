@@ -1,0 +1,181 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║  ✅ READY TO UPDATE LINEAR SUB-ISSUES STATUS                             ║
+║                                                                           ║
+║  Feature: 024-title-week-5 (Rate Limiter for POST Routes)                ║
+║  Parent Issue: PRI-2532                                                  ║
+║  Action: Change status from "Triage" → "In Progress"                     ║
+║  Sub-Issues: 12 total                                                    ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+🚀 COMMAND TO RUN (Copy & Paste)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+export LINEAR_API_KEY="your-api-key" && \
+cd /Users/prnceb/Desktop/WORK/hello-world && \
+node update-linear-status-024.mjs
+
+
+📋 STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Get API Key
+   └─ https://linear.app/settings/api
+
+2. Replace "your-api-key" with actual key in command above
+
+3. Copy entire command block and run
+
+4. Watch for success output
+
+
+📊 EXPECTED OUTPUT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 Updating Linear sub-issues status for 024-title-week-5
+📍 Parent issue: PRI-2532
+
+🔍 Fetching parent issue...
+✅ Parent ID: [uuid]
+
+🔍 Fetching team ID...
+✅ Team ID: [uuid]
+
+🔍 Fetching "In Progress" state ID...
+✅ In Progress State ID: [uuid]
+
+🔍 Fetching child issues...
+✅ Found 12 sub-issues
+
+📝 Updating states...
+
+✅ PRI-2533: Triage → In Progress
+✅ PRI-2534: Triage → In Progress
+✅ PRI-2535: Triage → In Progress
+✅ PRI-2536: Triage → In Progress
+✅ PRI-2537: Triage → In Progress
+✅ PRI-2538: Triage → In Progress
+✅ PRI-2539: Triage → In Progress
+✅ PRI-2540: Triage → In Progress
+✅ PRI-2541: Triage → In Progress
+✅ PRI-2542: Triage → In Progress
+✅ PRI-2543: Triage → In Progress
+✅ PRI-2544: Triage → In Progress
+
+════════════════════════════════════════════════════
+📊 Summary:
+   ✅ Updated: 12
+   ⏭️  Already In Progress: 0
+   ❌ Failed: 0
+════════════════════════════════════════════════════
+
+✨ All sub-issues under PRI-2532 status updated
+🔗 View in Linear: https://linear.app/issues/PRI-2532
+
+
+📝 SCRIPT DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+File: update-linear-status-024.mjs
+Size: ~7.2 KB
+Type: Executable Node.js script
+
+What it does:
+  1. Validates LINEAR_API_KEY
+  2. Fetches parent issue (PRI-2532)
+  3. Gets team ID from parent
+  4. Finds "In Progress" state
+  5. Gets all 12 child issues
+  6. Updates each to "In Progress"
+  7. Reports status for each
+
+
+✅ STATUS CHANGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Before (current):              After (after running script):
+─────────────────────────      ────────────────────────────
+T001 → Triage                  T001 → In Progress ✅
+T002 → Triage                  T002 → In Progress ✅
+T003 → Triage                  T003 → In Progress ✅
+T004 → Triage                  T004 → In Progress ✅
+T005 → Triage                  T005 → In Progress ✅
+T006 → Triage                  T006 → In Progress ✅
+T007 → Triage                  T007 → In Progress ✅
+T008 → Triage                  T008 → In Progress ✅
+T009 → Triage                  T009 → In Progress ✅
+T010 → Triage                  T010 → In Progress ✅
+T011 → Triage                  T011 → In Progress ✅
+T012 → Triage                  T012 → In Progress ✅
+
+
+🔍 VERIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After running the command:
+
+1. Script shows "Updated: 12, Failed: 0"
+2. Check in Linear: https://linear.app/issues/PRI-2532
+3. All 12 sub-issues should show "In Progress" status
+4. Team members can now see them in their sprint boards
+
+
+⚠️ TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem: "Authentication required, not authenticated"
+→ API key is invalid/expired
+→ Get new key: https://linear.app/settings/api
+
+Problem: "Failed to fetch parent issue"
+→ PRI-2532 doesn't exist
+→ Verify in your Linear workspace
+
+Problem: "Found 0 sub-issues"
+→ Sub-issues haven't been created yet
+→ Run create-linear-sub-issues-024.mjs first
+
+Problem: "Could not find 'In Progress' state"
+→ Your workflow doesn't have this state
+→ Check your Linear team's workflow states
+
+
+🔗 RELATED SCRIPTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+create-linear-sub-issues-024.mjs
+   └─ Creates the 12 sub-issues under PRI-2532
+   └─ Run this FIRST if sub-issues don't exist yet
+
+update-linear-status-024.mjs
+   └─ Updates status of existing sub-issues
+   └─ Run this to change Triage → In Progress
+
+
+📚 DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COMMAND_UPDATE_STATUS_024.md
+   └─ Full instructions and documentation
+   └─ Step-by-step guide
+   └─ Troubleshooting FAQ
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+🎉 READY!
+
+Just run the command with your API key and all 12 sub-issues will be
+moved from "Triage" to "In Progress" status.
+
+Get your API key: https://linear.app/settings/api
+
+═══════════════════════════════════════════════════════════════════════════
+
+Created: 2025-11-05
+Feature: 024-title-week-5 - Rate Limiter for POST Routes
+Parent Issue: PRI-2532
+Status: ✅ READY
+
