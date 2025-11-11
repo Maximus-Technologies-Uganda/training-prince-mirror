@@ -62,7 +62,6 @@ jobs:
 
       - name: Run Playwright smoke tests
         run: cd frontend && npx playwright test --reporter=list --reporter=html
-        continue-on-error: true
 
       - name: Upload test results
         if: always()
