@@ -1,27 +1,46 @@
 /**
  * Expense Mapper Module
- * Handles mapping between API requests/responses and internal data structures
+ * Handles bidirectional mapping between API requests/responses and internal data structures.
+ * 
+ * Key responsibilities:
+ * 1. Request mapping: Convert raw API requests to validated expense objects
+ * 2. Response formatting: Format expense objects with metadata (IDs, timestamps)
+ * 3. Error mapping: Convert validation errors to OpenAPI-compliant error responses
+ * 
+ * Type conversions:
+ * - String amounts are converted to numbers BEFORE validation
+ * - This ensures the validator receives consistent types
+ * - All error responses follow standardized structure per OpenAPI contract
  */
 
 import { validateExpense } from './validator.js';
 
 /**
- * Maps request body to validated expense object
+ * Maps request body to validated expense object.
+ * 
+ * Implementation notes:
+ * - Type conversion: String amounts converted to numbers BEFORE validation
+ *   This is critical because validation checks: typeof amount !== 'number'
+ * - Normalizes optional fields: description defaults to empty string
+ * - Throws validation errors with field-specific details
+ * 
  * @param {Object} req - Express request object or request body
- * @returns {Object} Validated expense object
- * @throws {Error} If request data is invalid
+ * @returns {Object} Validated expense object with normalized fields
+ * @throws {Error} If request data is invalid (validation error)
  */
 export function mapRequestToExpense(req) {
   const body = req.body || req;
 
   try {
-    // Convert amount to number if it's a string
+    // Critical: Convert amount to number if it's a string
+    // This must happen BEFORE validation to ensure validator receives correct type
     let amount = body.amount;
     if (typeof amount === 'string') {
       amount = parseFloat(amount);
     }
 
     // Create normalized object for validation
+    // Includes all required fields and optional fields with defaults
     const normalizedExpense = {
       date: body.date,
       category: body.category,

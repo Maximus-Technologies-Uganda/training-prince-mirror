@@ -1,10 +1,26 @@
 /**
  * Expense Validator Module
- * Provides validation functions for expense data fields
+ * Provides comprehensive validation functions for all expense data fields.
+ * 
+ * All validation functions follow the same pattern:
+ * - Throw descriptive errors for invalid inputs
+ * - Return true for valid inputs
+ * - Provide field-specific error messages matching OpenAPI contract
+ * 
+ * Used by mapper.js to validate request data before persistence
+ * and by handlers.js to validate API input parameters.
  */
 
 /**
- * Validates if a date string is in valid ISO 8601 YYYY-MM-DD format
+ * Validates if a date string is in valid ISO 8601 YYYY-MM-DD format.
+ * 
+ * Implementation notes:
+ * - Uses regex to check YYYY-MM-DD format
+ * - Validates actual date existence (e.g., rejects Feb 31)
+ * - Critical: Compares parsed date components with input to catch invalid dates
+ *   JavaScript's Date constructor auto-corrects invalid dates (Feb 31 -> Mar 3)
+ *   So we must verify: date.getFullYear() === year && date.getMonth() === month-1 && date.getDate() === day
+ * 
  * @param {string} dateStr - Date string to validate
  * @returns {boolean} True if valid, false otherwise
  * @throws {Error} If date string is invalid format
@@ -14,13 +30,15 @@ export function validateDateFormat(dateStr) {
     throw new Error('Date is required');
   }
 
-  // Check YYYY-MM-DD format
+  // Check YYYY-MM-DD format using regex
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
   if (!dateRegex.test(dateStr)) {
     throw new Error('Invalid date format. Expected YYYY-MM-DD');
   }
 
   // Verify it's a valid date by parsing and checking if the date components match
+  // This is critical because JavaScript Date will auto-correct invalid dates
+  // e.g., new Date(2024, 1, 31) creates March 3, 2024, not Feb 31
   const [year, month, day] = dateStr.split('-').map(Number);
   const date = new Date(year, month - 1, day);
 
