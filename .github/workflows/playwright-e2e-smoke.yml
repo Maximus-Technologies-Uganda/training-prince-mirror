@@ -33,7 +33,7 @@ jobs:
         run: npm run build
 
       - name: Run Playwright smoke tests
-        run: npx playwright test tests/e2e/smoke/
+        run: npx playwright test frontend/tests/e2e/
         if: always()
 
       - name: Upload test results

@@ -1,0 +1,100 @@
+name: Generate & Deploy API Documentation
+
+on:
+  push:
+    branches: [main, development]
+    paths:
+      - 'api/spec/openapi.yaml'
+      - '.github/workflows/api-documentation.yml'
+      - 'package.json'
+  pull_request:
+    branches: [main, development]
+    paths:
+      - 'api/spec/openapi.yaml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "api-docs"
+  cancel-in-progress: true
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    outputs:
+      docs-artifact: ${{ steps.build.outputs.artifact-path }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Redoc CLI
+        run: npm install --save-dev redoc-cli
+
+      - name: Generate API documentation
+        id: build
+        run: |
+          mkdir -p docs
+          npx redoc-cli build -o docs/api.html api/spec/openapi.yaml
+          echo "artifact-path=docs/api.html" >> $GITHUB_OUTPUT
+          ls -lh docs/api.html
+
+      - name: Validate generated HTML
+        run: |
+          if [ ! -f docs/api.html ]; then
+            echo "❌ API documentation generation failed"
+            exit 1
+          fi
+          FILE_SIZE=$(stat -f%z docs/api.html 2>/dev/null || stat -c%s docs/api.html)
+          if [ "$FILE_SIZE" -lt 50000 ]; then
+            echo "❌ Generated HTML file too small (${FILE_SIZE} bytes)"
+            exit 1
+          fi
+          echo "✅ API documentation generated successfully (${FILE_SIZE} bytes)"
+
+      - name: Upload artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/'
+          retention-days: 7
+
+  deploy-docs:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}/api.html
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  pr-check:
+    if: github.event_name == 'pull_request'
+    needs: build-docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment PR with doc status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ API documentation generated successfully. Preview will be available on main branch deployment.'
+            })

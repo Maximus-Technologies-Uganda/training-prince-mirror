@@ -29,10 +29,10 @@ export default defineConfig({
         '**/.git/**'
       ],
       thresholds: process.env.VITEST_DISABLE_THRESHOLD === '1' ? undefined : {
-        statements: 60,
-        branches: 50,
-        functions: 60,
-        lines: 60
+        statements: 70,
+        branches: 70,
+        functions: 70,
+        lines: 70
       }
     }
   }
