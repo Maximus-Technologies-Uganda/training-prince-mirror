@@ -9,9 +9,13 @@ export default defineConfig({
         singleFork: true
       }
     },
-    environment: 'jsdom',
+    environment: 'node',
     include: ['tests/**/*.test.js'],
     exclude: ['node_modules/**', 'frontend/**', 'coverage/**'],
+    environmentMatchGlobs: [
+      ['tests/stopwatch-ui-*.test.js', 'jsdom'],
+      ['tests/temp-converter.table.test.js', 'jsdom']
+    ],
     coverage: {
       all: true,
       provider: 'v8',
@@ -29,10 +33,10 @@ export default defineConfig({
         '**/.git/**'
       ],
       thresholds: process.env.VITEST_DISABLE_THRESHOLD === '1' ? undefined : {
-        statements: 60,
-        branches: 50,
-        functions: 60,
-        lines: 60
+        statements: 70,
+        branches: 70,
+        functions: 70,
+        lines: 70
       }
     }
   }

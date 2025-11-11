@@ -114,6 +114,13 @@ jobs:
           echo "## Review Packet" > review.md
           echo "Generated: $(date)" >> review.md
 
+      - name: Validate Review Packet Links
+        run: |
+          if [ -f scripts/validate-review-packet-links.sh ]; then
+            chmod +x scripts/validate-review-packet-links.sh
+            ./scripts/validate-review-packet-links.sh
+          fi
+
       - name: Upload Review Packet Artifact
         uses: actions/upload-artifact@v4
         with:
