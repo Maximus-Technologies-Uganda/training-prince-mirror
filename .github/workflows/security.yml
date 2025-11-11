@@ -9,8 +9,10 @@ on:
 permissions:
   contents: read
   security-events: write
-  # For Dependency Review
   pull-requests: read
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   # CodeQL Analysis Job
@@ -90,24 +92,7 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          # Fail on high severity vulnerabilities in direct dependencies
           fail-on-severity: high
-          # Comment on PR with review findings
-          comment-summary-in-pr: true
-          # Allow GHSA advisory review
-          allow-ghsas: null
-          # Allow licenses (by default all are allowed)
-          allow-licenses: |
-            Apache-2.0
-            MIT
-            BSD-2-Clause
-            BSD-3-Clause
-            ISC
-            MPL-2.0
-            LGPL-2.1-only
-            LGPL-3.0-only
-            GPL-2.0-only
-            GPL-3.0-only
 
   # Security Summary Job
   security-summary:
