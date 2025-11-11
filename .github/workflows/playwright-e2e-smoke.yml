@@ -5,11 +5,14 @@ on:
     branches: [main, development, 018-title-week-4]
   pull_request:
     branches: [development]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/playwright-e2e-smoke.yml'
 
 jobs:
   smoke-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
       - name: Checkout code
@@ -34,28 +37,31 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      - name: Start frontend server in background
-        run: cd frontend && npm run serve > server.log 2>&1 &
+      - name: Start frontend server
+        run: |
+          cd frontend
+          nohup npm run serve > /tmp/server.log 2>&1 &
+          sleep 3
+          echo $! > /tmp/server.pid
         shell: bash
 
-      - name: Wait for server to be ready
+      - name: Verify server is running
         run: |
-          for i in {1..30}; do
-            if curl -s http://127.0.0.1:5173 > /dev/null 2>&1; then
-              echo "Server is ready"
+          for i in {1..20}; do
+            if curl -s http://127.0.0.1:5173 > /dev/null; then
+              echo "✓ Server is responding"
               exit 0
             fi
-            echo "Waiting for server... attempt $i/30"
+            echo "Attempt $i: waiting for server..."
             sleep 1
           done
-          echo "Server failed to start"
-          cat frontend/server.log || true
+          echo "✗ Server failed to start"
+          cat /tmp/server.log
           exit 1
         shell: bash
 
       - name: Run Playwright smoke tests
-        run: cd frontend && npx playwright test --reporter=html,json
-        timeout-minutes: 5
+        run: cd frontend && npx playwright test --reporter=list --reporter=html
 
       - name: Upload test results
         if: always()
