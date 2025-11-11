@@ -34,6 +34,14 @@ jobs:
       - name: Build frontend
         run: npm run build
 
+      - name: Start frontend server
+        run: cd frontend && npm run serve &
+        timeout-minutes: 1
+
+      - name: Wait for server to start
+        run: |
+          timeout 30 bash -c 'until curl -f http://127.0.0.1:5173 2>/dev/null; do sleep 1; done'
+
       - name: Run Playwright smoke tests
         run: cd frontend && npx playwright test
         if: always()
