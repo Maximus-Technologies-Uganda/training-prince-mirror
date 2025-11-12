@@ -5,6 +5,8 @@ Auto-generated from all feature plans. Last updated: 2025-11-11
 ## Active Technologies
 - JavaScript (Node.js, ES modules) + Vitest (v3.2.4), @vitest/coverage-v8, supertest, Playwright (v1.48.2) (029-coverage-hardening)
 - N/A (test-focused feature, no data persistence changes) (029-coverage-hardening)
+- JavaScript (Node.js ES modules) for backend; Node.js v18+ for CLI tools and scripts + Vitest v3.2.4, @vitest/coverage-v8, supertest, Playwright v1.48.2, Redoc CLI v0.13.21 (030-final-polish)
+- N/A for this feature (documentation-focused; uses existing CI artifacts and git tags) (030-final-polish)
 
 - Node.js (Redoc generation), YAML (OpenAPI spec), JavaScript (Playwright test) + Redoc CLI (documentation generation), Playwright (UI testing), GitHub Actions (CI/CD workflow) (028-week-5-day)
 
@@ -24,6 +26,7 @@ npm test && npm run lint
 Node.js (Redoc generation), YAML (OpenAPI spec), JavaScript (Playwright test): Follow standard conventions
 
 ## Recent Changes
+- 030-final-polish: Added JavaScript (Node.js ES modules) for backend; Node.js v18+ for CLI tools and scripts + Vitest v3.2.4, @vitest/coverage-v8, supertest, Playwright v1.48.2, Redoc CLI v0.13.21
 - 029-coverage-hardening: Added JavaScript (Node.js, ES modules) + Vitest (v3.2.4), @vitest/coverage-v8, supertest, Playwright (v1.48.2)
 
 - 028-week-5-day: Added Node.js (Redoc generation), YAML (OpenAPI spec), JavaScript (Playwright test) + Redoc CLI (documentation generation), Playwright (UI testing), GitHub Actions (CI/CD workflow)
