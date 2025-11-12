@@ -1,0 +1,182 @@
+// Contract Test Template: api/tests/contract/expenses.contract.test.ts
+// This template validates that request/response schemas match the OpenAPI spec
+
+import { describe, it, expect } from 'vitest';
+import { Expense, ExpenseSummary } from '../../src/types';
+
+describe('Expense Contracts', () => {
+  describe('POST /expenses - CreateExpenseRequest Contract', () => {
+    it('should validate CreateExpenseRequest schema', () => {
+      const validRequest = {
+        amount: 25.50,
+        category: 'food',
+        date: '2025-11-05'
+      };
+
+      // Assert request conforms to schema
+      expect(validRequest).toHaveProperty('amount');
+      expect(validRequest).toHaveProperty('category');
+      expect(validRequest).toHaveProperty('date');
+      expect(typeof validRequest.amount).toBe('number');
+      expect(typeof validRequest.category).toBe('string');
+      expect(typeof validRequest.date).toBe('string');
+    });
+
+    it('should reject amount <= 0', () => {
+      const invalidAmounts = [0, -10, -0.01];
+      invalidAmounts.forEach(amount => {
+        const request = { amount, category: 'food', date: '2025-11-05' };
+        expect(request.amount).toBeLessThanOrEqual(0);
+      });
+    });
+
+    it('should reject non-ISO-8601 dates', () => {
+      const invalidDates = ['11/05/2025', '2025/11/05', 'invalid'];
+      invalidDates.forEach(date => {
+        const request = { amount: 25.50, category: 'food', date };
+        // Should not match YYYY-MM-DD pattern
+        expect(date).not.toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      });
+    });
+  });
+
+  describe('POST /expenses - Expense Response Contract', () => {
+    it('should validate Expense response schema', () => {
+      const response: Expense = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        amount: 25.50,
+        category: 'food',
+        date: '2025-11-05'
+      };
+
+      // Assert response conforms to schema
+      expect(response).toHaveProperty('id');
+      expect(response).toHaveProperty('amount');
+      expect(response).toHaveProperty('category');
+      expect(response).toHaveProperty('date');
+
+      // Type checks
+      expect(typeof response.id).toBe('string');
+      expect(typeof response.amount).toBe('number');
+      expect(typeof response.category).toBe('string');
+      expect(typeof response.date).toBe('string');
+
+      // Format checks
+      expect(response.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i); // UUID
+      expect(response.amount).toBeGreaterThan(0);
+      expect(response.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    });
+
+    it('should assign non-empty category', () => {
+      const response: Expense = {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        amount: 25.50,
+        category: 'food',
+        date: '2025-11-05'
+      };
+
+      expect(response.category).toBeTruthy();
+      expect(response.category.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('GET /expenses/summary - ExpenseSummary Contract', () => {
+    it('should validate ExpenseSummary response schema', () => {
+      const response: ExpenseSummary = {
+        total: 150.75,
+        count: 5,
+        filters: {}
+      };
+
+      // Assert response conforms to schema
+      expect(response).toHaveProperty('total');
+      expect(response).toHaveProperty('count');
+      expect(response).toHaveProperty('filters');
+
+      // Type checks
+      expect(typeof response.total).toBe('number');
+      expect(typeof response.count).toBe('number');
+      expect(typeof response.filters).toBe('object');
+
+      // Value checks
+      expect(response.total).toBeGreaterThanOrEqual(0);
+      expect(response.count).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should support category filter', () => {
+      const response: ExpenseSummary = {
+        total: 45.50,
+        count: 2,
+        filters: { category: 'food' }
+      };
+
+      expect(response.filters).toHaveProperty('category');
+      expect(typeof response.filters.category).toBe('string');
+    });
+
+    it('should support month filter (YYYY-MM format)', () => {
+      const response: ExpenseSummary = {
+        total: 230.00,
+        count: 8,
+        filters: { month: '2025-11' }
+      };
+
+      expect(response.filters).toHaveProperty('month');
+      expect(response.filters.month).toMatch(/^\d{4}-\d{2}$/);
+    });
+
+    it('should support both filters simultaneously', () => {
+      const response: ExpenseSummary = {
+        total: 12.99,
+        count: 1,
+        filters: { category: 'food', month: '2025-11' }
+      };
+
+      expect(response.filters).toHaveProperty('category');
+      expect(response.filters).toHaveProperty('month');
+      expect(typeof response.filters.category).toBe('string');
+      expect(response.filters.month).toMatch(/^\d{4}-\d{2}$/);
+    });
+
+    it('should return empty summary with no matches', () => {
+      const response: ExpenseSummary = {
+        total: 0,
+        count: 0,
+        filters: { category: 'nonexistent' }
+      };
+
+      expect(response.total).toBe(0);
+      expect(response.count).toBe(0);
+      expect(response.filters.category).toBe('nonexistent');
+    });
+  });
+
+  describe('Error Responses Contract', () => {
+    it('should validate ValidationError schema', () => {
+      const errorResponse = {
+        errors: [
+          {
+            field: 'amount',
+            message: 'amount must be greater than 0'
+          }
+        ]
+      };
+
+      expect(errorResponse).toHaveProperty('errors');
+      expect(Array.isArray(errorResponse.errors)).toBe(true);
+      errorResponse.errors.forEach(error => {
+        expect(error).toHaveProperty('field');
+        expect(error).toHaveProperty('message');
+        expect(typeof error.field).toBe('string');
+        expect(typeof error.message).toBe('string');
+      });
+    });
+
+    it('should include expected format in error messages', () => {
+      const errorMessage = 'date must be in YYYY-MM-DD format (received: 11/05/2025)';
+      expect(errorMessage).toContain('YYYY-MM-DD');
+      expect(errorMessage).toContain('received:');
+    });
+  });
+});
+

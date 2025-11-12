@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CHANGELOG Week 5 Entry Schema",
+  "description": "Contract for CHANGELOG.md Week 5 section format",
+  "type": "object",
+  "properties": {
+    "section": {
+      "type": "string",
+      "const": "Week 5",
+      "description": "Must be labeled 'Week 5 - Final Polish, Review Packet & Demo Prep'"
+    },
+    "added": {
+      "type": "array",
+      "description": "Features added in Week 5",
+      "items": {
+        "type": "object",
+        "properties": {
+          "feature": {
+            "type": "string",
+            "description": "One-line feature summary"
+          },
+          "details": {
+            "type": "array",
+            "description": "Optional sub-bullets with details",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["feature"]
+      },
+      "minItems": 6,
+      "examples": [
+        {
+          "feature": "API Scaffolding and POST /expenses endpoint for creating new expenses",
+          "details": ["Request: POST /expenses with body {description, amount, category}", "Response: 201 Created with expense object"]
+        },
+        {
+          "feature": "Rate Limiter middleware for request throttling"
+        }
+      ]
+    },
+    "changed": {
+      "type": "array",
+      "description": "Changes or removals in Week 5",
+      "items": {
+        "type": "string"
+      },
+      "examples": [
+        "GitHub Project board: All Week 5 issues (Day 0-4) moved to Done column"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional context or notes",
+      "examples": [
+        "Week 5 focused on finalizing Day 0-4 deliverables and preparing for mentor demo. All deliverables validated during 10-minute final demo. Mentor approval recorded via GitHub comment on feature PR."
+      ]
+    },
+    "requiredFeatures": {
+      "type": "array",
+      "const": [
+        "API Scaffolding",
+        "POST /expenses endpoint",
+        "GET /expenses/summary endpoint",
+        "Rate Limiter middleware",
+        "Coverage Hardening (70% threshold)",
+        "Security CI pipeline"
+      ],
+      "description": "All six Week 5 features must be documented"
+    }
+  },
+  "required": ["section", "added", "requiredFeatures"],
+  "examples": [
+    {
+      "section": "Week 5",
+      "added": [
+        {
+          "feature": "API Scaffolding and POST /expenses endpoint for creating new expenses",
+          "details": [
+            "Request: POST /expenses with body {description, amount, category}",
+            "Response: 201 Created with expense object"
+          ]
+        },
+        {
+          "feature": "GET /expenses/summary endpoint for retrieving expense summaries"
+        },
+        {
+          "feature": "Rate Limiter middleware for request throttling (429 Too Many Requests)"
+        },
+        {
+          "feature": "Coverage hardening to 70% test coverage threshold across all modules"
+        },
+        {
+          "feature": "Security CI pipeline with automated checks"
+        },
+        {
+          "feature": "Review Packet generation with complete artifact assembly"
+        }
+      ],
+      "changed": [
+        "GitHub Project board: All Week 5 issues (Day 0-4) moved to Done column"
+      ],
+      "notes": "Week 5 focused on finalizing Day 0-4 deliverables and preparing for mentor demo. All deliverables validated during 10-minute final demo. Mentor approval recorded via GitHub comment on feature PR.",
+      "requiredFeatures": [
+        "API Scaffolding",
+        "POST /expenses endpoint",
+        "GET /expenses/summary endpoint",
+        "Rate Limiter middleware",
+        "Coverage Hardening (70% threshold)",
+        "Security CI pipeline"
+      ]
+    }
+  ]
+}

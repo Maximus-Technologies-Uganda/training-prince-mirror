@@ -1,0 +1,281 @@
+openapi: 3.0.0
+info:
+  title: Expense API - Negative Paths & Validation Contract
+  version: 1.0.0
+  description: >
+    This contract documents the validation error responses and negative paths
+    for the Expense API. These responses are tested as part of the
+    Week 5 Day 4 coverage hardening feature.
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /expenses:
+    post:
+      summary: Create a new expense (with validation)
+      operationId: createExpense
+      tags:
+        - Expenses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseRequest'
+      responses:
+        '201':
+          description: Expense created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseResponse'
+        '400':
+          description: Validation error - invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                invalid_date_format:
+                  summary: Invalid date format
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: "Invalid date format. Expected YYYY-MM-DD"
+                      details:
+                        date: "Date must be in YYYY-MM-DD format"
+                empty_category:
+                  summary: Empty category
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: "Category cannot be empty"
+                      details:
+                        category: "Category is required and cannot be empty"
+                zero_amount:
+                  summary: Zero or negative amount
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: "Amount must be greater than 0"
+                      details:
+                        amount: "Amount must be a positive number"
+
+  /expenses/summary:
+    get:
+      summary: Get expense summary (with query validation)
+      operationId: getExpenseSummary
+      tags:
+        - Expenses
+      parameters:
+        - name: month
+          in: query
+          description: Month (1-12)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+        - name: year
+          in: query
+          description: Year (positive integer)
+          required: false
+          schema:
+            type: integer
+            minimum: 1900
+      responses:
+        '200':
+          description: Summary retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseSummaryResponse'
+        '400':
+          description: Validation error - invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                invalid_month:
+                  summary: Invalid month parameter
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: "Invalid month. Must be between 1 and 12"
+                      details:
+                        month: "Month must be an integer between 1 and 12"
+
+  /expenses/{id}:
+    get:
+      summary: Get expense by ID (with not found handling)
+      operationId: getExpenseById
+      tags:
+        - Expenses
+      parameters:
+        - name: id
+          in: path
+          description: Expense ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expense retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseResponse'
+        '400':
+          description: Validation error - invalid ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                invalid_id_format:
+                  summary: Invalid ID format
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: "Invalid expense ID format"
+                      details:
+                        id: "Expense ID must be a valid UUID or numeric ID"
+        '404':
+          description: Not found - expense does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+              examples:
+                not_found:
+                  summary: Expense not found
+                  value:
+                    error:
+                      code: NOT_FOUND
+                      message: "Expense not found"
+                      details:
+                        id: "Expense with ID 99999 does not exist"
+
+components:
+  schemas:
+    ExpenseRequest:
+      type: object
+      required:
+        - date
+        - category
+        - amount
+      properties:
+        date:
+          type: string
+          format: date
+          description: Expense date in YYYY-MM-DD format
+          example: "2024-11-10"
+        category:
+          type: string
+          minLength: 1
+          description: Non-empty category name
+          example: "Groceries"
+        amount:
+          type: number
+          format: double
+          minimum: 0.01
+          exclusiveMinimum: true
+          description: Expense amount (must be positive)
+          example: 45.99
+
+    ExpenseResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique expense ID
+          example: "123"
+        date:
+          type: string
+          format: date
+          example: "2024-11-10"
+        category:
+          type: string
+          example: "Groceries"
+        amount:
+          type: number
+          format: double
+          example: 45.99
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-11-10T10:00:00Z"
+
+    ExpenseSummaryResponse:
+      type: object
+      properties:
+        month:
+          type: integer
+          example: 11
+        year:
+          type: integer
+          example: 2024
+        totalExpenses:
+          type: number
+          format: double
+          example: 1250.50
+        categoryBreakdown:
+          type: object
+          additionalProperties:
+            type: number
+            format: double
+          example:
+            Groceries: 450.00
+            Transport: 300.00
+            Entertainment: 500.50
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              enum: [VALIDATION_ERROR]
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              description: User-friendly error message
+              example: "Category cannot be empty"
+            details:
+              type: object
+              additionalProperties:
+                type: string
+              description: Field-specific error details
+              example:
+                category: "Category is required and cannot be empty"
+
+    NotFoundErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              enum: [NOT_FOUND]
+              example: "NOT_FOUND"
+            message:
+              type: string
+              description: "Expense not found"
+            details:
+              type: object
+              additionalProperties:
+                type: string
+              example:
+                id: "Expense with ID 99999 does not exist"
+
+tags:
+  - name: Expenses
+    description: Expense management endpoints with validation

@@ -68,3 +68,4 @@ function calculateDirSize(dirPath: string): number {
   return size;
 }
 
+

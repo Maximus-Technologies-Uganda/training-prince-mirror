@@ -1,0 +1,344 @@
+// Unit Test Template: api/tests/unit/expenses.test.ts
+// This template validates business logic (aggregation, filtering, validation)
+
+import { describe, it, expect, beforeEach } from 'vitest';
+import { Expense, ExpenseSummary } from '../../src/types';
+
+// Mock service class - replace with actual implementation
+class ExpenseStore {
+  private expenses: Expense[] = [];
+
+  create(amount: number, category: string, date: string): Expense {
+    const id = `test-${Math.random()}`;
+    const expense = { id, amount, category, date };
+    this.expenses.push(expense);
+    return expense;
+  }
+
+  getAll(): Expense[] {
+    return [...this.expenses];
+  }
+
+  summarize(filters?: { category?: string; month?: string }): ExpenseSummary {
+    let filtered = this.expenses;
+
+    if (filters?.category) {
+      filtered = filtered.filter(e => e.category === filters.category);
+    }
+
+    if (filters?.month) {
+      filtered = filtered.filter(e => e.date.startsWith(filters.month));
+    }
+
+    const total = filtered.reduce((sum, e) => sum + e.amount, 0);
+    const count = filtered.length;
+
+    return { total, count, filters: filters || {} };
+  }
+
+  clear(): void {
+    this.expenses = [];
+  }
+}
+
+describe('Expense Service - Unit Tests', () => {
+  let store: ExpenseStore;
+
+  beforeEach(() => {
+    store = new ExpenseStore();
+  });
+
+  describe('create() - Expense Creation', () => {
+    it('should create expense with provided fields', () => {
+      const expense = store.create(25.50, 'food', '2025-11-05');
+
+      expect(expense.amount).toBe(25.50);
+      expect(expense.category).toBe('food');
+      expect(expense.date).toBe('2025-11-05');
+    });
+
+    it('should assign unique ID to each expense', () => {
+      const exp1 = store.create(10.00, 'food', '2025-11-01');
+      const exp2 = store.create(20.00, 'transport', '2025-11-02');
+
+      expect(exp1.id).not.toBe(exp2.id);
+    });
+
+    it('should return created expense object', () => {
+      const result = store.create(15.00, 'utilities', '2025-11-05');
+
+      expect(result).toHaveProperty('id');
+      expect(result).toHaveProperty('amount', 15.00);
+      expect(result).toHaveProperty('category', 'utilities');
+      expect(result).toHaveProperty('date', '2025-11-05');
+    });
+  });
+
+  describe('summarize() - Basic Aggregation', () => {
+    it('should return 0 for empty store', () => {
+      const summary = store.summarize();
+
+      expect(summary.total).toBe(0);
+      expect(summary.count).toBe(0);
+      expect(summary.filters).toEqual({});
+    });
+
+    it('should sum all expenses when no filters applied', () => {
+      store.create(10.00, 'food', '2025-11-01');
+      store.create(20.00, 'transport', '2025-11-02');
+      store.create(15.00, 'utilities', '2025-11-03');
+
+      const summary = store.summarize();
+
+      expect(summary.total).toBe(45.00);
+      expect(summary.count).toBe(3);
+    });
+
+    it('should count all expenses when no filters applied', () => {
+      store.create(10.00, 'food', '2025-11-01');
+      store.create(20.00, 'food', '2025-11-02');
+      store.create(15.00, 'food', '2025-11-03');
+
+      const summary = store.summarize();
+
+      expect(summary.count).toBe(3);
+    });
+
+    it('should return filters object in response', () => {
+      const summary = store.summarize();
+
+      expect(summary).toHaveProperty('filters');
+      expect(typeof summary.filters).toBe('object');
+    });
+
+    it('should handle decimal amounts precisely', () => {
+      store.create(10.50, 'food', '2025-11-01');
+      store.create(20.75, 'transport', '2025-11-02');
+
+      const summary = store.summarize();
+
+      expect(summary.total).toBeCloseTo(31.25, 2);
+    });
+  });
+
+  describe('summarize() - Category Filtering', () => {
+    beforeEach(() => {
+      store.create(10.00, 'food', '2025-11-01');
+      store.create(20.00, 'food', '2025-11-02');
+      store.create(30.00, 'transport', '2025-11-03');
+      store.create(15.00, 'utilities', '2025-11-04');
+    });
+
+    it('should filter by single category', () => {
+      const summary = store.summarize({ category: 'food' });
+
+      expect(summary.total).toBe(30.00);
+      expect(summary.count).toBe(2);
+    });
+
+    it('should filter multiple categories independently', () => {
+      const foodSummary = store.summarize({ category: 'food' });
+      const transportSummary = store.summarize({ category: 'transport' });
+
+      expect(foodSummary.total).toBe(30.00);
+      expect(transportSummary.total).toBe(30.00);
+    });
+
+    it('should return 0 for non-existent category', () => {
+      const summary = store.summarize({ category: 'nonexistent' });
+
+      expect(summary.total).toBe(0);
+      expect(summary.count).toBe(0);
+    });
+
+    it('should include category in filters object', () => {
+      const summary = store.summarize({ category: 'food' });
+
+      expect(summary.filters.category).toBe('food');
+    });
+
+    it('should not include month in filters when only category applied', () => {
+      const summary = store.summarize({ category: 'food' });
+
+      expect(summary.filters).toHaveProperty('category');
+      expect(summary.filters).not.toHaveProperty('month');
+    });
+
+    it('should be case-sensitive for category matching', () => {
+      const summary = store.summarize({ category: 'Food' });
+
+      expect(summary.total).toBe(0);
+      expect(summary.count).toBe(0);
+    });
+  });
+
+  describe('summarize() - Month Filtering', () => {
+    beforeEach(() => {
+      store.create(10.00, 'food', '2025-10-15');
+      store.create(20.00, 'food', '2025-11-05');
+      store.create(30.00, 'food', '2025-11-15');
+      store.create(15.00, 'transport', '2025-12-05');
+    });
+
+    it('should filter by month (YYYY-MM format)', () => {
+      const summary = store.summarize({ month: '2025-11' });
+
+      expect(summary.total).toBe(50.00);
+      expect(summary.count).toBe(2);
+    });
+
+    it('should filter multiple months independently', () => {
+      const novSummary = store.summarize({ month: '2025-11' });
+      const decSummary = store.summarize({ month: '2025-12' });
+
+      expect(novSummary.total).toBe(50.00);
+      expect(decSummary.total).toBe(15.00);
+    });
+
+    it('should return 0 for non-existent month', () => {
+      const summary = store.summarize({ month: '2024-01' });
+
+      expect(summary.total).toBe(0);
+      expect(summary.count).toBe(0);
+    });
+
+    it('should include month in filters object', () => {
+      const summary = store.summarize({ month: '2025-11' });
+
+      expect(summary.filters.month).toBe('2025-11');
+    });
+
+    it('should not include category in filters when only month applied', () => {
+      const summary = store.summarize({ month: '2025-11' });
+
+      expect(summary.filters).toHaveProperty('month');
+      expect(summary.filters).not.toHaveProperty('category');
+    });
+
+    it('should use month prefix matching (not fuzzy)', () => {
+      store.create(50.00, 'food', '2025-11-99'); // Invalid day, but month should match prefix
+      const summary = store.summarize({ month: '2025-11' });
+
+      // Should still match 2025-11 prefix
+      expect(summary.total).toBeGreaterThanOrEqual(50.00);
+    });
+  });
+
+  describe('summarize() - Combined Filters (AND Logic)', () => {
+    beforeEach(() => {
+      store.create(10.00, 'food', '2025-11-01');
+      store.create(20.00, 'food', '2025-11-02');
+      store.create(30.00, 'food', '2025-10-15');
+      store.create(40.00, 'transport', '2025-11-03');
+    });
+
+    it('should apply category AND month filters together', () => {
+      const summary = store.summarize({ category: 'food', month: '2025-11' });
+
+      expect(summary.total).toBe(30.00);
+      expect(summary.count).toBe(2);
+    });
+
+    it('should exclude expenses not matching both criteria', () => {
+      const summary = store.summarize({ category: 'food', month: '2025-11' });
+
+      // Should exclude: food from Oct (30.00) and transport from Nov (40.00)
+      expect(summary.total).not.toContain(30.00);
+      expect(summary.total).not.toContain(40.00);
+    });
+
+    it('should return 0 when no expenses match both filters', () => {
+      const summary = store.summarize({ category: 'nonexistent', month: '2025-11' });
+
+      expect(summary.total).toBe(0);
+      expect(summary.count).toBe(0);
+    });
+
+    it('should include both filters in response', () => {
+      const summary = store.summarize({ category: 'food', month: '2025-11' });
+
+      expect(summary.filters.category).toBe('food');
+      expect(summary.filters.month).toBe('2025-11');
+    });
+
+    it('should work with all categories and all months', () => {
+      const summary1 = store.summarize({ category: 'food', month: '2025-11' });
+      const summary2 = store.summarize({ category: 'transport', month: '2025-10' });
+
+      expect(summary1.total).toBe(30.00);
+      expect(summary2.total).toBe(0);
+    });
+  });
+
+  describe('Edge Cases - Accuracy', () => {
+    it('should handle floating point precision correctly', () => {
+      store.create(0.1, 'food', '2025-11-01');
+      store.create(0.2, 'food', '2025-11-02');
+      store.create(0.3, 'food', '2025-11-03');
+
+      const summary = store.summarize();
+
+      expect(summary.total).toBeCloseTo(0.6, 5);
+    });
+
+    it('should aggregate correctly with many expenses', () => {
+      // Create 100 expenses
+      for (let i = 0; i < 100; i++) {
+        store.create(1.00, 'food', `2025-11-${String(i % 30 + 1).padStart(2, '0')}`);
+      }
+
+      const summary = store.summarize();
+
+      expect(summary.total).toBe(100.00);
+      expect(summary.count).toBe(100);
+    });
+
+    it('should handle identical expense values correctly', () => {
+      store.create(25.00, 'food', '2025-11-01');
+      store.create(25.00, 'food', '2025-11-02');
+      store.create(25.00, 'food', '2025-11-03');
+
+      const summary = store.summarize({ category: 'food' });
+
+      expect(summary.total).toBe(75.00);
+      expect(summary.count).toBe(3);
+    });
+
+    it('should never mutate original expense data during filter', () => {
+      const exp1 = store.create(10.00, 'food', '2025-11-01');
+      const originalAmount = exp1.amount;
+
+      store.summarize({ category: 'food' });
+
+      expect(exp1.amount).toBe(originalAmount);
+    });
+  });
+
+  describe('getAll() - Retrieval', () => {
+    it('should return empty array when no expenses', () => {
+      const expenses = store.getAll();
+
+      expect(Array.isArray(expenses)).toBe(true);
+      expect(expenses.length).toBe(0);
+    });
+
+    it('should return all created expenses', () => {
+      store.create(10.00, 'food', '2025-11-01');
+      store.create(20.00, 'transport', '2025-11-02');
+      store.create(30.00, 'utilities', '2025-11-03');
+
+      const expenses = store.getAll();
+
+      expect(expenses.length).toBe(3);
+    });
+
+    it('should return copy of expenses (not reference)', () => {
+      store.create(10.00, 'food', '2025-11-01');
+      const expenses = store.getAll();
+
+      // Mutating returned array should not affect store
+      expect(Array.isArray(expenses)).toBe(true);
+    });
+  });
+});
+

@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Git Tag Contract",
+  "description": "Contract for week5-complete annotated git tag",
+  "type": "object",
+  "properties": {
+    "tagName": {
+      "type": "string",
+      "const": "week5-complete",
+      "description": "Exact tag name"
+    },
+    "type": {
+      "type": "string",
+      "const": "annotated",
+      "description": "Must be annotated tag (not lightweight)"
+    },
+    "message": {
+      "type": "string",
+      "pattern": "^Week 5 Complete:.*",
+      "examples": [
+        "Week 5 Complete: Final Polish, Review Packet & Demo Prep - Ready for Production"
+      ]
+    },
+    "pointsTo": {
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "string",
+          "const": "main",
+          "description": "Tag must be on main branch"
+        },
+        "commitType": {
+          "type": "string",
+          "const": "merge",
+          "description": "Should point to final merge commit"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string",
+          "description": "Git user who created the tag"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When tag was created"
+        },
+        "isPushedToRemote": {
+          "type": "boolean",
+          "const": true,
+          "description": "Tag must be accessible via remote"
+        },
+        "isVisibleOnGitHub": {
+          "type": "boolean",
+          "const": true,
+          "description": "Tag must appear on GitHub releases/tags page"
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "isAnnotated": {
+          "type": "boolean",
+          "const": true
+        },
+        "isOnMain": {
+          "type": "boolean",
+          "const": true
+        },
+        "isPushedToRemote": {
+          "type": "boolean",
+          "const": true
+        },
+        "isAccessibleViaGit": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": ["isAnnotated", "isOnMain", "isPushedToRemote", "isAccessibleViaGit"]
+    }
+  },
+  "required": ["tagName", "type", "message", "pointsTo", "validation"],
+  "examples": [
+    {
+      "tagName": "week5-complete",
+      "type": "annotated",
+      "message": "Week 5 Complete: Final Polish, Review Packet & Demo Prep - Ready for Production",
+      "pointsTo": {
+        "branch": "main",
+        "commitType": "merge"
+      },
+      "metadata": {
+        "author": "Prince <prince@example.com>",
+        "timestamp": "2025-11-12T20:00:00Z",
+        "isPushedToRemote": true,
+        "isVisibleOnGitHub": true
+      },
+      "validation": {
+        "isAnnotated": true,
+        "isOnMain": true,
+        "isPushedToRemote": true,
+        "isAccessibleViaGit": true
+      }
+    }
+  ]
+}

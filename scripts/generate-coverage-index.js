@@ -36,6 +36,11 @@ for (const dir of uiDirs) {
 }
 html += '</ul>\n';
 
+html += '<h2>API Documentation</h2>\n';
+html += '<div class="suite-links">\n';
+html += '  <a href="./openapi.html" class="link-button">OpenAPI Documentation</a>\n';
+html += '</div>\n';
+
 fs.writeFileSync(path.join(artifactsDir, 'index.html'), html, 'utf8');
 console.log('Generated review-artifacts/index.html');
 

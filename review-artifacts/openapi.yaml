@@ -1,0 +1,12 @@
+openapi: 3.0.0
+info:
+  title: API - Placeholder
+  version: "1.0.0"
+  description: Placeholder OpenAPI specification. Will be replaced from api/spec/openapi.yaml during CI.
+paths:
+  /:
+    get:
+      summary: API Status
+      responses:
+        '200':
+          description: API is running

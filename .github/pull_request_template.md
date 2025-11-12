@@ -1,6 +1,8 @@
 # Pull Request Description
 
 ## Spec URL
+Spec: [REPLACE_WITH_YOUR_SPEC_URL]
+
 Link to the specification (required):
 - GitHub: https://github.com/.../specs/XXX/spec.md
 - Linear: PRI-XXXX
