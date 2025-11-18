@@ -53,7 +53,7 @@ import {
     };
 
     switch (command) {
-      case 'add':
+      case 'add': {
         if (!validateUnknownFlags(['--highPriority','--dueToday','--due','--priority'])) return;
         if (!argument) {
           console.error('Error: Please provide the to-do text.');
@@ -118,8 +118,9 @@ import {
         saveTodos(todos);
         console.log('Added new to-do.');
         break;
+      }
   
-      case 'list':
+      case 'list': {
         // Support both spec and legacy filters for now
         const filterHigh = args.includes('--highPriority');
         const filterDue = args.includes('--dueToday');
@@ -132,13 +133,17 @@ import {
         } else {
           list.forEach((todo, index) => {
             const status = todo.completed ? '[x]' : '[ ]';
-            const flags = [(todo.highPriority || todo.priority === 'high') ? '(!)' : '', (todo.dueToday || (todo.dueDate && isToday(new Date(todo.dueDate)))) ? '(today)' : ''].filter(Boolean).join(' ');
+            const flags = [
+              (todo.highPriority || todo.priority === 'high') ? '(!)' : '',
+              (todo.dueToday || (todo.dueDate && isToday(new Date(todo.dueDate)))) ? '(today)' : ''
+            ].filter(Boolean).join(' ');
             console.log(`${index}. ${status} ${todo.text} ${flags}`.trim());
           });
         }
         break;
+      }
   
-      case 'toggle':
+      case 'toggle': {
         const indexToToggle = parseInt(argument);
         if (isNaN(indexToToggle) || indexToToggle >= todos.length) {
           console.error('Error: Please provide a valid index to toggle.');
@@ -148,8 +153,9 @@ import {
         todos = toggleTodo(todos, indexToToggle);
         saveTodos(todos);
         break;
+      }
   
-      case 'remove':
+      case 'remove': {
         const indexToRemove = parseInt(argument);
         if (isNaN(indexToRemove) || indexToRemove >= todos.length) {
           console.error('Error: Please provide a valid index to remove.');
@@ -159,6 +165,7 @@ import {
         todos = removeTodo(todos, indexToRemove);
         saveTodos(todos);
         break;
+      }
   
       default:
         console.error('Error: Command not recognized.');

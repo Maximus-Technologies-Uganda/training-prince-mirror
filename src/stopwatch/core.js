@@ -53,7 +53,9 @@ export function createStopwatch() {
 
 export function saveState(state) {
   // Ensure data directory exists to prevent ENOENT on fresh clones
-  try { fs.mkdirSync('data', { recursive: true }); } catch (_) {}
+  if (!fs.existsSync('data')) {
+    fs.mkdirSync('data', { recursive: true });
+  }
   const data = JSON.stringify(state, null, 2);
   fs.writeFileSync(DB_FILE, data);
 }
@@ -62,7 +64,7 @@ export function loadState() {
   try {
     const data = fs.readFileSync(DB_FILE, 'utf8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch {
     // If no file, return a default state
     return { startTime: 0, laps: [] };
   }

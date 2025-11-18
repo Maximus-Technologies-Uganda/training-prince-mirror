@@ -155,4 +155,12 @@ As a project manager, I need to update the Review Packet to document Chapter 6 w
 - Creating new GitHub Project from scratch (assuming it exists; only verifying/completing fields)
 - Changing or removing existing branch protection rules (only verifying they are in place)
 
+## Review & Acceptance Checklist
+
+- [ ] All functional requirements (FR-001 – FR-016) have documented tests or validation notes
+- [ ] Non-functional requirements (NFR-001 – NFR-004) have measurement plans or CI instrumentation updates
+- [ ] Review Packet updates (Projects evidence + Chapter 6 UI placeholder) are captured with screenshots/links
+- [ ] GitHub Projects board fields and automations have been validated with evidence artifacts
+- [ ] Ally-check baseline JSON includes required metadata and is referenced in README/Review Packet
+
 

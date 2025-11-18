@@ -44,14 +44,16 @@ export function loadTodos() {
   try {
     const data = fs.readFileSync(DB_FILE, 'utf8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch {
     return []; // If file doesn't exist, start with an empty list
   }
 }
 
 export function saveTodos(todos) {
   // Ensure data directory exists to prevent ENOENT on fresh clones
-  try { fs.mkdirSync('data', { recursive: true }); } catch (_) {}
+  if (!fs.existsSync('data')) {
+    fs.mkdirSync('data', { recursive: true });
+  }
   const data = JSON.stringify(todos, null, 2);
   fs.writeFileSync(DB_FILE, data);
   console.log('To-do list saved.');

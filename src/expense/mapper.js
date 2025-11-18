@@ -30,32 +30,27 @@ import { validateExpense } from './validator.js';
  */
 export function mapRequestToExpense(req) {
   const body = req.body || req;
-
-  try {
-    // Critical: Convert amount to number if it's a string
-    // This must happen BEFORE validation to ensure validator receives correct type
-    let amount = body.amount;
-    if (typeof amount === 'string') {
-      amount = parseFloat(amount);
-    }
-
-    // Create normalized object for validation
-    // Includes all required fields and optional fields with defaults
-    const normalizedExpense = {
-      date: body.date,
-      category: body.category,
-      amount: amount,
-      description: body.description || ''
-    };
-
-    // Validate the expense data
-    validateExpense(normalizedExpense);
-
-    // Return mapped object
-    return normalizedExpense;
-  } catch (error) {
-    throw error;
+  // Critical: Convert amount to number if it's a string
+  // This must happen BEFORE validation to ensure validator receives correct type
+  let amount = body.amount;
+  if (typeof amount === 'string') {
+    amount = parseFloat(amount);
   }
+
+  // Create normalized object for validation
+  // Includes all required fields and optional fields with defaults
+  const normalizedExpense = {
+    date: body.date,
+    category: body.category,
+    amount,
+    description: body.description || ''
+  };
+
+  // Validate the expense data
+  validateExpense(normalizedExpense);
+
+  // Return mapped object
+  return normalizedExpense;
 }
 
 /**
@@ -147,6 +142,7 @@ export function formatErrorResponse(error, statusCode = 400) {
   };
 
   return {
+    statusCode,
     error: {
       code: errorInfo.code,
       message: error.message,

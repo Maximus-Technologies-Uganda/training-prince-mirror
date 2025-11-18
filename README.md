@@ -144,6 +144,15 @@ Run the full test suite:
 npm test
 ```
 
+### Linting
+Run the JavaScript and TypeScript linters for the core CLI apps, API, and frontend:
+
+```bash
+npm run lint
+```
+
+> Legacy automation scripts, specs, and archived test harnesses are excluded from linting to keep the signal focused on actively maintained code paths.
+
 ### Usage Examples
 
 #### Hello CLI

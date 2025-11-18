@@ -55,7 +55,7 @@ export function loadExpenses() {
       const data = fs.readFileSync(DB_FILE, 'utf8');
       // Parse the JSON string back into an array
       return JSON.parse(data);
-    } catch (error) {
+    } catch {
       // If the file doesn't exist yet, return an empty array
       return [];
     }
@@ -64,7 +64,9 @@ export function loadExpenses() {
   // A function to save the expenses array to the JSON file
   export function saveExpenses(expenses) {
     // Ensure data directory exists
-    try { fs.mkdirSync('data', { recursive: true }); } catch (_) {}
+    if (!fs.existsSync('data')) {
+      fs.mkdirSync('data', { recursive: true });
+    }
     // Convert the expenses array into a JSON string with nice formatting
     const data = JSON.stringify(expenses, null, 2);
     // Write the string to the file
