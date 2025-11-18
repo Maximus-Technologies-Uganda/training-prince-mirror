@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createStopwatch, formatTime } from './core.js';
+import { formatTime } from './core.js';
 import fs from 'node:fs';
 import path from 'node:path';
 

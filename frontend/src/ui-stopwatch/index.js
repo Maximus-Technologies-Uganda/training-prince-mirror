@@ -77,6 +77,31 @@ function updateTimerDisplay() {
 }
 
 /**
+ * Force update the timer display (regardless of running state)
+ * Used for UI updates after pause/reset/resume
+ * @private
+ */
+function forceUpdateDisplay() {
+  const displayElement = document.querySelector('.timer-display');
+  if (!displayElement) {
+    return;
+  }
+
+  if (timerState.isRunning && timerState.startTime) {
+    const now = Date.now();
+    const elapsedMs = now - timerState.startTime;
+    displayElement.textContent = formatTime(elapsedMs);
+  } else if (timerState.startTime === null) {
+    // Reset state - show 00:00:00
+    displayElement.textContent = formatTime(0);
+  } else {
+    // Paused state - show paused time
+    const displayElement = document.querySelector('.timer-display');
+    // The display will already be showing the paused time, so no update needed
+  }
+}
+
+/**
  * Update lap list display with current recorded laps
  * Derives LapRecords from current state and renders each lap
  * @private
@@ -110,7 +135,7 @@ function updateLapListDisplay() {
       const absoluteTimeText = lap.absoluteElapsedTimeDisplay;
       const lapDurationText = lap.lapDurationDisplay;
       
-      return `<div class="lap-item">
+      return `<div class="lap-item" data-testid="lap-item">
         <div class="lap-info">
           <span class="lap-number">${lapNumberText}</span>
           <span class="lap-time">Total: ${absoluteTimeText}</span>
@@ -191,6 +216,50 @@ export function startTimer() {
 }
 
 /**
+ * Pause the timer (stops without resetting)
+ * @returns {Object} {success: boolean, newState: Object}
+ */
+export function pauseTimer() {
+  try {
+    timerState.isRunning = false;
+    persistState(timerState);
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+    return { success: true, newState: { ...timerState } };
+  } catch (error) {
+    console.error('Error pausing timer:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Resume the timer (continues from paused state)
+ * @returns {Object} {success: boolean, newState: Object}
+ */
+export function resumeTimer() {
+  try {
+    if (timerState.startTime === null) {
+      return { success: false, error: 'No previous start time' };
+    }
+    timerState.isRunning = true;
+    persistState(timerState);
+    
+    // Restart the display animation loop
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+    }
+    animationFrameId = requestAnimationFrame(updateTimerDisplay);
+    
+    return { success: true, newState: { ...timerState } };
+  } catch (error) {
+    console.error('Error resuming timer:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
  * Stop the timer
  * @returns {Object} {success: boolean, newState: Object}
  */
@@ -226,8 +295,9 @@ export function resetTimer() {
       animationFrameId = null;
     }
     
-    // Clear lap list display
+    // Update lap list display and timer display
     updateLapListDisplay();
+    forceUpdateDisplay();
     
     return { success: true, newState: { ...timerState } };
   } catch (error) {
@@ -342,8 +412,14 @@ function updateButtonStates() {
     if (pauseBtn) pauseBtn.disabled = false;
     if (resumeBtn) resumeBtn.disabled = true;
     if (lapBtn) lapBtn.disabled = false;
+  } else if (timerState.startTime !== null) {
+    // Timer is paused (has a start time but not running)
+    if (startBtn) startBtn.disabled = true;
+    if (pauseBtn) pauseBtn.disabled = true;
+    if (resumeBtn) resumeBtn.disabled = false;
+    if (lapBtn) lapBtn.disabled = true;
   } else {
-    // Timer is stopped
+    // Timer is not started or reset
     if (startBtn) startBtn.disabled = false;
     if (pauseBtn) pauseBtn.disabled = true;
     if (resumeBtn) resumeBtn.disabled = true;
@@ -364,6 +440,7 @@ function updateButtonStates() {
 function initializeButtonHandlers() {
   const startBtn = document.querySelector('.start-btn');
   const pauseBtn = document.querySelector('.pause-btn');
+  const resumeBtn = document.querySelector('.resume-btn');
   const stopBtn = document.querySelector('.stop-btn');
   const lapBtn = document.querySelector('.lap-btn');
   const clearLapsBtn = document.querySelector('.clear-laps-btn');
@@ -374,14 +451,25 @@ function initializeButtonHandlers() {
     startBtn.addEventListener('click', () => {
       startTimer();
       updateButtonStates();
+      updateTimerDisplay();
     });
   }
 
-  // Pause button (maps to stopTimer)
+  // Pause button (maps to pauseTimer)
   if (pauseBtn) {
     pauseBtn.addEventListener('click', () => {
-      stopTimer();
+      pauseTimer();
       updateButtonStates();
+      updateTimerDisplay();
+    });
+  }
+
+  // Resume button (maps to resumeTimer)
+  if (resumeBtn) {
+    resumeBtn.addEventListener('click', () => {
+      resumeTimer();
+      updateButtonStates();
+      updateTimerDisplay();
     });
   }
 
@@ -390,6 +478,7 @@ function initializeButtonHandlers() {
     stopBtn.addEventListener('click', () => {
       resetTimer();
       updateButtonStates();
+      updateTimerDisplay();
     });
   }
 
@@ -398,6 +487,7 @@ function initializeButtonHandlers() {
     lapBtn.addEventListener('click', () => {
       recordLap();
       updateButtonStates();
+      updateLapListDisplay();
     });
   }
 
@@ -406,6 +496,7 @@ function initializeButtonHandlers() {
     clearLapsBtn.addEventListener('click', () => {
       resetTimer();
       updateButtonStates();
+      updateTimerDisplay();
     });
   }
 
