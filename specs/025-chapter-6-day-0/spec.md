@@ -79,7 +79,7 @@ As a project manager, I need to update the Review Packet to document Chapter 6 w
 
 **Chapter 5 FinishtoGreen (D0.1)**
 
-- **FR-001**: Main branch MUST have no extraneous or stray files (e.g., hello.js..js, test files, debug scripts)
+- **FR-001**: Main branch MUST have no extraneous or stray files. "Stray" is defined as any temporary artifact produced outside committed specs: double-extension playground files (e.g., `hello.js..js`), scratch test harnesses, debug helpers, generated logs, or local data exports. Cleanup work MUST capture a short note or screenshot of each removed file so the audit trail remains intact.
 - **FR-002**: README.md on main branch MUST be updated to reference: Review Packet, live API docs on GitHub Pages, and Chapter 6 instructions
 - **FR-003**: Main branch MUST be protected by required status checks: spec-check, test-api, codeql, and dependency-review
 - **FR-004**: A git tag named `chapter5-complete` MUST be created on the final Chapter 5 commit and pushed to origin
@@ -89,8 +89,8 @@ As a project manager, I need to update the Review Packet to document Chapter 6 w
 
 - **FR-006**: A SECURITY.md file MUST exist in the repository root with responsible disclosure information
 - **FR-007**: A new CI job named `ally-check` MUST run automated accessibility checks (using axe) against the frontend
-- **FR-007a**: Ally-check MUST establish a baseline of known/acceptable accessibility violations on Day 0; violations in baseline are excluded from job failure
-- **FR-007b**: Ally-check MUST fail only on NEW accessibility violations not in the baseline allowlist; baseline allowlist MUST be documented in version control
+- **FR-007a**: Ally-check MUST establish a baseline of known/acceptable accessibility violations on Day 0; violations in baseline are excluded from job failure. The baseline MUST live at `.github/accessibility/ally-check-baseline.json`, include `baseline_date`, `baseline_version`, `scan_pages`, `documentation` URL, and enumerate every allowable violation entry (ID, impact, page/selector, remediation plan, accountable owner, due date).
+- **FR-007b**: Ally-check MUST fail only on NEW accessibility violations not in the baseline allowlist; the allowlist MUST be immutable after Day 0 and documented in both git history and the Review Packet. Comparison logic MUST key on `(violation.id, page, selector)` to detect regressions, and any request to expand the baseline later MUST link to a remediation issue before approval.
 - **FR-008**: The `ally-check` CI job MUST be configured as a required status check for all PRs
 - **FR-009**: API test coverage thresholds (vitest.config.ts or CI scripts) MUST be set to ≥70% for lines, functions, and branches; configured as hard blocker (PR rejection if violated)
 - **FR-010**: UI test coverage thresholds (vitest.config.ts or CI scripts) MUST be set to ≥55% for lines, functions, and branches; configured as hard blocker (PR rejection if violated)
@@ -98,11 +98,18 @@ As a project manager, I need to update the Review Packet to document Chapter 6 w
 
 **Review Packet & Project Hygiene (D0.2)**
 
-- **FR-012**: The build-review-packet workflow script MUST be updated to include link or screenshot for "Projects evidence" in review-artifacts/index.html
+- **FR-012**: The build-review-packet workflow script MUST be updated to include link or screenshot for "Projects evidence" in review-artifacts/index.html, using evidence captured within the previous 24 hours.
 - **FR-013**: A reserved section titled "Chapter 6 UI Assets" MUST be created in the review-packet structure (placeholder for UI Coverage, Playwright reports, Lighthouse reports)
-- **FR-014**: GitHub Projects "Training Prince" board MUST have all required fields: Status, Priority, Size, Spec URL, Sprint/Chapter
-- **FR-015**: GitHub Projects automations MUST be functional: auto-add (issues/PRs added to project) and PR-to-Done (PRs move items to Done)
-- **FR-016**: README.md MUST link to live API docs on GitHub Pages (API docs are already published; Day 0 task is verification and linking)
+- **FR-014**: GitHub Projects "Training Prince" board MUST have all required fields: Status, Priority, Size, Spec URL, Sprint/Chapter; each card MUST surface all five values in the default Board view so reviewers do not need to open the side panel.
+- **FR-015**: GitHub Projects automations MUST be functional: auto-add (issues/PRs added to project) and PR-to-Done (PRs move items to Done). Auto-add MUST trigger when an issue or PR is created with Chapter 6 labels or targets `main`, and PR-to-Done MUST move the linked card to Done within 60 seconds of merge. Evidence (screenshot or CLI output) MUST be linked in the Review Packet.
+- **FR-016**: README.md MUST link to live API docs on GitHub Pages at `https://maximus-technologies-uganda.github.io/training-prince/` (API docs are already published; Day 0 task is verification and linking)
+
+### Non-Functional Requirements
+
+- **NFR-001 (CI Latency)**: The combined Day 0 workflow (spec-check, test-api, dependency-review, codeql, ally-check) MUST complete in ≤5 minutes wall-clock time on `ubuntu-latest`. If any job exceeds this SLA, a follow-up issue documenting mitigations MUST be opened.
+- **NFR-002 (Accessibility Scan SLA)**: Ally-check runs MUST finish in ≤3 minutes and produce a JSON report ≤1 MB to keep artifacts lightweight for reviewers.
+- **NFR-003 (Review Packet Availability)**: Review Packet artifacts and linked evidence MUST remain accessible for ≥14 days after creation (either via GitHub Pages or preserved Actions artifacts) so stakeholders can audit chapter readiness.
+- **NFR-004 (Baseline Governance)**: Any future change to `.github/accessibility/ally-check-baseline.json` MUST follow change control: create an issue, attach diff of comparison output, obtain DevSecOps approval, and bump `baseline_version` using semantic versioning (MAJOR for allowlist expansions, MINOR for metadata updates, PATCH for typo fixes).
 
 ### Key Entities *(include if feature involves data)*
 

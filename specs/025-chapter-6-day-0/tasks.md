@@ -69,7 +69,7 @@ This document contains all tasks needed to implement Chapter 6 Day 0 setup. Task
 - [X] T006 Create .github/accessibility/ally-check-baseline.json with initial baseline
   - **Description**: Establish Day 0 baseline of known accessibility violations (initially empty or pre-scanned)
   - **File Path**: `.github/accessibility/ally-check-baseline.json`
-  - **Acceptance**: File is valid JSON; baseline_date set to today; violations array populated or empty per Day 0 scan
+  - **Acceptance**: File is valid JSON; baseline_date set to today; violations array populated or empty per Day 0 scan; companion log `.github/accessibility/ALLY_BASELINE_NOTES.md` lists every allowed violation, remediation issue link, and owners; Review Packet references both files.
   - **Status**: ✅ COMPLETE - Baseline JSON created with Day 0 configuration
 
 - [X] T007 Create placeholder scripts: .github/scripts/run-ally-check.js and compare-ally-baseline.js
@@ -146,13 +146,13 @@ This document contains all tasks needed to implement Chapter 6 Day 0 setup. Task
 - [X] T012 [US2] Update API coverage threshold to 70% in api/vitest.config.ts
   - **Description**: Verify or update API coverage configuration to enforce ≥70% for lines, functions, branches per FR-009
   - **File Path**: `api/vitest.config.ts`
-  - **Acceptance**: Thresholds set to 70% in config; verified via local test run
+  - **Acceptance**: Thresholds set to 70% in config; verified via local test run **and** CI demonstration: create a sacrificial branch with intentionally reduced coverage to prove the workflow fails and blocks merge (attach run URL/screenshot to Review Packet per T022).
   - **Status**: ✅ COMPLETE - API coverage thresholds updated to 70%
 
 - [X] T013 [P] [US2] Update frontend coverage threshold from 40% to 55% in frontend/vitest.config.js
   - **Description**: Update UI coverage configuration to enforce ≥55% for lines, functions, branches (increased from 40%) per FR-010
   - **File Path**: `frontend/vitest.config.js`
-  - **Acceptance**: Thresholds updated to 55%; verified via local test run
+  - **Acceptance**: Thresholds updated to 55%; verified via local test run **and** CI demonstration mirroring T012. If baseline UI coverage is below 55%, document a remediation plan + owner in `.github/accessibility/ALLY_BASELINE_NOTES.md` (or dedicated README section) before merging.
   - **Status**: ✅ COMPLETE - Frontend coverage thresholds updated from 40% to 55%
 
 - [X] T014 [US2] Implement .github/scripts/run-ally-check.js accessibility scanning logic
@@ -170,7 +170,7 @@ This document contains all tasks needed to implement Chapter 6 Day 0 setup. Task
 - [ ] T016 [P] [US2] Add ally-check to branch protection required status checks
   - **Description**: Update GitHub Settings → Branches → main to require ally-check as a status check per FR-008
   - **File Path**: N/A (GitHub Settings update)
-  - **Acceptance**: ally-check added to required checks; screenshot confirms; cannot be bypassed
+  - **Acceptance**: ally-check added to required checks immediately after the Day 0 PR merges to `main`; screenshot confirms; cannot be bypassed. Document the activation timestamp in `.github/accessibility/ALLY_BASELINE_NOTES.md`.
   - **Status**: ⏳ PENDING - Will be completed after PR merge to main (final step of Day 0)
 
 ---

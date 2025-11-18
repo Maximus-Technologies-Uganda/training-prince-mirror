@@ -103,3 +103,11 @@ data/                    # Existing: Data directory (per hygiene standards)
 - Configuration files (vitest.config.js updates, ally-check-baseline.json)
 - Documentation (SECURITY.md, README.md updates, spec documents)
 - Agent context updates (.github/copilot-instructions.md)
+
+## Execution Notes & Guardrails
+
+- **Ally-check implementation cadence**: Day 0 creates the workflow, baseline file, and placeholder scripts. Full axe-core + Playwright automation (T014/T015) is explicitly scheduled for Chapter 6 Day 1 once the frontend shell lands. The plan keeps the scripts lightweight (exit 0) to unblock CI wiring without introducing flaky scans on an unfinished UI.
+- **Baseline governance**: T006 now requires a short Markdown summary (`.github/accessibility/ALLY_BASELINE_NOTES.md`) that lists every allowed violation, links to remediation issues, and references the Review Packet evidence. This ensures the baseline cannot be silently expanded.
+- **Coverage enforcement test**: T012/T013 must include a sacrificial branch that intentionally drops coverage (e.g., skip tests) so the CI run proves thresholds fail PRs. Evidence (screenshot or CI URL) goes into Review Packet and the chapter Daily Log.
+- **Branch protection timing**: Ally-check becomes a required status check immediately after the Day 0 PR merges to `main`. This avoids bricking the feature branch mid-review while still ensuring all subsequent Chapter 6 PRs inherit the stricter gate.
+- **Documentation links**: README updates must point to the canonical GitHub Pages URL `https://maximus-technologies-uganda.github.io/training-prince/` plus the latest Review Packet artifact to keep stakeholders aligned.

@@ -432,6 +432,55 @@ Baseline established (Day 0) → Tracked (violations logged) → Fixed (removed 
 }
 ```
 
+**JSON Schema Reference** (abridged):
+
+```json
+{
+  "$id": "https://maximus-technologies-uganda.github.io/schemas/ally-baseline.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["baseline_date", "baseline_version", "scan_tool", "scan_pages", "documentation", "violations"],
+  "properties": {
+    "baseline_date": { "type": "string", "format": "date" },
+    "baseline_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "scan_tool": { "type": "string", "enum": ["axe-core", "axe-playwright"] },
+    "scan_pages": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^/.*" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "documentation": { "type": "string", "format": "uri" },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "page", "selector", "impact", "instances", "remediation_plan", "responsible_team", "due_date"],
+        "properties": {
+          "id": { "type": "string" },
+          "page": { "type": "string", "pattern": "^/.*" },
+          "selector": { "type": "string" },
+          "impact": { "type": "string", "enum": ["minor", "moderate", "serious", "critical"] },
+          "instances": { "type": "integer", "minimum": 1 },
+          "remediation_plan": { "type": "string", "minLength": 10 },
+          "responsible_team": { "type": "string" },
+          "due_date": { "type": "string", "format": "date" }
+        }
+      },
+      "minItems": 0
+    }
+  }
+}
+```
+
+**Baseline Comparison Contract**:
+
+- Comparison scripts MUST treat `(violation.id, page, selector)` as the unique tuple for differential analysis.
+- New violations appear when the tuple is absent in the baseline OR when the `impact` value worsens (e.g., `minor` → `serious`).
+- False positives are mitigated by normalizing selectors (remove nth-child noise) and stripping query parameters from `page` URLs before comparison.
+- When a new violation is discovered, the script MUST exit non-zero, write a diff artifact, and instruct engineers to open a remediation issue before proposing any baseline edits.
+- Any change to `violations` array MUST bump `baseline_version` following semantic rules: MAJOR for allowlist expansions, MINOR for metadata-only updates, PATCH for typo/formatting fixes.
+
 ---
 
 ## Review Packet Artifact Entity
