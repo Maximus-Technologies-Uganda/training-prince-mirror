@@ -143,6 +143,21 @@ All of the following must be satisfied before D0 is considered complete:
 
 ---
 
+## Review & Acceptance Checklist *(mandatory)*
+
+- [x] Week 5 documentation links in `README.md` verified (spec, plan, data-model, research, contracts, quickstart)
+- [x] Review packet artifacts (coverage table, Playwright report, OpenAPI HTML, changelog) generated and linked from `review-artifacts/index.html`
+- [x] Branch protection rules on `main` require spec-check, API checks, Playwright smoke, CodeQL, and Dependency Review
+- [x] Vitest coverage thresholds (≥60%) enforced for statements, functions, branches, and lines
+- [x] GitHub Project "Week 5 Day-0" created with required custom fields (Status, Priority, Size, Spec URL, Sprint/Week)
+- [x] Automation rules add issues/PRs to the project and update status on open/merge
+- [x] Issue templates (`feature.md`, `bug.md`) include required sections and YAML frontmatter
+- [x] Pull request template includes Spec URL, Contract Tests, Checks, CHANGELOG Updated, Related Issues, Testing, and Breaking Changes sections
+- [x] Linear automations decommissioned and GitHub Projects declared the single source of truth
+- [x] Release tag `week5-day0` documented with merge instructions and rollback notes
+
+---
+
 ## Execution Status
 *Updated by implementation team during task execution*
 
