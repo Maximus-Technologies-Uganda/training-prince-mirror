@@ -1,6 +1,28 @@
 ```markdown
 # Changelog
 
+## Chapter 6 Day 1 – Expenses Insights & Accessibility (2025-11-20)
+
+Summary experience for `/expenses` now ships with telemetry, fully-tested tiles, and an automated accessibility gate.
+
+### Added
+- **Expense Summary Panel (US3)**
+  - TanStack Query hook `useExpenseSummaryQuery` with shared cache keys, generatedAt timestamps, and manual refresh telemetry (`frontend.expenses.refresh_ms`).
+  - Accessible `<ExpenseSummaryPanel />` tiles with aria-live announcements, request-ID error messaging, and "Still working…" helper during background refetches.
+  - Filter chips with clear-all controls, sr-only announcements, and URL/search param sync to keep list + summary panes aligned.
+- **QA Assets**
+  - Vitest contract: `tests/contract/expenses-summary.contract.test.tsx` covering loading/error/empty/success permutations plus chip interactions.
+  - Playwright journeys: `tests/e2e/expenses-summary.spec.ts` (retry-only summary, filter-chip refreshes) and `tests/e2e/expenses-accessibility.spec.ts` (axe-core WCAG AA scan).
+  - Screenshot set (`summary-state-{loading,empty,error,success}.png`) referenced from the summary contract for FR-005 evidence.
+
+### Changed
+- `frontend/app/expenses/components/ExpenseSummaryPanel.tsx` and `FilterChips.tsx` now expose aria-live messaging, request IDs, and deterministic `data-testid`s for QA harnesses.
+- Quickstart + Accessibility Audit updated with the new validation flow, telemetry metrics, and axe coverage expectations.
+
+### Notes
+- `npm run test:e2e` now targets `tests/e2e/` via `tests/e2e/playwright.config.ts`, which spins up the Next.js dev server automatically.
+- Accessibility regression fails the pipeline on any `serious`/`critical` axe violation to satisfy FR-006/FR-007.
+
 ## Week 5 - Final Polish (2025-11-12)
 
 Documentation finalization, review packet assembly, and mentor demo preparation
