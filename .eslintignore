@@ -1,9 +1,0 @@
-node_modules/
-dist/
-build/
-coverage/
-.nyc_output/
-.next/
-.turbo/
-.DS_Store
-.vscode/

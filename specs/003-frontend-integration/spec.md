@@ -129,3 +129,15 @@ Finance leads need to read the aggregated totals so they can judge burn rate and
 - Chapter 5 OpenAPI spec (`api/spec/openapi.yaml`): GET /expenses, POST /expenses, GET /expenses/summary definitions.
 - Accessibility guardrails from `ACCESSIBILITY_AUDIT.md`.
 - Performance expectations from CI ally workflow (`.github/workflows/ally-check.yml`) informing the WCAG AA requirement.
+
+## Review & Acceptance Checklist
+
+- [x] Specification captures all Chapter 6 Day 1 deliverables
+- [x] Functional requirements map to documented user stories
+- [x] Non-functional requirements include accessibility, performance, and telemetry criteria
+- [x] Edge cases and resiliency behaviors are described
+- [x] Required artifacts (screenshots, QA evidence, telemetry) are enumerated
+- [x] Shared dependencies (TanStack Query, react-window, telemetry hooks) are identified
+- [x] Acceptance scenarios reference measurable outcomes
+- [ ] Open research items or stakeholder feedback are resolved
+- [ ] Final sign-off obtained from reviewers/stakeholders
