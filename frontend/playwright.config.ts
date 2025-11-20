@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: 'e2e',
   testMatch: /.*\.spec\.(js|ts)$/,
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || process.env.BASE_URL || 'http://127.0.0.1:5173',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || process.env.BASE_URL || 'http://127.0.0.1:3000',
     headless: true,
     // Enhanced configuration for smoke tests
     trace: 'on-first-retry',
@@ -16,10 +16,10 @@ export default defineConfig({
     ? {}
     : {
         webServer: {
-          command: 'npm run serve',
-          url: 'http://127.0.0.1:5173',
+          command: 'npm run build && npm run start',
+          url: 'http://127.0.0.1:3000',
           reuseExistingServer: true,
-          timeout: 60000,
+          timeout: 120000,
         },
       }),
   // Enhanced retry and timeout settings for smoke tests
