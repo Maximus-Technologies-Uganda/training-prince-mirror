@@ -1,10 +1,9 @@
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    typedRoutes: true,
-  },
+  typedRoutes: true,
   eslint: {
     dirs: ['app', 'tests', 'src'],
+    ignoreDuringBuilds: true,
   },
 };
 

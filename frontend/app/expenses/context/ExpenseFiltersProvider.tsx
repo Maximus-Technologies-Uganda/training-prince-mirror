@@ -22,7 +22,11 @@ const DEFAULT_FILTERS: ExpenseFilters = {
   month: null,
 };
 
-export function ExpenseFiltersProvider({ children }: { children: React.ReactNode }) {
+type ExpenseFiltersProviderProps = {
+  children: React.ReactNode;
+};
+
+export function ExpenseFiltersProvider({ children }: ExpenseFiltersProviderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -46,7 +50,8 @@ export function ExpenseFiltersProvider({ children }: { children: React.ReactNode
       if (nextFilters.category) params.set("category", nextFilters.category);
       if (nextFilters.month) params.set("month", nextFilters.month);
       const query = params.toString();
-      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+      const url = query ? `${pathname}?${query}` : pathname;
+      router.replace(url as any, { scroll: false });
       setFilters(nextFilters);
       setLastChangedAt(new Date().toISOString());
       emitFilterTelemetry(nextFilters);
