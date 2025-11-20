@@ -28,6 +28,11 @@ coverage
 review-artifacts/
 coverage-summary.json
 
+# Test results and reports
+test-results/
+playwright-report/
+*.tmp
+
 # Local tool metadata
 /.cursor/
 .eslintcache
