@@ -20,8 +20,12 @@ test.describe('Expenses list e2e', () => {
 
     let retried = false;
     await page.route('**/expenses**', async (route) => {
-      if (route.request().url().includes('/expenses/summary')) {
+      if (route.request().resourceType() === 'document') {
         await route.continue();
+        return;
+      }
+      if (route.request().url().includes('/expenses/summary')) {
+        await route.fallback();
         return;
       }
       const url = new URL(route.request().url());
@@ -35,6 +39,7 @@ test.describe('Expenses list e2e', () => {
         retried = true;
         return;
       }
+      await delay(250);
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -43,6 +48,10 @@ test.describe('Expenses list e2e', () => {
     });
 
     await page.route('**/expenses/summary**', async (route) => {
+      if (route.request().resourceType() === 'document') {
+        await route.continue();
+        return;
+      }
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -85,4 +94,8 @@ function buildListPayload(page: number) {
     },
     requestId: `req_page_${page}`,
   };
+}
+
+async function delay(ms: number) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
 }

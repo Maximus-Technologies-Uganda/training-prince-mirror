@@ -23,6 +23,10 @@ test.describe('Expenses summary e2e', () => {
     let servedSummaryError = false;
 
     await page.route('**/expenses/summary**', async (route) => {
+      if (route.request().resourceType() === 'document') {
+        await route.continue();
+        return;
+      }
       summaryRequests += 1;
       if (!servedSummaryError) {
         servedSummaryError = true;
@@ -47,8 +51,12 @@ test.describe('Expenses summary e2e', () => {
     });
 
     await page.route('**/expenses**', async (route) => {
-      if (route.request().url().includes('/expenses/summary')) {
+      if (route.request().resourceType() === 'document') {
         await route.continue();
+        return;
+      }
+      if (route.request().url().includes('/expenses/summary')) {
+        await route.fallback();
         return;
       }
       listRequests += 1;
@@ -73,6 +81,10 @@ test.describe('Expenses summary e2e', () => {
     let summaryCallCount = 0;
 
     await page.route('**/expenses/summary**', async (route) => {
+      if (route.request().resourceType() === 'document') {
+        await route.continue();
+        return;
+      }
       summaryCallCount += 1;
       if (summaryCallCount === 3) {
         await new Promise((resolve) => setTimeout(resolve, 600));
@@ -94,8 +106,12 @@ test.describe('Expenses summary e2e', () => {
     });
 
     await page.route('**/expenses**', async (route) => {
-      if (route.request().url().includes('/expenses/summary')) {
+      if (route.request().resourceType() === 'document') {
         await route.continue();
+        return;
+      }
+      if (route.request().url().includes('/expenses/summary')) {
+        await route.fallback();
         return;
       }
       await route.fulfill({

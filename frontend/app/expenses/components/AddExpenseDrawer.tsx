@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useMemo, useCallback } from "react";
 import type { ReactNode } from "react";
 import classNames from "classnames";
 import { useCreateExpenseMutation, type CreateExpenseInput } from "@/hooks/useCreateExpenseMutation";
@@ -29,6 +29,7 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
   const [showRefreshHint, setShowRefreshHint] = useState(false);
 
   const firstFieldRef = useRef<HTMLInputElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const categoryFieldRef = useRef<HTMLSelectElement | null>(null);
   const dateFieldRef = useRef<HTMLInputElement | null>(null);
   const drawerRef = useRef<HTMLDivElement | null>(null);
@@ -36,6 +37,8 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
   const refreshHintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSubmittedPayload = useRef<CreateExpenseInput | null>(null);
+  const focusIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const submissionGuardRef = useRef(false);
 
   const isDirty = useMemo(
     () => Boolean(formValues.amount || formValues.category || formValues.date),
@@ -46,24 +49,50 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
     onDirtyChange?.(isDirty);
   }, [isDirty, onDirtyChange]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isOpen) {
       setFormErrors({});
       setIsTakingLong(false);
       setShowRefreshHint(false);
+      if (focusIntervalRef.current) {
+        clearInterval(focusIntervalRef.current);
+        focusIntervalRef.current = null;
+      }
       return;
     }
+
     setFormValues({ ...EMPTY_FORM });
     setFormErrors({});
     setSuccessMessage(null);
     setShowRefreshHint(false);
     lastSubmittedPayload.current = null;
-    setTimeout(() => firstFieldRef.current?.focus(), 0);
+
+    // Auto-focus the Amount input when drawer transition completes
+    // This satisfies the Ally Plan requirement for focus management on open
+    const handleTransitionEnd = (event: TransitionEvent) => {
+      // Only handle the 'right' property transition to avoid firing multiple times
+      if (event.propertyName === 'right') {
+        firstFieldRef.current?.focus({ preventScroll: true });
+        drawerRef.current?.removeEventListener('transitionend', handleTransitionEnd as EventListener);
+      }
+    };
+
+    if (drawerRef.current) {
+      drawerRef.current.addEventListener('transitionend', handleTransitionEnd as EventListener);
+    }
+
     refreshHintTimerRef.current = setTimeout(() => setShowRefreshHint(true), FIVE_MINUTES);
     return () => {
       if (refreshHintTimerRef.current) {
         clearTimeout(refreshHintTimerRef.current);
         refreshHintTimerRef.current = null;
+      }
+      if (focusIntervalRef.current) {
+        clearInterval(focusIntervalRef.current);
+        focusIntervalRef.current = null;
+      }
+      if (drawerRef.current) {
+        drawerRef.current.removeEventListener('transitionend', handleTransitionEnd as EventListener);
       }
     };
   }, [isOpen]);
@@ -108,6 +137,7 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
       if (refreshHintTimerRef.current) clearTimeout(refreshHintTimerRef.current);
       if (slowSubmissionTimerRef.current) clearTimeout(slowSubmissionTimerRef.current);
       if (successTimerRef.current) clearTimeout(successTimerRef.current);
+      if (focusIntervalRef.current) clearInterval(focusIntervalRef.current);
     };
   }, []);
 
@@ -137,9 +167,9 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       );
       if (!focusable || focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      const active = document.activeElement as HTMLElement;
+      const first = firstFieldRef.current ?? focusable[0];
+      const last = closeButtonRef.current ?? focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
 
       if (!event.shiftKey && active === last) {
         event.preventDefault();
@@ -189,6 +219,11 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
     };
     lastSubmittedPayload.current = payload;
 
+    if (submissionGuardRef.current) {
+      return;
+    }
+    submissionGuardRef.current = true;
+
     try {
       await mutateAsync(payload);
       setSuccessMessage("Expense added");
@@ -203,12 +238,15 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
         focusField(serverFields[0]);
         emitValidationTelemetry(serverFields.map(String));
       }
+    } finally {
+      submissionGuardRef.current = false;
     }
   };
 
   const retryLastSubmission = async () => {
-    if (!lastSubmittedPayload.current || isPending) return;
+    if (!lastSubmittedPayload.current || isPending || submissionGuardRef.current) return;
     setFormErrors({});
+    submissionGuardRef.current = true;
     try {
       await mutateAsync(lastSubmittedPayload.current);
       setSuccessMessage("Expense added");
@@ -223,6 +261,8 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
         focusField(serverFields[0]);
         emitValidationTelemetry(serverFields.map(String));
       }
+    } finally {
+      submissionGuardRef.current = false;
     }
   };
 
@@ -263,7 +303,13 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
             All fields are required. Inline errors announce automatically for screen readers.
           </p>
         </div>
-        <button className="btn ghost" onClick={onClose} aria-label="Close drawer" type="button">
+        <button
+          ref={closeButtonRef}
+          className="btn ghost"
+          onClick={onClose}
+          aria-label="Close drawer"
+          type="button"
+        >
           ×
         </button>
       </header>
@@ -343,17 +389,19 @@ export function AddExpenseDrawer({ isOpen, onClose, onSuccess, onDirtyChange }: 
   );
 }
 
+type FieldProps = {
+  label: string;
+  error?: string;
+  helper?: string;
+  children: ReactNode;
+};
+
 function Field({
   label,
   error,
   helper,
   children,
-}: {
-  label: string;
-  error?: string;
-  helper?: string;
-  children: ReactNode;
-}) {
+}: FieldProps) {
   return (
     <label className="form-field">
       <span>{label}</span>

@@ -26,6 +26,7 @@ export function useExpenseSummaryQuery() {
       return mapExpenseSummary(response);
     },
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   const refresh = useCallback(

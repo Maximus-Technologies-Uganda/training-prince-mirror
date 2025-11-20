@@ -6,11 +6,13 @@ export const metadata: Metadata = {
   description: 'Finance reviewer dashboard for Chapter 6 Day 1',
 };
 
+type RootLayoutProps = {
+  children: React.ReactNode;
+};
+
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: RootLayoutProps) {
   return (
     <html lang="en">
       <body>{children}</body>

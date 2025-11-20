@@ -143,19 +143,21 @@ function SkeletonList() {
   );
 }
 
+type FooterProps = {
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  onPageChange: (next: number) => void;
+  onPageSizeChange: (size: number) => void;
+};
+
 function Footer({
   page,
   pageSize,
   totalPages,
   onPageChange,
   onPageSizeChange,
-}: {
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  onPageChange: (next: number) => void;
-  onPageSizeChange: (size: number) => void;
-}) {
+}: FooterProps) {
   return (
     <div className="list-footer">
       <div className="pagination">

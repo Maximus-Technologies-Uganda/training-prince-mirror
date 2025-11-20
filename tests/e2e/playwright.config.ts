@@ -1,9 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const port = Number(process.env.EXPENSES_E2E_PORT ?? 3000);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(__dirname, '..', '..');
+const frontendDir = path.join(repoRoot, 'frontend');
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: __dirname,
   testIgnore: ['smoke/**'],
   fullyParallel: false,
   timeout: 30_000,
@@ -31,7 +36,8 @@ export default defineConfig({
   webServer: process.env.EXPENSES_E2E_SKIP_SERVER
     ? undefined
     : {
-        command: 'cd frontend && npm run dev',
+  command: `npm run dev --prefix ${frontendDir}`,
+  cwd: repoRoot,
         url: `http://localhost:${port}`,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,

@@ -87,15 +87,17 @@ export function ExpenseSummaryPanel({ query, onRetry, onAddExpense }: ExpenseSum
   );
 }
 
+type SummaryTileProps = {
+  label: string;
+  value: string;
+  supporting: string;
+};
+
 function SummaryTile({
   label,
   value,
   supporting,
-}: {
-  label: string;
-  value: string;
-  supporting: string;
-}) {
+}: SummaryTileProps) {
   return (
     <article className="summary-tile">
       <p className="muted">{label}</p>

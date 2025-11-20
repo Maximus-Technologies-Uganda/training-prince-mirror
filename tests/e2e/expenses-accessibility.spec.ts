@@ -6,6 +6,10 @@ const BASE_URL = process.env.EXPENSES_E2E_BASE_URL ?? 'http://localhost:3000/exp
 test.describe('Expenses dashboard accessibility', () => {
   test('meets WCAG AA rules via axe-core scan', async ({ page }) => {
     await page.route('**/expenses/summary**', async (route) => {
+      if (route.request().resourceType() === 'document') {
+        await route.continue();
+        return;
+      }
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -19,8 +23,12 @@ test.describe('Expenses dashboard accessibility', () => {
     });
 
     await page.route('**/expenses**', async (route) => {
-      if (route.request().url().includes('/expenses/summary')) {
+      if (route.request().resourceType() === 'document') {
         await route.continue();
+        return;
+      }
+      if (route.request().url().includes('/expenses/summary')) {
+        await route.fallback();
         return;
       }
       await route.fulfill({

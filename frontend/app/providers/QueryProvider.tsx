@@ -20,7 +20,11 @@ const createClient = () =>
     },
   });
 
-export function QueryProvider({ children }: { children: React.ReactNode }) {
+type QueryProviderProps = {
+  children: React.ReactNode;
+};
+
+export function QueryProvider({ children }: QueryProviderProps) {
   const [client] = useState(createClient);
   const showDevtools =
     typeof window !== "undefined" && process.env.NODE_ENV !== "production";

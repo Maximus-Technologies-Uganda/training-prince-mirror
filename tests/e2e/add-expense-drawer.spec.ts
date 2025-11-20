@@ -15,11 +15,23 @@ async function throttle(page: Page) {
 }
 
 test.describe('Add expense drawer e2e', () => {
+  test.beforeEach(({ page }) => {
+    page.on('pageerror', (error) => {
+      // eslint-disable-next-line no-console
+      console.error('[pageerror]', error);
+      console.error('[pageerror stack]', error.stack);
+    });
+  });
+
   test('focus trap, validation, and duplicate-submit guard', async ({ page }) => {
     await throttle(page);
 
     const submittedPayloads: unknown[] = [];
     await page.route('**/expenses**', async (route) => {
+      if (route.request().resourceType() === 'document') {
+        await route.continue();
+        return;
+      }
       const url = new URL(route.request().url());
       const isSummary = url.pathname.endsWith('/summary');
       if (route.request().method() === 'POST') {
@@ -47,9 +59,12 @@ test.describe('Add expense drawer e2e', () => {
     });
 
     await page.goto(BASE_URL);
-    await page.getByRole('button', { name: 'Add expense' }).click();
+    await page.getByRole('button', { name: 'Add expense from page header' }).click();
 
     const amount = page.getByLabel('Amount');
+    // Wait for drawer to be fully visible and focus to be set
+    // Playwright's expect will auto-wait until the condition is met
+    await expect(amount).toBeVisible();
     await expect(amount).toBeFocused();
     await page.keyboard.down('Shift');
     await page.keyboard.press('Tab');
@@ -78,6 +93,10 @@ test.describe('Add expense drawer e2e', () => {
     await throttle(page);
 
     await page.route('**/expenses**', async (route) => {
+      if (route.request().resourceType() === 'document') {
+        await route.continue();
+        return;
+      }
       const url = new URL(route.request().url());
       const isSummary = url.pathname.endsWith('/summary');
       if (route.request().method() === 'POST') {
@@ -104,7 +123,7 @@ test.describe('Add expense drawer e2e', () => {
     });
 
     await page.goto(BASE_URL);
-    const headerCta = page.getByRole('button', { name: 'Add expense' });
+    const headerCta = page.getByRole('button', { name: 'Add expense from page header' });
     await headerCta.click();
 
     await page.getByLabel('Amount').fill('12.34');
@@ -124,6 +143,50 @@ test.describe('Add expense drawer e2e', () => {
     await expect(page.getByRole('dialog', { name: 'Add expense' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Close drawer' }).click();
+    // Wait for the drawer to close and verify focus returns to the triggering button (SC-002 compliance)
+    // The parent page uses RAF to restore focus to lastFocusRef
+    await expect(page.getByRole('dialog', { name: 'Add expense' })).not.toBeVisible();
+    await expect(headerCta).toBeFocused();
+  });
+
+  test('Escape key closes drawer and returns focus to trigger button (SC-002 compliance)', async ({ page }) => {
+    await throttle(page);
+
+    await page.route('**/expenses**', async (route) => {
+      if (route.request().resourceType() === 'document') {
+        await route.continue();
+        return;
+      }
+      const url = new URL(route.request().url());
+      const isSummary = url.pathname.endsWith('/summary');
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(
+          isSummary
+            ? { total: 0, count: 0, filters: {}, generatedAt: new Date().toISOString() }
+            : {
+                data: [],
+                pagination: { totalItems: 0, currentPage: 1, pageSize: 20, totalPages: 0 },
+                requestId: 'req_escape_test',
+              },
+        ),
+      });
+    });
+
+    await page.goto(BASE_URL);
+    const headerCta = page.getByRole('button', { name: 'Add expense from page header' });
+    await headerCta.click();
+
+    const amount = page.getByLabel('Amount');
+    await expect(amount).toBeVisible();
+    await expect(amount).toBeFocused();
+
+    // Press Escape to close the drawer
+    await page.keyboard.press('Escape');
+
+    // Verify drawer closes and focus returns to the triggering button
+    await expect(page.getByRole('dialog', { name: 'Add expense' })).not.toBeVisible();
     await expect(headerCta).toBeFocused();
   });
 });

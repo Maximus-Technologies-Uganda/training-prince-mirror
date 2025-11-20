@@ -41,7 +41,12 @@ export default function ExpensesPage() {
     setIsDrawerOpen(false);
     setIsDrawerDirty(false);
     if (lastFocusRef.current) {
-      setTimeout(() => lastFocusRef.current?.focus(), 0);
+      const target = lastFocusRef.current;
+      if (typeof window !== 'undefined') {
+        window.requestAnimationFrame(() => target?.focus({ preventScroll: true }));
+      } else {
+        target.focus({ preventScroll: true });
+      }
     }
   }, []);
 

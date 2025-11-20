@@ -42,6 +42,7 @@ export function useExpensesQuery(options: UseExpensesQueryOptions = {}) {
       return mapPaginatedExpenseResponse(response);
     },
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   const refresh = useCallback(
