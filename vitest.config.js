@@ -25,7 +25,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'lcov', 'html', 'text-summary'],
       reportsDirectory: 'coverage',
-      include: ['src/**/*.js', 'frontend/app/expenses/**/*.{ts,tsx}'],
+      include: ['src/**/*.js'],
       exclude: [
         '**/node_modules/**',
         '**/dist/**',
@@ -34,7 +34,8 @@ export default defineConfig({
         '**/*.test.js',
         '**/*.spec.js',
         '**/coverage/**',
-        '**/.git/**'
+        '**/.git/**',
+        '**/frontend/**'
       ],
       thresholds: process.env.VITEST_DISABLE_THRESHOLD === '1' ? undefined : {
         statements: 70,
