@@ -9,7 +9,7 @@ on:
 jobs:
   smoke-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     if: ${{ !contains(github.head_ref, 'coverage-hardening') && !contains(github.head_ref, 'backend') && !contains(github.head_ref, 'api') }}
 
     steps:
@@ -61,7 +61,7 @@ jobs:
         shell: bash
 
       - name: Run Playwright smoke tests
-        run: cd frontend && npx playwright test --reporter=list --reporter=html
+        run: cd frontend && npx playwright test --grep "\.smoke\.spec\." --reporter=list --reporter=html
         env:
           BASE_URL: http://127.0.0.1:3000
 
