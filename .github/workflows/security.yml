@@ -28,7 +28,6 @@ jobs:
         # CodeQL supports: [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
 
     steps:
-      steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -62,6 +61,7 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{ matrix.language }}"
+          output: sarif-results
           upload: true
           wait-for-processing: false
 
@@ -69,7 +69,7 @@ jobs:
         if: always()
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: .
+          sarif_file: sarif-results
           wait-for-processing: true
 
   # Dependency Review Job

@@ -25,7 +25,21 @@ const withFiles = (configs, files) =>
     files,
   }));
 
+const ignores = [
+  'node_modules/**',
+  'dist/**',
+  'build/**',
+  'coverage/**',
+  '.nyc_output/**',
+  '.next/**',
+  '.turbo/**',
+  '.DS_Store',
+  '.vscode/**',
+  'data/**/*.json',
+];
+
 export default [
+  { ignores },
   ...compat.config(rootLegacy),
   ...withFiles(compat.config(apiLegacy), ['api/**/*.{ts,tsx}']),
   ...withFiles(compat.config(frontendLegacy), ['frontend/**/*.{js,jsx,ts,tsx}']),

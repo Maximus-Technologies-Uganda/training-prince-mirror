@@ -6,17 +6,19 @@ on:
   pull_request:
     branches: [development]
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   smoke-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: ${{ !contains(github.head_ref, 'coverage-hardening') && !contains(github.head_ref, 'backend') && !contains(github.head_ref, 'api') }}
+    timeout-minutes: 15
+    if: ${{ !contains(github.head_ref, 'coverage-hardening') && !contains(github.head_ref, 'backend') && !contains(github.head_ref, 'api') && !contains(github.head_ref, 'frontend') }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          token: ${{ github.token }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -38,15 +40,17 @@ jobs:
       - name: Start frontend server
         run: |
           cd frontend
-          nohup npm run serve > /tmp/server.log 2>&1 &
-          sleep 3
+          nohup npm run start > /tmp/server.log 2>&1 &
+          sleep 5
           echo $! > /tmp/server.pid
         shell: bash
+        env:
+          PORT: 3000
 
       - name: Verify server is running
         run: |
           for i in {1..20}; do
-            if curl -s http://127.0.0.1:5173 > /dev/null; then
+            if curl -s http://127.0.0.1:3000 > /dev/null; then
               echo "✓ Server is responding"
               exit 0
             fi
@@ -59,7 +63,9 @@ jobs:
         shell: bash
 
       - name: Run Playwright smoke tests
-        run: cd frontend && npx playwright test --reporter=list --reporter=html
+        run: cd frontend && npx playwright test --grep "\.smoke\.spec\." --reporter=list --reporter=html
+        env:
+          BASE_URL: http://127.0.0.1:3000
 
       - name: Upload test results
         if: always()

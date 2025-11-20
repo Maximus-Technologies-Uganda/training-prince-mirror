@@ -9,11 +9,6 @@ permissions:
   issues: write
   contents: read
 
-permissions:
-  pull-requests: write
-  issues: write
-  contents: read
-
 jobs:
   validate:
     runs-on: ubuntu-latest
