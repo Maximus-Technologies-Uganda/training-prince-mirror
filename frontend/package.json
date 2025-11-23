@@ -10,6 +10,7 @@
     "test": "npm run test:ui",
     "test:ui": "cross-env NEXT_PUBLIC_API_URL=http://127.0.0.1:3000 NEXT_SERVICE_TOKEN=test-token vitest run",
     "test:ui:watch": "cross-env NEXT_PUBLIC_API_URL=http://127.0.0.1:3000 NEXT_SERVICE_TOKEN=test-token vitest",
+    "test:coverage": "cross-env NEXT_PUBLIC_API_URL=http://127.0.0.1:3000 NEXT_SERVICE_TOKEN=test-token vitest run --coverage",
     "test:e2e": "playwright test",
     "test:ally": "cross-env PLAYWRIGHT_ALLY=1 playwright test",
     "review-artifacts": "node ./scripts/review-artifacts.mjs",
