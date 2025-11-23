@@ -52,3 +52,5 @@ Thumbs.db
 # Environment variables
 .env
 .env.*
+!/frontend/.env.example
+!/frontend/.env.local

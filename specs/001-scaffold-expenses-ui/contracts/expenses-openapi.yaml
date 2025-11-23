@@ -1,0 +1,123 @@
+openapi: 3.1.0
+info:
+  title: Chapter 6 Day 2 Expenses Surfaces
+  version: 0.1.0
+  description: |
+    Contracts for the Next.js proxy route (`/api/expenses`) and the upstream Chapter 5 API (`/expenses`).
+servers:
+  - url: https://{frontendHost}
+    description: Next.js 15 frontend deployment
+    variables:
+      frontendHost:
+        default: localhost:3000
+  - url: https://chapter5-api.example.com
+    description: Chapter 5 source API (reachable only from server route)
+components:
+  securitySchemes:
+    ServiceToken:
+      type: http
+      scheme: bearer
+      bearerFormat: SERVICE_TOKEN
+  schemas:
+    Amount:
+      type: object
+      required: [currency, value]
+      properties:
+        currency:
+          type: string
+          description: ISO 4217 code (e.g., USD)
+        value:
+          type: integer
+          description: Value in minor units (cents)
+    Expense:
+      type: object
+      required: [id, merchant, purchaseDate, status, amount]
+      properties:
+        id:
+          type: string
+          format: uuid
+        merchant:
+          type: string
+        category:
+          type: string
+          description: Enum defined by Chapter 5 taxonomy
+        purchaseDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [PENDING, APPROVED, FLAGGED, REJECTED]
+        amount:
+          $ref: '#/components/schemas/Amount'
+        memo:
+          type: string
+        attachments:
+          type: array
+          items:
+            type: string
+            format: uri
+    ExpensesResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Expense'
+    ErrorEnvelope:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+paths:
+  /api/expenses:
+    get:
+      summary: Proxy GET for Chapter 5 expenses
+      description: Calls the upstream `/expenses` endpoint server-side and returns the same payload to the browser.
+      parameters:
+        - in: header
+          name: x-next-public-api-url
+          required: true
+          schema:
+            type: string
+          description: Set automatically from `NEXT_PUBLIC_API_URL` during build. Build fails if absent.
+      responses:
+        '200':
+          description: Expenses found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpensesResponse'
+        '204':
+          description: No expenses (empty state). Client renders empty ledger component.
+        '502':
+          description: Upstream error propagated to client state machine
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+      security:
+        - {}
+  /expenses:
+    get:
+      summary: Chapter 5 API source of truth
+      security:
+        - ServiceToken: []
+      responses:
+        '200':
+          description: Array of read-only expenses sorted by purchaseDate desc
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpensesResponse'
+        '401':
+          description: Missing or invalid service token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '504':
+          description: Timeout returning data (UI transitions to error state with retry)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
