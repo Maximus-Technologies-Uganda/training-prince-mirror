@@ -161,19 +161,20 @@ describe('lib/api/http', () => {
       global.fetch = vi.fn().mockImplementation(
         (_url, options) =>
           new Promise((_, reject) => {
-            options.signal?.addEventListener('abort', () => {
+            // Set up abort listener
+            const abortHandler = () => {
               const error = new Error('Aborted');
               error.name = 'AbortError';
               reject(error);
-            });
+            };
+            options.signal?.addEventListener('abort', abortHandler, { once: true });
           })
       );
 
       const promise = requestChapter5('/test', { signal: controller.signal });
       
-      // Abort immediately
+      // Abort immediately before timeout can fire
       controller.abort();
-      await vi.advanceTimersByTimeAsync(0);
 
       await expect(promise).rejects.toThrow();
     });
