@@ -1,0 +1,180 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║                   CREATE PR ON GITHUB - VISUAL GUIDE                          ║
+║                                                                               ║
+║              Follow these screenshots/steps to create the PR                  ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+
+📍 STEP 1: Go to GitHub Pull Requests
+═════════════════════════════════════════════════════════════════════════════════
+
+URL: https://github.com/YOUR_ORG/hello-world/pulls
+
+Or navigate manually:
+  1. Go to: https://github.com/YOUR_ORG/hello-world
+  2. Click: "Pull Requests" tab (next to "Code")
+  3. Click: "New Pull Request" button (green button)
+
+
+📍 STEP 2: Select Branches
+═════════════════════════════════════════════════════════════════════════════════
+
+You should see a screen like:
+
+    [ development ]  ← [ 024-title-week-5 ]
+     (base branch)      (compare branch)
+
+Make sure:
+  ✅ Base: development
+  ✅ Compare: 024-title-week-5
+
+If not correct, click the branch dropdowns to select them.
+
+Then click: "Create pull request" button
+
+
+📍 STEP 3: Fill PR Title
+═════════════════════════════════════════════════════════════════════════════════
+
+In the title field, enter:
+
+    feat: rate limiter for POST routes (W5 stretch goal)
+
+(Copy this exactly)
+
+
+📍 STEP 4: Fill PR Description
+═════════════════════════════════════════════════════════════════════════════════
+
+In the description field:
+  1. Click in the description text box
+  2. Select all and delete any default text
+  3. Open file: PR_DESCRIPTION_024_RATE_LIMITER.md
+  4. Copy ALL contents (entire file)
+  5. Paste into the description field
+
+The description should start with:
+    # Pull Request: W5 Stretch Goal - Rate Limiter for POST Routes
+
+And contain:
+  ✅ Overview
+  ✅ Implementation Summary
+  ✅ Test Results
+  ✅ Code Quality Metrics
+  ✅ Files Changed
+  ✅ Technical Details
+
+
+📍 STEP 5: Add Labels
+═════════════════════════════════════════════════════════════════════════════════
+
+On the right side, find "Labels" section:
+
+Click on Labels and add:
+  ✅ stretch-goal
+  ✅ week-5
+  ✅ api
+  ✅ infrastructure
+
+
+📍 STEP 6: Link to Linear Issue (Optional)
+═════════════════════════════════════════════════════════════════════════════════
+
+If there's a "Link an issue" field on the right:
+  - Enter: PRI-2532
+  - Or leave blank if you can't link it
+
+
+📍 STEP 7: Create PR
+═════════════════════════════════════════════════════════════════════════════════
+
+Click the green button: "Create pull request"
+
+That's it! The PR will be created immediately.
+
+
+✅ VERIFICATION - What You Should See After Creating PR
+═════════════════════════════════════════════════════════════════════════════════
+
+After clicking "Create pull request", you should see:
+
+  ✅ Page redirects to your PR
+  ✅ URL shows: /pull/[number]
+  ✅ Title: "feat: rate limiter for POST routes (W5 stretch goal)"
+  ✅ Status: "Open" (pending review)
+  ✅ Description: Full contents from PR_DESCRIPTION_024_RATE_LIMITER.md
+  ✅ Labels: stretch-goal, week-5, api, infrastructure
+  ✅ Checks running: GitHub Actions tests should start
+
+
+🎯 WHAT TO COPY & PASTE
+═════════════════════════════════════════════════════════════════════════════════
+
+Title:
+  feat: rate limiter for POST routes (W5 stretch goal)
+
+Description:
+  [Copy entire contents of: PR_DESCRIPTION_024_RATE_LIMITER.md]
+
+Labels:
+  stretch-goal
+  week-5
+  api
+  infrastructure
+
+
+📋 CHECKLIST BEFORE CLICKING "CREATE PULL REQUEST"
+═════════════════════════════════════════════════════════════════════════════════
+
+- [ ] Base branch: development
+- [ ] Compare branch: 024-title-week-5
+- [ ] Title: "feat: rate limiter for POST routes (W5 stretch goal)"
+- [ ] Description: Pasted from PR_DESCRIPTION_024_RATE_LIMITER.md
+- [ ] Labels: stretch-goal, week-5, api, infrastructure
+- [ ] Ready to click "Create pull request"
+
+
+🚀 THAT'S ALL YOU NEED TO DO!
+═════════════════════════════════════════════════════════════════════════════════
+
+Once you click "Create pull request":
+
+  1. PR appears on GitHub ✅
+  2. Tests start running automatically ✅
+  3. Code review can begin ✅
+  4. You're done! 🎉
+
+
+⏱️ ESTIMATED TIME: 3 MINUTES
+═════════════════════════════════════════════════════════════════════════════════
+
+
+🔗 QUICK LINK TO GET STARTED
+═════════════════════════════════════════════════════════════════════════════════
+
+Go here to create the PR:
+  https://github.com/YOUR_ORG/hello-world/compare/development...024-title-week-5
+
+
+📁 FILES YOU'LL NEED
+═════════════════════════════════════════════════════════════════════════════════
+
+PR Description (copy this):
+  → PR_DESCRIPTION_024_RATE_LIMITER.md
+
+
+✨ FINAL STEP
+═════════════════════════════════════════════════════════════════════════════════
+
+Everything is ready. Just:
+
+  1. Open: PR_DESCRIPTION_024_RATE_LIMITER.md
+  2. Copy: All contents
+  3. Go to: https://github.com/YOUR_ORG/hello-world/pulls
+  4. Create PR with the details above
+  5. Done! 🎉
+
+═════════════════════════════════════════════════════════════════════════════════
+

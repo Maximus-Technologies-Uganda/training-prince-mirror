@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Demo Script Contract",
+  "description": "Contract for 10-minute mentor demo walkthrough (demo-script.md)",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "const": "Week 5 Final Demo: 10-Minute Walkthrough",
+      "description": "Demo script title"
+    },
+    "totalDuration": {
+      "type": "string",
+      "const": "10 minutes (strict)",
+      "description": "Hard time limit"
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "description": "Five sequential demo phases",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phaseNumber": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Phase sequence number"
+          },
+          "name": {
+            "type": "string",
+            "enum": [
+              "Setup & Context",
+              "API Coverage & OpenAPI",
+              "Test Coverage Display",
+              "Rate Limiter Feature Demo",
+              "Sign-Off & Feedback"
+            ]
+          },
+          "duration": {
+            "type": "string",
+            "examples": ["~1 minute", "~2 minutes"]
+          },
+          "objectives": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "order": { "type": "integer" },
+                "action": { "type": "string" },
+                "expectedOutcome": { "type": "string" },
+                "timing": { "type": "string" },
+                "isOptional": { "type": "boolean" }
+              },
+              "required": ["order", "action", "expectedOutcome"]
+            }
+          },
+          "fallbacks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "condition": { "type": "string" },
+                "action": { "type": "string" }
+              }
+            }
+          }
+        },
+        "required": ["phaseNumber", "name", "duration", "objectives", "steps"]
+      }
+    },
+    "mentorSignOff": {
+      "type": "object",
+      "properties": {
+        "approvalCommentTemplate": {
+          "type": "string",
+          "description": "GitHub comment template for mentor approval"
+        },
+        "requiredFields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "examples": [
+            ["Deliverables Reviewed", "Coverage ≥70%", "Rate Limiter Validated", "No Critical Blockers"]
+          ]
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "reviewPacketUrl": { "type": "string" },
+        "openApiPath": { "type": "string" },
+        "changelogPath": { "type": "string" },
+        "playwrightReportUrl": { "type": "string" }
+      }
+    },
+    "timingBreakdown": {
+      "type": "object",
+      "properties": {
+        "phase1": { "type": "string", "const": "1 minute" },
+        "phase2": { "type": "string", "const": "2 minutes" },
+        "phase3": { "type": "string", "const": "1 minute" },
+        "phase4": { "type": "string", "const": "2 minutes" },
+        "phase5": { "type": "string", "const": "1 minute" },
+        "buffer": { "type": "string", "const": "3 minutes" },
+        "total": { "type": "string", "const": "10 minutes" }
+      }
+    }
+  },
+  "required": ["title", "totalDuration", "phases", "mentorSignOff"]
+}

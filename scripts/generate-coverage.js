@@ -170,19 +170,30 @@ class CoverageGenerator {
   async generateUICoverage() {
     console.log('🎨 Generating UI coverage reports...');
     
-    // Map backend app names to frontend UI names
-    const uiAppMapping = {
-      'quote': 'main', // Quote UI is in main.js
-      'expense': 'expense',
-      'temp-converter': 'temp',
-      'todo': 'todo',
-      'stopwatch': 'stopwatch'
-    };
+    // For now, only expense app has Next.js frontend coverage
+    // Other apps use legacy frontend structure that doesn't exist anymore
+    const appsWithFrontend = ['expense'];
     
     for (const app of APPLICATIONS) {
       try {
-        const uiAppName = uiAppMapping[app];
-        const report = await this.generateUIReport(app, uiAppName);
+        if (!appsWithFrontend.includes(app)) {
+          // Skip apps without frontend coverage
+          console.log(`⏭️  Skipping UI coverage for ${app} (no Next.js frontend)`);
+          const skipReport = new UICoverageReport({
+            application_name: app,
+            coverage_percentage: 0,
+            statement_coverage: 0,
+            branch_coverage: 0,
+            function_coverage: 0,
+            line_coverage: 0,
+            report_path: null,
+            error_message: 'No Next.js frontend for this application'
+          });
+          this.uiReports.push(skipReport);
+          continue;
+        }
+
+        const report = await this.generateUIReport(app);
         this.uiReports.push(report);
         console.log(`✅ UI coverage for ${app}: ${report.coverage_percentage}%`);
       } catch (error) {
@@ -211,27 +222,17 @@ class CoverageGenerator {
 
   /**
    * Generate UI coverage report for a specific application
+   * Uses Next.js frontend structure with app/ and lib/ directories
    */
-  async generateUIReport(appName, uiAppName) {
+  async generateUIReport(appName) {
     const frontendDir = path.join(ROOT_DIR, 'frontend');
     
     if (!fs.existsSync(frontendDir)) {
       throw new Error(`Frontend directory not found: ${frontendDir}`);
     }
 
-    // Special handling for quote UI which is in main.js
-    if (uiAppName === 'main') {
-      return await this.generateMainJSCoverage(appName, frontendDir);
-    }
-
-    // Check if UI components exist for this app
-    const uiDir = path.join(frontendDir, 'src', `ui-${uiAppName}`);
-    if (!fs.existsSync(uiDir)) {
-      throw new Error(`UI directory not found: ${uiDir}`);
-    }
-
-    // Run vitest with coverage for UI components
-    const coverageDir = path.join(ARTIFACTS_DIR, `ui-coverage-${uiAppName}`);
+    // Run vitest with coverage for Next.js frontend (app/ and lib/ directories)
+    const coverageDir = path.join(ARTIFACTS_DIR, `ui-coverage-${appName}`);
     
     // Ensure coverage directory exists
     if (!fs.existsSync(coverageDir)) {
@@ -239,12 +240,18 @@ class CoverageGenerator {
     }
     
     try {
-      // Run tests with coverage and capture JSON output
-      const output = execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/ui-${uiAppName}/**/*.js"`, {
+      // Run tests with coverage using the vitest config
+      // This will automatically pick up the correct include patterns from vitest.config.ts
+      const output = execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir}`, {
         cwd: frontendDir,
         stdio: 'pipe',
         encoding: 'utf8',
-        env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
+        env: { 
+          ...process.env, 
+          VITEST_DISABLE_THRESHOLD: '1',
+          NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3000',
+          NEXT_SERVICE_TOKEN: process.env.NEXT_SERVICE_TOKEN || 'test-token'
+        }
       });
       
       // Parse coverage data from JSON output
@@ -267,8 +274,8 @@ class CoverageGenerator {
         report_path: path.join(coverageDir, 'lcov-report', 'index.html'),
         test_count: testResult.numTotalTests || 0,
         vitest_config: {
-          include: `src/ui-${uiAppName}/**/*.js`,
-          threshold: 40
+          include: 'app/**/*.{ts,tsx}, lib/**/*.{ts,tsx}',
+          threshold: 55
         }
       });
       
@@ -289,102 +296,10 @@ class CoverageGenerator {
           test_count: 0,
           error_message: 'Tests failed but coverage data available',
           vitest_config: {
-            include: `src/ui-${uiAppName}/**/*.js`,
-            threshold: 40
+            include: 'app/**/*.{ts,tsx}, lib/**/*.{ts,tsx}',
+            threshold: 55
           }
         });
-      }
-      
-      // Run the command again with stdio: 'inherit' to show the actual error
-      console.log(`🔍 Running UI coverage command with visible output for debugging:`);
-      try {
-        execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/ui-${uiAppName}/**/*.js"`, {
-          cwd: frontendDir,
-          stdio: 'inherit',
-          env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
-        });
-      } catch (debugError) {
-        console.error(`❌ Debug run also failed:`, debugError.message);
-      }
-      
-      throw error;
-    }
-  }
-
-  /**
-   * Generate coverage report for quote UI in main.js
-   */
-  async generateMainJSCoverage(appName, frontendDir) {
-    const coverageDir = path.join(ARTIFACTS_DIR, `ui-coverage-${appName}`);
-    
-    // Ensure coverage directory exists
-    if (!fs.existsSync(coverageDir)) {
-      fs.mkdirSync(coverageDir, { recursive: true });
-    }
-    
-    try {
-      // Run tests with coverage for main.js (quote UI)
-      const output = execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/main.js"`, {
-        cwd: frontendDir,
-        stdio: 'pipe',
-        encoding: 'utf8',
-        env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
-      });
-      
-      // Parse coverage data from JSON output
-      const lines = output.trim().split('\n');
-      const jsonLine = lines.find(line => line.startsWith('{') && line.includes('coverageMap'));
-      if (!jsonLine) {
-        throw new Error('No coverage data found in test output');
-      }
-      
-      const testResult = JSON.parse(jsonLine);
-      const coverageData = this.parseCoverageFromTestResult(testResult);
-      
-      return new UICoverageReport({
-        application_name: appName,
-        coverage_percentage: coverageData.total.coverage_percentage,
-        statement_coverage: coverageData.total.statements,
-        branch_coverage: coverageData.total.branches,
-        function_coverage: coverageData.total.functions,
-        line_coverage: coverageData.total.lines,
-        report_path: path.join(coverageDir, 'lcov-report', 'index.html'),
-        test_count: testResult.numTotalTests || 0,
-        vitest_config: {
-          include: 'src/main.js',
-          threshold: 40
-        }
-      });
-      
-    } catch (error) {
-      console.error(`❌ Main.js coverage generation failed for ${appName}:`, error.message);
-      
-      // If tests fail, try to extract partial coverage
-      if (fs.existsSync(path.join(coverageDir, 'coverage-final.json'))) {
-        const coverageData = this.readCoverageData(coverageDir);
-        return new UICoverageReport({
-          application_name: appName,
-          coverage_percentage: coverageData.total.coverage_percentage,
-          statement_coverage: coverageData.total.statements,
-          branch_coverage: coverageData.total.branches,
-          function_coverage: coverageData.total.functions,
-          line_coverage: coverageData.total.lines,
-          report_path: path.join(coverageDir, 'lcov-report', 'index.html'),
-          test_count: 0,
-          error_message: 'Tests failed but coverage data available'
-        });
-      }
-      
-      // Run the command again with stdio: 'inherit' to show the actual error
-      console.log(`🔍 Running main.js coverage command with visible output for debugging:`);
-      try {
-        execSync(`npx vitest run --coverage --reporter=json --coverage.reportsDirectory=${coverageDir} --coverage.include="src/main.js"`, {
-          cwd: frontendDir,
-          stdio: 'inherit',
-          env: { ...process.env, VITEST_DISABLE_THRESHOLD: '1' }
-        });
-      } catch (debugError) {
-        console.error(`❌ Debug run also failed:`, debugError.message);
       }
       
       throw error;

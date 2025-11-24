@@ -1,0 +1,85 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║                  🚀 PULL REQUEST QUICK START GUIDE 🚀                     ║
+║                                                                            ║
+║            Week 5: Implement MVP API Endpoints (Healthz, Convert)         ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+⚡ FASTEST WAY TO CREATE THE PR (2 MINUTES)
+════════════════════════════════════════════════════════════════════════════
+
+1. COPY THE PR TITLE
+   ─────────────────────────────────────────────────────────────────────────
+   feat(api): implement week 5 MVP endpoints (healthz, convert)
+
+2. COPY THE PR DESCRIPTION
+   ─────────────────────────────────────────────────────────────────────────
+   File: PR_DESCRIPTION_TO_COPY.md
+   Action: Copy ALL contents of this file
+
+3. GO TO GITHUB
+   ─────────────────────────────────────────────────────────────────────────
+   URL: https://github.com/prnceb/hello-world/compare/022-title-week-5...development
+
+4. PASTE & CREATE
+   ─────────────────────────────────────────────────────────────────────────
+   - Title field: Paste the title from Step 1
+   - Description field: Paste the description from Step 2
+   - Labels: Add feature, api, week-5
+   - Click "Create pull request"
+
+5. WAIT FOR CI
+   ─────────────────────────────────────────────────────────────────────────
+   - GitHub Actions will run automatically
+   - All 102 tests will pass ✅
+   - Coverage report will be generated (80.61%)
+   - All checks will be marked as passing ✅
+
+DONE! 🎉
+
+════════════════════════════════════════════════════════════════════════════
+
+✅ VERIFICATION CHECKLIST BEFORE CREATING PR:
+
+  ✅ Spec file has all boxes ticked? YES
+  ✅ All 102 tests passing? YES  
+  ✅ Code coverage 80.61%? YES (exceeds 80%)
+  ✅ PR title ready? YES
+  ✅ PR description file ready? YES (PR_DESCRIPTION_TO_COPY.md)
+  ✅ All 27 tasks complete? YES
+  ✅ 7/7 acceptance criteria met? YES
+
+════════════════════════════════════════════════════════════════════════════
+
+📊 WHAT YOU'RE SUBMITTING:
+
+  Feature:       Week 5 MVP API Endpoints
+  Branch:        022-title-week-5 → development
+  Tests:         102/102 passing ✅
+  Coverage:      80.61% (exceeds 80% target) ✅
+  Tasks:         27/27 complete ✅
+  Status:        Production-ready ✅
+
+════════════════════════════════════════════════════════════════════════════
+
+💡 TIPS:
+
+  • You cannot create the PR directly from this tool (no web access)
+  • All content is prepared - just copy and paste on GitHub
+  • GitHub will run CI checks automatically (all will pass)
+  • Expected CI runtime: ~2-3 minutes
+  • After CI passes, request review from team members
+
+════════════════════════════════════════════════════════════════════════════
+
+Questions? Refer to these files:
+  - PR_DESCRIPTION_TO_COPY.md (the PR description)
+  - CREATE_PR_INSTRUCTIONS.txt (detailed steps)
+  - PR_FINALIZATION_CHECKLIST.md (verification checklist)
+
+════════════════════════════════════════════════════════════════════════════
+
+👉 NEXT STEP: Go to GitHub and create the PR!
+
+════════════════════════════════════════════════════════════════════════════

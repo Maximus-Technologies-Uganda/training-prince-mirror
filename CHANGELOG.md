@@ -1,4 +1,76 @@
+```markdown
 # Changelog
+
+## Chapter 6 Day 1 – Expenses Insights & Accessibility (2025-11-20)
+
+Summary experience for `/expenses` now ships with telemetry, fully-tested tiles, and an automated accessibility gate.
+
+### Added
+- **Expense Summary Panel (US3)**
+  - TanStack Query hook `useExpenseSummaryQuery` with shared cache keys, generatedAt timestamps, and manual refresh telemetry (`frontend.expenses.refresh_ms`).
+  - Accessible `<ExpenseSummaryPanel />` tiles with aria-live announcements, request-ID error messaging, and "Still working…" helper during background refetches.
+  - Filter chips with clear-all controls, sr-only announcements, and URL/search param sync to keep list + summary panes aligned.
+- **QA Assets**
+  - Vitest contract: `tests/contract/expenses-summary.contract.test.tsx` covering loading/error/empty/success permutations plus chip interactions.
+  - Playwright journeys: `tests/e2e/expenses-summary.spec.ts` (retry-only summary, filter-chip refreshes) and `tests/e2e/expenses-accessibility.spec.ts` (axe-core WCAG AA scan).
+  - Screenshot set (`summary-state-{loading,empty,error,success}.png`) referenced from the summary contract for FR-005 evidence.
+
+### Changed
+- `frontend/app/expenses/components/ExpenseSummaryPanel.tsx` and `FilterChips.tsx` now expose aria-live messaging, request IDs, and deterministic `data-testid`s for QA harnesses.
+- Quickstart + Accessibility Audit updated with the new validation flow, telemetry metrics, and axe coverage expectations.
+
+### Notes
+- `npm run test:e2e` now targets `tests/e2e/` via `tests/e2e/playwright.config.ts`, which spins up the Next.js dev server automatically.
+- Accessibility regression fails the pipeline on any `serious`/`critical` axe violation to satisfy FR-006/FR-007.
+
+## Week 5 - Final Polish (2025-11-12)
+
+Documentation finalization, review packet assembly, and mentor demo preparation
+
+### Added
+- **API Scaffolding**: Added API scaffolding with Express middleware pipeline
+  - Implemented RESTful API foundation with standardized middleware stack
+  - Request/response handling with proper error management
+  - Routes organized by domain (hello, temp-converter, stopwatch, todo, quote, expense)
+- **POST /expenses Endpoint**: Added POST /expenses endpoint - create and track new expenses
+  - Expense creation with validation (amount, description, category)
+  - Automatic timestamp and ID generation
+  - Request/response schemas documented in OpenAPI spec
+  - Coverage: 89.95% (hello module: 96.55%, expense module: 89.95%)
+- **GET /expenses/summary Endpoint**: Added GET /expenses/summary endpoint - retrieve expense summary with calculations
+  - Summary calculations: total, average, by-category breakdown
+  - Filter support for date ranges and categories
+  - Response includes aggregated metrics
+  - Integration with POST /expenses for complete CRUD workflow
+- **Rate Limiter Middleware**: Added Rate Limiter middleware - throttle requests to 100 per 10-minute window, return 429 on limit exceeded
+  - Window: 10 minutes
+  - Limit: 100 requests per window
+  - Status: 429 (Too Many Requests) on limit exceeded
+  - Applies to all API endpoints with clear rate-limit headers
+- **Coverage Hardening**: Hardened test coverage to 70% threshold across all API modules
+  - Target: 70% API coverage
+  - Modules verified: hello (96.55%), stopwatch (88.8%), temp-converter (80.6%), expense (89.95%), todo (91.78%), quote (85.26%)
+  - Overall API coverage: 80.52% (Statements: 80.52%, Branches: 86.27%, Functions: 70.33%, Lines: 80.5%)
+  - All 542 tests passing across 42 test files
+- **Security CI Workflow**: Added automated security CI checks to review-packet workflow
+  - Coverage collection for all modules (6 modules: hello, stopwatch, temp-converter, expense, todo, quote)
+  - OpenAPI HTML documentation generation via Redoc CLI (v0.13.21)
+  - Playwright test report integration
+  - Automated artifact assembly for review packet
+
+### Changed
+- CHANGELOG updated with comprehensive Week 5 summary
+- review-artifacts/index.html enhanced with 4-section review packet structure
+- CI workflow (review-packet.yml) optimized for multi-module coverage collection
+
+### Notes
+- All tests passing (542/542) with no critical blockers
+- Coverage meets 70% threshold for all core modules
+- OpenAPI spec includes all Week 5 endpoints (POST /expenses, GET /expenses, GET /expenses/summary)
+- Ready for production deployment after mentor sign-off
+- Demo script prepared for 10-minute walkthrough of all Week 5 deliverables
+
+---
 
 ## Week 1 → Week 2 Transition
 

@@ -1,0 +1,137 @@
+═══════════════════════════════════════════════════════════════
+  QUICK START: Create Linear Sub-Issues for 024-title-week-5
+═══════════════════════════════════════════════════════════════
+
+🎯 GOAL: Create 12 sub-issues under PRI-2532 (Rate Limiter Feature)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1: Get Your Linear API Key
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to: https://linear.app/settings/api
+2. Click "Create new" to create a new API key
+3. Copy the entire API key (starts with "lin_pat_")
+4. Keep it safe - you'll only see it once
+
+Example API key format: lin_pat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2: Run the Command (Copy and Paste)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Replace YOUR_API_KEY with your actual key:
+
+  export LINEAR_API_KEY="YOUR_API_KEY" && \
+  cd /Users/prnceb/Desktop/WORK/hello-world && \
+  node create-linear-sub-issues-024.mjs
+
+
+Example with real key:
+
+  export LINEAR_API_KEY="lin_pat_FaFRe3XQfvgZ4b2pPMC31VkGm7RN5d6D7F8G9H0I" && \
+  cd /Users/prnceb/Desktop/WORK/hello-world && \
+  node create-linear-sub-issues-024.mjs
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3: Verify Success
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You should see output like this:
+
+  🚀 Creating Linear sub-issues for 024-title-week-5
+  📍 Parent issue: PRI-2532
+  📋 Total tasks: 12
+
+  🔍 Fetching team ID...
+  ✅ Team ID: [team-id]
+
+  📝 Creating sub-issues...
+
+  ✅ T001: PRI-2533 - Create contract test file rate-limit.contract.test.ts [P]
+  ✅ T002: PRI-2534 - Contract 1: POST /api/convert 100 req/15 min limit [P]
+  ✅ T003: PRI-2535 - Contract 2: POST /api/expenses 100 req/15 min limit [P]
+  ... (9 more sub-issues)
+
+  ═════════════════════════════════════════════════════════════
+  📊 Summary: 12 created, 0 failed
+  ═════════════════════════════════════════════════════════════
+
+  ✨ Sub-issues created under PRI-2532
+  🔗 View in Linear: https://linear.app/issues/PRI-2532
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Sub-Issues Being Created
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Phase 4.1: Contract Tests (8 parallel tasks)
+  T001 - Create contract test file rate-limit.contract.test.ts [P]
+  T002 - Contract 1: POST /api/convert 100 req/15 min limit [P]
+  T003 - Contract 2: POST /api/expenses 100 req/15 min limit [P]
+  T004 - Contract 3: Independent quota per endpoint [P]
+  T005 - Contract 4: GET routes exempt from rate limiting [P]
+  T006 - Contract 5: Retry-After header accuracy [P]
+  T007 - Contract 6: Proxy trust configuration [P]
+  T008 - Contract 7: Logging on rate limit rejection [P]
+
+Phase 4.2: Implementation (2 sequential tasks)
+  T009 - Create rate-limit.ts middleware with express-rate-limit
+  T010 - Register rate limiter in api/src/index.ts
+
+Phase 4.3-4.4: Validation (2 sequential tasks)
+  T011 - Run integration tests and verify all contract tests pass
+  T012 - Execute manual verification from quickstart.md
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Troubleshooting
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ "Authentication required, not authenticated"
+   → Your API key is invalid or expired
+   → Get a new key from: https://linear.app/settings/api
+   → Make sure you copy the ENTIRE key
+
+❌ "Failed to fetch parent issue"
+   → PRI-2532 doesn't exist in your Linear workspace
+   → Check that the parent issue was created
+   → Ask your team lead for the correct issue ID
+
+❌ "Could not find parent issue PRI-2532"
+   → Same as above - verify the issue exists
+
+✅ All sub-issues created successfully?
+   → Check Linear: https://linear.app/issues/PRI-2532
+   → All 12 should appear as sub-issues
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+After Creation
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. ✅ View all issues in Linear
+   https://linear.app/issues/PRI-2532
+
+2. ✅ Reference the task descriptions
+   /Users/prnceb/Desktop/WORK/hello-world/specs/024-title-week-5/tasks.md
+
+3. ✅ Start with T001 (contract tests setup)
+
+4. ✅ Follow execution order:
+   T001-T008 (contract tests)
+     ↓
+   T009-T010 (middleware implementation)
+     ↓
+   T011 (integration tests)
+     ↓
+   T012 (manual verification)
+
+
+═══════════════════════════════════════════════════════════════
+Created: 2025-11-05
+Feature: 024-title-week-5 (Rate Limiter for POST Routes)
+Parent Issue: PRI-2532
+═══════════════════════════════════════════════════════════════
+

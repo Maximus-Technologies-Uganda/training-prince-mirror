@@ -1,0 +1,41 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Week 5 Day-0: API Scaffolding and Spec-First Setup",
+  "type": "module",
+  "main": "src/server.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest watch",
+  "lint": "eslint .",
+    "dev": "nodemon --exec tsx src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.2.1",
+    "pino": "^8.16.2",
+    "pino-http": "^8.5.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.15.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.6",
+    "@types/supertest": "^2.0.16",
+    "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@typescript-eslint/parser": "^8.13.0",
+    "@vitest/coverage-v8": "^1.1.0",
+  "eslint": "^9.15.0",
+    "nodemon": "^3.0.2",
+    "pino-pretty": "^10.3.1",
+    "supertest": "^6.3.3",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  }
+}

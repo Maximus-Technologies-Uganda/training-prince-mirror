@@ -19,6 +19,8 @@ pids
 # Dependency directories
 node_modules/
 jspm_packages/
+dist/
+build/
 
 # Coverage directory & report artifacts
 coverage
@@ -26,9 +28,16 @@ coverage
 review-artifacts/
 coverage-summary.json
 
+# Test results and reports
+test-results/
+playwright-report/
+*.tmp
+
 # Local tool metadata
 /.cursor/
 .eslintcache
+.next/
+.turbo/
 
 # IDE and editor directories
 .idea
@@ -39,3 +48,9 @@ coverage-summary.json
 Thumbs.db
 # Runtime state files
 /data/
+
+# Environment variables
+.env
+.env.*
+!/frontend/.env.example
+!/frontend/.env.local

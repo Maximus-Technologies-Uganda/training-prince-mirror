@@ -1,0 +1,170 @@
+================================================================================
+QUICKSTART: Create Linear Sub-Issues for 023-title-week-5
+Week 5: Implement MVP API Endpoints (Expenses)
+================================================================================
+
+GOAL: Create 30 Linear sub-issues under PRI-2501 (marked "In Progress")
+
+================================================================================
+STEP 1: Get Your Linear API Key
+================================================================================
+
+1. Go to: https://linear.app/settings/api
+2. Copy your API key
+3. Note: This key is sensitive - don't commit to git!
+
+================================================================================
+STEP 2: Run the Automation Script
+================================================================================
+
+Option A (One-line command):
+  export LINEAR_API_KEY="your-key-here" && \
+  cd /Users/prnceb/Desktop/WORK/hello-world && \
+  node create-linear-sub-issues-023.mjs
+
+Option B (Step by step):
+  export LINEAR_API_KEY="your-key-here"
+  cd /Users/prnceb/Desktop/WORK/hello-world
+  node create-linear-sub-issues-023.mjs
+
+================================================================================
+EXPECTED OUTPUT
+================================================================================
+
+🚀 Creating 30 sub-issues for PRI-2501...
+
+📝 Creating T001: Create contract test for POST /expenses [P]...
+  ✅ Created: PRI-2501-1 - Create contract test for POST /expenses [P]
+
+[... 28 more issues ...]
+
+============================================================
+📊 Summary:
+  ✅ Created: 30/30
+  ❌ Failed: 0/30
+============================================================
+
+================================================================================
+STEP 3: Verify in Linear
+================================================================================
+
+1. Go to: https://linear.app/
+2. Search for: PRI-2501
+3. Click to open the issue
+4. Scroll to "Sub-Issues" section
+5. Should see 30 sub-issues listed
+6. All should have status "In Progress"
+
+================================================================================
+WHAT GETS CREATED
+================================================================================
+
+Task Distribution:
+  - T001-T005: Contract Tests (Phase 4.1)
+  - T006-T008: Types & Schemas (Phase 4.2)
+  - T009-T011: OpenAPI Spec (Phase 4.3)
+  - T012-T014: Service Layer (Phase 4.4)
+  - T015-T017: Route Implementation (Phase 4.5)
+  - T018-T023: Integration Tests (Phase 4.6)
+  - T024-T026: Unit Tests (Phase 4.7)
+  - T027: Coverage Verification (Phase 4.8)
+  - T028-T030: Documentation (Phase 4.9)
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Error: "LINEAR_API_KEY environment variable not set"
+  → Run: export LINEAR_API_KEY="your-key"
+  → Then run the script again
+
+Error: "Failed to parse response"
+  → Check API key is valid
+  → Check internet connection
+  → Try again in a few seconds
+
+Error: "Issue creation failed"
+  → Verify PRI-2501 exists
+  → Check workspace permissions
+  → See full guide: GUIDE_CREATE_LINEAR_SUB_ISSUES_023.md
+
+================================================================================
+NEXT STEPS (After Issues Created)
+================================================================================
+
+1. Read the full implementation plan:
+   → open /Users/prnceb/Desktop/WORK/hello-world/IMPLEMENTATION_PLAN_023.md
+
+2. Share with team:
+   → Post link to PRI-2501 in Slack/Discord
+
+3. Start implementation:
+   → Begin with T001-T005 (Contract tests)
+   → Follow specs/023-title-week-5/tasks.md
+
+4. Track progress:
+   → Update Linear status as tasks complete
+   → Reference issue ID in git commits
+
+================================================================================
+FILES AVAILABLE
+================================================================================
+
+Main Files:
+  - specs/023-title-week-5/tasks.md (30 tasks, ready to execute)
+  - create-linear-sub-issues-023.mjs (automation script)
+  - IMPLEMENTATION_PLAN_023.md (full execution guide)
+  - COMPLETION_SUMMARY_023.md (summary of deliverables)
+
+Support Guides:
+  - GUIDE_CREATE_LINEAR_SUB_ISSUES_023.md (troubleshooting)
+  - COMMAND_TO_CREATE_LINEAR_SUB_ISSUES_023.md (command reference)
+
+Design Specs (Already Complete):
+  - specs/023-title-week-5/spec.md (business requirements)
+  - specs/023-title-week-5/plan.md (technical approach)
+  - specs/023-title-week-5/research.md (architectural decisions)
+  - specs/023-title-week-5/data-model.md (entities)
+  - specs/023-title-week-5/quickstart.md (test scenarios)
+
+================================================================================
+STATUS
+================================================================================
+
+✅ Design: COMPLETE
+   All specification documents finalized
+
+✅ Planning: COMPLETE  
+   30 tasks generated, ordered, and estimated
+
+✅ Automation: COMPLETE
+   Linear sub-issue script ready to run
+
+✅ Documentation: COMPLETE
+   Guides, troubleshooting, implementation plan ready
+
+⏳ Next: CREATE LINEAR SUB-ISSUES (You are here)
+   Run the script to create 30 issues under PRI-2501
+
+🚀 Then: EXECUTE TASKS
+   Follow tasks.md starting with T001-T005
+
+================================================================================
+QUICK COMMAND
+================================================================================
+
+Ready to go? Run this command:
+
+  export LINEAR_API_KEY="your-api-key" && \
+  cd /Users/prnceb/Desktop/WORK/hello-world && \
+  node create-linear-sub-issues-023.mjs
+
+Then verify all 30 issues in Linear workspace.
+
+================================================================================
+Questions? See GUIDE_CREATE_LINEAR_SUB_ISSUES_023.md for full troubleshooting.
+Ready to execute. Week 5 MVP is waiting! 🚀
+
+Last Updated: November 5, 2025
+================================================================================
+

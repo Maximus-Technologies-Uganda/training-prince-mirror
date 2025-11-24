@@ -1,0 +1,44 @@
+name: Spec Check
+
+on:
+  pull_request:
+    branches: [main, development]
+    paths:
+      - 'specs/core/openapi.yaml'
+      - 'api/spec/openapi.yaml'
+      - '.github/workflows/spec-check.yml'
+  push:
+    branches: [main, development]
+    paths:
+      - 'specs/core/openapi.yaml'
+      - 'api/spec/openapi.yaml'
+      - '.github/workflows/spec-check.yml'
+
+jobs:
+  spec-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for review packet
+          # Removed custom token to use default GITHUB_TOKEN
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install OpenAPI validator
+        run: npm install -g @apidevtools/swagger-cli
+
+      - name: Validate OpenAPI spec (specs/core/openapi.yaml)
+        run: |
+          swagger-cli validate specs/core/openapi.yaml
+          echo "✅ OpenAPI spec validation passed"
+
+      - name: Validate OpenAPI spec (api/spec/openapi.yaml)
+        run: |
+          swagger-cli validate api/spec/openapi.yaml
+          echo "✅ OpenAPI spec validation passed"
+

@@ -15,6 +15,20 @@ This document contains the accessibility audit results for all 5 UI modules. The
 
 ---
 
+## Chapter 6 Day 1 – Expenses Dashboard Additions (November 20, 2025)
+
+**Scope:** Next.js `/expenses` page (summary panel, filter chips, stale banner, drawer triggers)
+
+- Automated coverage now runs through `tests/e2e/expenses-accessibility.spec.ts`, which mounts the dashboard under Fast 3G, intercepts API calls, and executes an axe-core scan limited to WCAG 2.1 A/AA rules. The suite blocks the pipeline on any `serious` or `critical` violations.
+- Summary tiles, stale banner, and filter chips expose `aria-live="polite"` announcements plus `role="status"` so screen readers receive inline updates without stealing focus from drawer CTAs.
+- Manual keyboard sweep confirms tab order: Header CTA → filter toolbar → Refresh + drawer buttons → list → summary tiles → filter chips → drawer content. Drawer close button returns focus to the invoker, satisfying FR-006.
+- High-contrast focus rings (`--focus-ring`) remain visible against the dark dashboard palette; summaries inherit the same focus token used across Ch. 5.
+- No violations were reported by axe-core (0 serious/critical issues). Minor contrast info messages remain acceptable due to design tokens already covered in Week 5 audit.
+
+All findings have been rolled into the Playwright regression suite and documented here so FR-007/FR-010 accessibility clauses stay verifiable.
+
+---
+
 ## T027: Contrast Ratio Audit
 
 ### Audit Methodology

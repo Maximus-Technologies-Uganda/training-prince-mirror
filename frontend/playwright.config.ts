@@ -1,10 +1,26 @@
 import { defineConfig } from '@playwright/test';
 
+const REQUIRED_ENV_DEFAULTS: Record<string, string> = {
+  NEXT_PUBLIC_API_URL: 'https://chapter5-api.example.com',
+  NEXT_SERVICE_TOKEN: 'local-dev-token',
+};
+
+for (const [key, value] of Object.entries(REQUIRED_ENV_DEFAULTS)) {
+  if (!process.env[key]) {
+    process.env[key] = value;
+  }
+}
+
+const WEB_SERVER_ENV = {
+  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL!,
+  NEXT_SERVICE_TOKEN: process.env.NEXT_SERVICE_TOKEN!,
+};
+
 export default defineConfig({
-  testDir: 'e2e',
+  testDir: 'tests/e2e',
   testMatch: /.*\.spec\.(js|ts)$/,
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || process.env.BASE_URL || 'http://127.0.0.1:5173',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || process.env.BASE_URL || 'http://127.0.0.1:3000',
     headless: true,
     // Enhanced configuration for smoke tests
     trace: 'on-first-retry',
@@ -16,10 +32,11 @@ export default defineConfig({
     ? {}
     : {
         webServer: {
-          command: 'npm run serve',
-          url: 'http://127.0.0.1:5173',
+          command: 'npm run build && npm run start',
+          url: 'http://127.0.0.1:3000',
           reuseExistingServer: true,
-          timeout: 60000,
+          timeout: 120000,
+          env: WEB_SERVER_ENV,
         },
       }),
   // Enhanced retry and timeout settings for smoke tests

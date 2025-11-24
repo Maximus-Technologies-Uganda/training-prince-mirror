@@ -51,7 +51,7 @@ import {
     };
 
     switch (command) {
-      case 'add':
+      case 'add': {
         if (!validateFlags(['--amount', '--category', '--month'])) return;
         const amountIndex = args.indexOf('--amount');
         const categoryIndex = args.indexOf('--category');
@@ -76,14 +76,16 @@ import {
         expenses = addExpense(expenses, { amount, category, month: monthVal });
         saveExpenses(expenses);
         break;
+      }
   
-      case 'list':
+      case 'list': {
         if (!validateFlags([])) return;
         console.log('All Expenses:');
         console.table(expenses);
         break;
+      }
   
-      case 'total':
+      case 'total': {
         if (!validateFlags(['--category', '--month'])) return;
         const categoryFilterIndex = args.indexOf('--category');
         const categoryFilter = categoryFilterIndex !== -1 ? args[categoryFilterIndex + 1] : null;
@@ -97,6 +99,7 @@ import {
         const filterText = parts.length ? ` for ${parts.join(' & ')}` : '';
         console.log(`Total Expenses${filterText}: ${total}`);
         break;
+      }
   
       default:
         console.error('Error: Command not recognized.');

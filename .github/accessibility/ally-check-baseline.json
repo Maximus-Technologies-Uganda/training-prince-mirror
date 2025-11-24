@@ -1,0 +1,8 @@
+{
+  "baseline_date": "2025-11-18",
+  "baseline_version": "1.0.0",
+  "scan_tool": "axe-core",
+  "scan_pages": ["/", "/about"],
+  "documentation": "Chapter 6 Day 0 accessibility baseline. Established 2025-11-18. Initial scan to identify known violations. Only NEW violations (not in this baseline) trigger CI failure.",
+  "violations": []
+}
