@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { AppQueryClientProvider } from '@/app/providers/query-client';
+import { Nav } from '@/app/(shell)/Nav';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -15,7 +17,12 @@ export default function RootLayout({
 }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AppQueryClientProvider>
+          <Nav />
+          <main>{children}</main>
+        </AppQueryClientProvider>
+      </body>
     </html>
   );
 }

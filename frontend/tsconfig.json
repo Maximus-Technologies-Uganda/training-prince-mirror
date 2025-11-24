@@ -23,8 +23,14 @@
       "@/app/*": [
         "app/*"
       ],
+      "@/config/*": [
+        "config/*"
+      ],
       "@/components/*": [
         "app/expenses/components/*"
+      ],
+      "@/lib/*": [
+        "lib/*"
       ],
       "@/hooks/*": [
         "app/expenses/hooks/*"

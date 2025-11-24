@@ -11,7 +11,7 @@ import { execSync } from 'child_process';
 export class SmokeTestExecutionService {
   constructor(options = {}) {
     this.playwrightConfig = options.playwrightConfig || 'frontend/playwright.config.ts';
-    this.testDir = options.testDir || 'frontend/e2e';
+    this.testDir = options.testDir || 'tests/e2e/smoke';
     this.outputDir = options.outputDir || 'test-results';
     this.applications = options.applications || ['quote', 'expense', 'temp', 'todo', 'stopwatch'];
     this.baseUrl = options.baseUrl || 'http://localhost:5173';
@@ -353,9 +353,19 @@ export class SmokeTestExecutionService {
       verification.errors.push(`Playwright config not found: ${this.playwrightConfig}`);
     }
 
+    // Map application names to test file names
+    const appToTestFile = {
+      'quote': 'hello.spec.ts',  // quote test is in hello.spec.ts
+      'expense': 'expense.spec.ts',
+      'temp': 'temperature.spec.ts',
+      'todo': 'todo.spec.ts',
+      'stopwatch': 'stopwatch.spec.ts'
+    };
+
     // Check if test files exist
     for (const app of this.applications) {
-      const testFile = path.join(this.testDir, `${app}.smoke.spec.ts`);
+      const testFileName = appToTestFile[app] || `${app}.spec.ts`;
+      const testFile = path.join(this.testDir, testFileName);
       try {
         await fs.access(testFile);
         verification.testFilesExist.push(app);
