@@ -15,7 +15,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reportsDirectory: path.join(ROOT, 'coverage', 'ui'),
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       include: ['app/**/*.{ts,tsx}', 'lib/**/*.{ts,tsx}'],
       thresholds: {
         statements: 55,
