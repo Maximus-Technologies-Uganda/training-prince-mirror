@@ -31,8 +31,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          token: ${{ github.token }}
+          fetch-depth: 0 # Required for review packet
+          # Removed custom token to use default GITHUB_TOKEN
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -86,8 +86,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          token: ${{ github.token }}
+          fetch-depth: 0 # Required for review packet
+          # Removed custom token to use default GITHUB_TOKEN
 
       - name: Dependency Review
         uses: actions/dependency-review-action@v4

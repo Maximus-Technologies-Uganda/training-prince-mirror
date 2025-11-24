@@ -21,7 +21,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ github.token }}
+          fetch-depth: 0 # Required for review packet
+          # Removed custom token to use default GITHUB_TOKEN
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
